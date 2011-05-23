@@ -11,6 +11,7 @@ import org.antlr.stringtemplate.StringTemplateGroup;
 
 import java.io.BufferedReader;
 import java.io.StringReader;
+import java.net.URI;
 import java.net.URL;
 
 public class StringTemplates extends StringTemplateGroup implements Templates{
@@ -23,11 +24,18 @@ public class StringTemplates extends StringTemplateGroup implements Templates{
     @Override
     protected StringTemplate loadTemplate(String name, String fileName) {
         try {
-            String text = Strings.toString(new URL(fileName).openStream());
+            String text = Strings.toString(new URL(format(fileName)).openStream());
             return loadTemplate(name, new BufferedReader(new StringReader(text)));
         } catch (Exception e) {
             return null;
         }
+    }
+
+    private String format(String fileName) {
+        if(fileName.startsWith("jar:")){
+            return fileName.replace("//", "/");
+        }
+        return fileName;
     }
 
     @Override
