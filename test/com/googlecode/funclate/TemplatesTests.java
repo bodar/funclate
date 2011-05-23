@@ -9,7 +9,7 @@ import static com.googlecode.totallylazy.records.MapRecord.record;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-public abstract class TemplatesTest {
+public abstract class TemplatesTests {
     protected abstract Templates templates();
 
     @Test

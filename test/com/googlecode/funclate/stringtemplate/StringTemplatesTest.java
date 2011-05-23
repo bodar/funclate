@@ -1,7 +1,7 @@
 package com.googlecode.funclate.stringtemplate;
 
-import com.googlecode.funclate.Templates;
 import com.googlecode.funclate.TemplatesTests;
+import com.googlecode.funclate.Templates;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -9,7 +9,6 @@ import java.net.URL;
 import static com.googlecode.totallylazy.Strings.EMPTY;
 
 public class StringTemplatesTest extends TemplatesTests {
-    @Override
     protected Templates templates() {
         return new StringTemplates(packageUrl(StringTemplatesTest.class));
     }
