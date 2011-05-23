@@ -33,7 +33,7 @@ public class StringTemplates extends StringTemplateGroup implements Templates{
 
     private String format(String fileName) {
         if(fileName.startsWith("jar:")){
-            return fileName.replace("//", "/");
+            return fileName.replaceFirst("//([^/]+)$", "/$1");
         }
         return fileName;
     }
