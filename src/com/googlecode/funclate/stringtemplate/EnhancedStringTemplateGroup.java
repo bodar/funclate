@@ -1,6 +1,5 @@
 package com.googlecode.funclate.stringtemplate;
 
-import com.googlecode.funclate.Templates;
 import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Strings;

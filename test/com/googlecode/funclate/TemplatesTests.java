@@ -27,7 +27,20 @@ public abstract class TemplatesTests {
         assertThat(template.call(model().add("foo", annotationInstance())), is("Hello"));
     }
 
-    private static Callable1<WebEndpoint,String> name() {
+    @Test
+    public void supportsRenderingNestedModels() throws Exception {
+        Template template = templates().registerRenderer(instanceOf(WebEndpoint.class), name()).template("users");
+        Model model = model().
+                add("users", model().
+                        add("firstname", "Dan").
+                        add("lastname", "Bodart")).
+                add("users", model().
+                        add("firstname", "Matt").
+                        add("lastname", "Savage"));
+        assertThat(template.call(model), is("Hello Dan Bodart. Hello Matt Savage. "));
+    }
+
+    private static Callable1<WebEndpoint, String> name() {
         return new Callable1<WebEndpoint, String>() {
             public String call(WebEndpoint webEndpoint) throws Exception {
                 return webEndpoint.name();
