@@ -1,15 +1,12 @@
 package com.googlecode.funclate;
 
 import com.googlecode.totallylazy.Callable1;
-import com.googlecode.totallylazy.Predicate;
-import com.googlecode.totallylazy.Predicates;
 import org.junit.Test;
 
 import javax.xml.ws.WebEndpoint;
 import java.lang.annotation.Annotation;
 
 import static com.googlecode.totallylazy.Predicates.instanceOf;
-import static com.googlecode.totallylazy.Predicates.where;
 import static com.googlecode.totallylazy.records.Keyword.keyword;
 import static com.googlecode.totallylazy.records.MapRecord.record;
 import static org.hamcrest.MatcherAssert.assertThat;
