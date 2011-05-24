@@ -1,17 +1,16 @@
 package com.googlecode.funclate.stringtemplate;
 
-import com.googlecode.totallylazy.records.Keyword;
-import com.googlecode.totallylazy.records.Record;
+import com.googlecode.funclate.Model;
 
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
-public class RecordAdapter implements Map {
-    private final Record record;
+public class ModelAdapter implements Map {
+    private final Model model;
 
-    public RecordAdapter(Record record) {
-        this.record = record;
+    public ModelAdapter(Model model) {
+        this.model = model;
     }
 
     public int size() {
@@ -23,7 +22,7 @@ public class RecordAdapter implements Map {
     }
 
     public boolean containsKey(Object key) {
-        return record.keywords().contains(toKey(key));
+        return model.contains(key.toString());
     }
 
     public boolean containsValue(Object value) {
@@ -31,7 +30,7 @@ public class RecordAdapter implements Map {
     }
 
     public Object get(Object key) {
-        return record.get(toKey(key));
+        return model.get(key.toString());
     }
 
     public Object put(Object key, Object value) {
@@ -62,7 +61,7 @@ public class RecordAdapter implements Map {
         throw new UnsupportedOperationException();
     }
 
-    private Keyword<Object> toKey(Object key) {
-        return Keyword.keyword(key.toString());
+    private String toKey(Object key) {
+        return key.toString();
     }
 }

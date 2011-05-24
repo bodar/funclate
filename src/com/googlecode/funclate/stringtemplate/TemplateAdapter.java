@@ -1,7 +1,7 @@
 package com.googlecode.funclate.stringtemplate;
 
+import com.googlecode.funclate.Model;
 import com.googlecode.funclate.Template;
-import com.googlecode.totallylazy.records.Record;
 import org.antlr.stringtemplate.StringTemplate;
 
 public class TemplateAdapter implements Template {
@@ -11,8 +11,8 @@ public class TemplateAdapter implements Template {
         this.template = template;
     }
 
-    public String call(Record record) throws Exception {
-        template.setArgumentContext(new RecordAdapter(record));
+    public String call(Model model) throws Exception {
+        template.setArgumentContext(new ModelAdapter(model));
         return template.toString();
     }
 }
