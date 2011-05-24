@@ -14,11 +14,11 @@ public class ModelAdapter implements Map {
     }
 
     public int size() {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("size");
     }
 
     public boolean isEmpty() {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("isEmpty");
     }
 
     public boolean containsKey(Object key) {
@@ -26,42 +26,38 @@ public class ModelAdapter implements Map {
     }
 
     public boolean containsValue(Object value) {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("containsValue");
     }
 
     public Object get(Object key) {
-        return model.get(key.toString());
+        return model.getObject(key.toString());
     }
 
     public Object put(Object key, Object value) {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("put");
     }
 
     public Object remove(Object key) {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("remove");
     }
 
     public void putAll(Map m) {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("putAll");
     }
 
     public void clear() {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("clear");
     }
 
     public Set keySet() {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("keySet");
     }
 
     public Collection values() {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("values");
     }
 
     public Set entrySet() {
-        throw new UnsupportedOperationException();
-    }
-
-    private String toKey(Object key) {
-        return key.toString();
+        throw new UnsupportedOperationException("entrySet");
     }
 }

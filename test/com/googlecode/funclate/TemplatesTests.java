@@ -18,13 +18,13 @@ public abstract class TemplatesTests {
     public void supportsRenderers() throws Exception {
         String expected = "bar";
         Template template = templates().registerRenderer(instanceOf(String.class), returnsValue(expected)).template("test");
-        assertThat(template.call(model().add("foo", "ignored")).toString(), is(expected));
+        assertThat(template.call(model().add("foo", "ignored")), is(expected));
     }
 
     @Test
-    public void supportsRendereringAnnotations() throws Exception {
+    public void supportsRenderingAnnotations() throws Exception {
         Template template = templates().registerRenderer(instanceOf(WebEndpoint.class), name()).template("test");
-        assertThat(template.call(model().add("foo", annotationInstance())).toString(), is("Hello"));
+        assertThat(template.call(model().add("foo", annotationInstance())), is("Hello"));
     }
 
     private static Callable1<WebEndpoint,String> name() {

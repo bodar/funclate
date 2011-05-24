@@ -28,10 +28,6 @@ public class Model {
         return values.containsKey(key);
     }
 
-    public Object get(String key) {
-        return values.get(key);
-    }
-
     public <T> T get(String key, Class<T> aClass) {
         T t = (T) values.get(key);
         if(t instanceof List){
@@ -41,7 +37,7 @@ public class Model {
     }
 
     public <T> List<T> getValues(String key, Class<T> aClass) {
-        final Object value = get(key);
+        final Object value = getObject(key);
         if(value instanceof List){
             return (List) value;
         }
@@ -50,4 +46,7 @@ public class Model {
         }};
     }
 
+    public <T> T getObject(String key) {
+        return (T) values.get(key);
+    }
 }
