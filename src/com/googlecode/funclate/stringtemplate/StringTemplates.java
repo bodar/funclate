@@ -14,45 +14,19 @@ import java.io.StringReader;
 import java.net.URI;
 import java.net.URL;
 
-public class StringTemplates extends StringTemplateGroup implements Templates{
-    private final Renderers renderers = new Renderers();
+public class StringTemplates implements Templates{
+    private final EnhancedStringTemplateGroup group;
 
     public StringTemplates(URL baseUrl) {
-        super(baseUrl.toString(), baseUrl.toString());
-    }
-
-    @Override
-    protected StringTemplate loadTemplate(String name, String fileName) {
-        try {
-            String text = Strings.toString(new URL(format(fileName)).openStream());
-            return loadTemplate(name, new BufferedReader(new StringReader(text)));
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    private String format(String fileName) {
-        if(fileName.startsWith("jar:")){
-            return fileName.replaceFirst("//([^/]+)$", "/$1");
-        }
-        return fileName;
-    }
-
-    @Override
-    public AttributeRenderer getAttributeRenderer(Class attributeClassType) {
-        AttributeRenderer attributeRenderer = super.getAttributeRenderer(attributeClassType);
-        if(attributeRenderer == null){
-            return renderers;
-        }
-        return attributeRenderer;
+        group = new EnhancedStringTemplateGroup(baseUrl);
     }
 
     public <T, R> Templates registerRenderer(Predicate<? super T> predicate, Callable1<T, R> callable) {
-        renderers.add(predicate, callable);
+        group.registerRenderer(predicate, callable);
         return this;
     }
 
     public Template template(String name) {
-        return new TemplateAdapter(getInstanceOf(name));
+        return new TemplateAdapter(group.getInstanceOf(name));
     }
 }

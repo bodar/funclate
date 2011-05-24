@@ -35,14 +35,6 @@ public abstract class TemplatesTests {
         };
     }
 
-    private Callable1<? super Annotation, Class<? extends Annotation>> annotationType() {
-        return new Callable1<Annotation, Class<? extends Annotation>>() {
-            public Class<? extends Annotation> call(Annotation annotation) throws Exception {
-                return annotation.annotationType();
-            }
-        };
-    }
-
     private static Callable1<String, String> returnsValue(final String value) {
         return new Callable1<String, String>() {
             public String call(String s) throws Exception {
