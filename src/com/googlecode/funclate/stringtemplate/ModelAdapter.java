@@ -2,78 +2,58 @@ package com.googlecode.funclate.stringtemplate;
 
 import com.googlecode.funclate.Model;
 
+import java.util.AbstractMap;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
-public class ModelAdapter implements Map {
+@SuppressWarnings("unchecked")
+public class ModelAdapter extends AbstractMap {
     private final Model model;
 
     public ModelAdapter(Model model) {
         this.model = model;
     }
 
-    public int size() {
-        throw new UnsupportedOperationException("size");
-    }
-
-    public boolean isEmpty() {
-        throw new UnsupportedOperationException("isEmpty");
-    }
-
-    public boolean containsKey(Object key) {
-        return model.contains(key.toString());
-    }
-
-    public boolean containsValue(Object value) {
-        throw new UnsupportedOperationException("containsValue");
-    }
-
-    public Object get(Object key) {
-        return adaptModel(model.getObject(key.toString()));
-    }
-
-    private Object adaptModel(Object object) {
-        if(object instanceof Model){
+    private Object adapt(Object object) {
+        if (object instanceof Model) {
             return new ModelAdapter((Model) object);
         }
-        if(object instanceof List){
-            List adapted = new ArrayList();
-            for (Object value : (List) object) {
-                adapted.add(adaptModel(value));
-            }
-            return adapted;
+        if (object instanceof Entry) {
+            return adapt((Entry) object);
+        }
+        if (object instanceof Set) {
+            return adapt((Set) object);
+        }
+        if (object instanceof List) {
+            return adapt((List) object);
         }
         return object;
     }
 
-    public Object put(Object key, Object value) {
-        throw new UnsupportedOperationException("put");
+    private List adapt(List object) {
+        List adapted = new ArrayList();
+        for (Object value : object) {
+            adapted.add(adapt(value));
+        }
+        return adapted;
     }
 
-    public Object remove(Object key) {
-        throw new UnsupportedOperationException("remove");
+    private Entry adapt(Entry object) {
+        return new SimpleImmutableEntry(object.getKey(), adapt(object.getValue()));
     }
 
-    public void putAll(Map m) {
-        throw new UnsupportedOperationException("putAll");
+    private Set adapt(Set object) {
+        Set adapted = new HashSet();
+        for (Object o : object) {
+            adapted.add(adapt(o));
+        }
+        return adapted;
     }
 
-    public void clear() {
-        throw new UnsupportedOperationException("clear");
-    }
-
-    public Set keySet() {
-        throw new UnsupportedOperationException("keySet");
-    }
-
-    public Collection values() {
-        throw new UnsupportedOperationException("values");
-    }
-
+    @Override
     public Set entrySet() {
-        throw new UnsupportedOperationException("entrySet");
+        return adapt(model.entries());
     }
 }
