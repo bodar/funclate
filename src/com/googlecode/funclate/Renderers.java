@@ -1,35 +1,25 @@
-package com.googlecode.funclate.stringtemplate;
+package com.googlecode.funclate;
 
-import com.googlecode.totallylazy.Callable1;
-import com.googlecode.totallylazy.Callables;
-import com.googlecode.totallylazy.Pair;
-import com.googlecode.totallylazy.Predicate;
-import com.googlecode.totallylazy.Predicates;
-import org.antlr.stringtemplate.AttributeRenderer;
+import com.googlecode.totallylazy.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.googlecode.totallylazy.Callables.first;
 import static com.googlecode.totallylazy.Callables.second;
-import static com.googlecode.totallylazy.Callers.call;
 import static com.googlecode.totallylazy.Predicates.where;
 import static com.googlecode.totallylazy.Sequences.sequence;
 
-public class Renderers implements AttributeRenderer{
+public class Renderers implements Callable1<Object, String>{
     private final List<Pair<Predicate, Callable1>> pairs = new ArrayList<Pair<Predicate, Callable1>>();
 
-    public String toString(Object value) {
-        Object result = call(sequence(pairs).find(where(first(Predicate.class), (Predicate<? super Predicate>) Predicates.matches(value))).
+    public String call(Object value) {
+        Object result = Callers.call(sequence(pairs).find(where(first(Predicate.class), (Predicate<? super Predicate>) Predicates.matches(value))).
                 map(second(Callable1.class)).getOrElse(Callables.<Object>asString()), value);
         if(value instanceof String && result instanceof String){
             return (String) result;
         }
-        return toString(result);
-    }
-
-    public String toString(Object value, String format) {
-        throw new UnsupportedOperationException("We don't support format yet");
+        return call(result);
     }
 
     public <T, R> Renderers add(Predicate<? super T> predicate, Callable1<T, R> callable) {

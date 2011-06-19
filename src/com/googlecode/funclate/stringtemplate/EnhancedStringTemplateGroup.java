@@ -1,5 +1,6 @@
 package com.googlecode.funclate.stringtemplate;
 
+import com.googlecode.funclate.Renderers;
 import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Strings;
@@ -39,7 +40,7 @@ public class EnhancedStringTemplateGroup extends StringTemplateGroup {
     public AttributeRenderer getAttributeRenderer(Class attributeClassType) {
         AttributeRenderer attributeRenderer = super.getAttributeRenderer(attributeClassType);
         if(attributeRenderer == null){
-            return renderers;
+            return new RendererAdapter(renderers);
         }
         return attributeRenderer;
     }
@@ -48,7 +49,6 @@ public class EnhancedStringTemplateGroup extends StringTemplateGroup {
         renderers.add(predicate, callable);
         return this;
     }
-
 
 
 }
