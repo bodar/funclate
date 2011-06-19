@@ -10,7 +10,7 @@ public class CoreFunclates implements Funclates{
     private final Map<String, Callable1> funclates = new HashMap<String, Callable1>();
     private final Renderers renderers = new Renderers();
 
-    public Funclates add(String name, Callable1<?, ?> callable) {
+    public Funclates add(String name, Callable1<?, String> callable) {
         funclates.put(name, callable);
         return this;
     }
