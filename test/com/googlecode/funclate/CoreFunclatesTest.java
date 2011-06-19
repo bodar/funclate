@@ -1,11 +1,13 @@
 package com.googlecode.funclate;
 
 import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Strings;
 import org.junit.Test;
 
 import java.net.URLEncoder;
 
 import static com.googlecode.totallylazy.Predicates.instanceOf;
+import static com.googlecode.totallylazy.Strings.format;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
@@ -25,6 +27,15 @@ public class CoreFunclatesTest {
         String result = funclates.call("Hello Dan");
         assertThat(result, is("Hello+Dan"));
     }
+
+    @Test
+    public void canIntegrateWithStringFormat() throws Exception {
+        Funclates funclates = new CoreFunclates();
+        funclates.add("format", format("Hello %s"));
+        String result = funclates.call("format", "Dan");
+        assertThat(result, is("Hello Dan"));
+    }
+
 
     private static Callable1<String, String> encode() {
         return new Callable1<String, String>(){
