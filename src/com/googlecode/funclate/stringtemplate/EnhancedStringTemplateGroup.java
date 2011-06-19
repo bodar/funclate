@@ -8,9 +8,10 @@ import org.antlr.stringtemplate.AttributeRenderer;
 import org.antlr.stringtemplate.StringTemplate;
 import org.antlr.stringtemplate.StringTemplateGroup;
 
-import java.io.BufferedReader;
-import java.io.StringReader;
+import java.io.*;
 import java.net.URL;
+
+import static com.googlecode.totallylazy.Closeables.using;
 
 public class EnhancedStringTemplateGroup extends StringTemplateGroup {
     private final Renderers renderers = new Renderers();
@@ -20,13 +21,20 @@ public class EnhancedStringTemplateGroup extends StringTemplateGroup {
     }
 
     @Override
-    protected StringTemplate loadTemplate(String name, String fileName) {
+    protected StringTemplate loadTemplate(final String name, String fileName) {
         try {
-            String text = Strings.toString(new URL(format(fileName)).openStream());
-            return loadTemplate(name, new BufferedReader(new StringReader(text)));
+            return using(new URL(format(fileName)).openStream(), loadTemplate(name));
         } catch (Exception e) {
             return null;
         }
+    }
+
+    private Callable1<InputStream, StringTemplate> loadTemplate(final String name) {
+        return new Callable1<InputStream, StringTemplate>() {
+            public StringTemplate call(InputStream stream) throws Exception {
+                return loadTemplate(name, new BufferedReader(new InputStreamReader(stream)));
+            }
+        };
     }
 
     private String format(String fileName) {

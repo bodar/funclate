@@ -1,10 +1,6 @@
 package com.googlecode.funclate;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @SuppressWarnings("unchecked")
 public class Model {
@@ -15,7 +11,7 @@ public class Model {
     }
 
     public <T> Model add(String key, T value) {
-        if(!contains(key)){
+        if (!contains(key)) {
             values.put(key, value);
             return this;
         }
@@ -31,7 +27,7 @@ public class Model {
 
     public <T> T get(String key, Class<T> aClass) {
         T t = (T) values.get(key);
-        if(t instanceof List){
+        if (t instanceof List) {
             return (T) ((List) t).get(0);
         }
         return t;
@@ -39,10 +35,10 @@ public class Model {
 
     public <T> List<T> getValues(String key, Class<T> aClass) {
         final Object value = getObject(key);
-        if(value instanceof List){
+        if (value instanceof List) {
             return (List) value;
         }
-        return new ArrayList(){{
+        return new ArrayList() {{
             add(value);
         }};
     }
@@ -53,5 +49,14 @@ public class Model {
 
     public Set<Map.Entry<String, Object>> entries() {
         return values.entrySet();
+    }
+
+    public Map<String, Object> toMap() {
+        Map<String, Object> result = new HashMap<String, Object>();
+        for (Map.Entry<String, Object> entry : values.entrySet()) {
+            result.put(entry.getKey(),
+                    entry.getValue() instanceof Model ? ((Model) entry.getValue()).toMap() : entry.getValue());
+        }
+        return result;
     }
 }
