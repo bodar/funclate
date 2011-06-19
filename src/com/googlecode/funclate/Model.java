@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @SuppressWarnings("unchecked")
 public class Model {
@@ -48,5 +49,9 @@ public class Model {
 
     public <T> T getObject(String key) {
         return (T) values.get(key);
+    }
+
+    public Set<Map.Entry<String, Object>> entries() {
+        return values.entrySet();
     }
 }
