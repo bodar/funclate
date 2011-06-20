@@ -6,7 +6,7 @@ import com.googlecode.totallylazy.Predicate;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CoreFunclates implements Funclates{
+public class BaseFunclates implements Funclates{
     private final Map<String, Callable1> funclates = new HashMap<String, Callable1>();
     private final Renderers renderers = new Renderers();
 
