@@ -37,11 +37,23 @@ public class ModelTest {
     @Test
     public void canConvertToAMap() throws Exception {
         Model model = model().
-                add("root", model().
-                        add("child", "value"));
-        Map<String,Object> map = model.toMap();
-        Map<String,Object> root = (Map<String, Object>) map.get("root");
-        String child = (String) root.get("child");
-        assertThat(child, is("value"));
+                add("users", model().
+                        add("user", model().
+                                add("name", "Dan").
+                                add("tel", "34567890")).
+                        add("user", model().
+                                add("name", "Mat").
+                                add("tel", "978532")));
+
+        Map<String, Object> root = (Map<String, Object>) model.toMap().get("users");
+        List<Map<String, Object>> users = (List<Map<String, Object>>) root.get("user");
+
+        Map<String, Object> dan = users.get(0);
+        assertThat((String) dan.get("name"), is("Dan"));
+        assertThat((String) dan.get("tel"), is("34567890"));
+
+        Map<String, Object> mat = users.get(1);
+        assertThat((String) mat.get("name"), is("Mat"));
+        assertThat((String) mat.get("tel"), is("978532"));
     }
 }
