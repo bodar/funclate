@@ -62,6 +62,14 @@ public class Model {
         return result;
     }
 
+    public static Callable1<? super Model, Map<String, Object>> asMap() {
+        return new Callable1<Model, Map<String, Object>>() {
+            public Map<String, Object> call(Model model) throws Exception {
+                return model.toMap();
+            }
+        };
+    }
+
     private Object toValue(Object value) {
         if(value instanceof Model){
             return ((Model) value).toMap();
