@@ -13,7 +13,7 @@ public class XmlModelRenderer implements Callable1<Model, String> {
         EnhancedStringTemplateGroup group = new EnhancedStringTemplateGroup(packageUrl(getClass()));
         group.registerRenderer(instanceOf(Model.class), new XmlModelRenderer());
         StringTemplate template = group.getInstanceOf("xml");
-        template.setAttribute("entries", model.toMap(returnArgument()));
+        template.setAttribute("entries", model.entries());
         return template.toString();
     }
 }

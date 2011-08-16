@@ -16,7 +16,14 @@ public class XmlModelRendererTest {
                         add("foo", "bar").
                         add("foo", model().
                                 add("baz", "lo"))));
-        System.out.println("result = " + Xml.format(Xml.load(result)));
-        assertThat(result, is("<root><foo>bar</foo><foo><baz>lo</baz></foo></root>"));
+
+        assertThat(Xml.format(Xml.load(result)),
+                is("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n" +
+                "<root>\n" +
+                "    <foo>bar</foo>\n" +
+                "    <foo>\n" +
+                "        <baz>lo</baz>\n" +
+                "    </foo>\n" +
+                "</root>\n"));
     }
 }

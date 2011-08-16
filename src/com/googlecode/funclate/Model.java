@@ -1,7 +1,6 @@
 package com.googlecode.funclate;
 
 import com.googlecode.totallylazy.Callable1;
-import com.googlecode.totallylazy.Callers;
 import com.googlecode.totallylazy.Sequences;
 
 import java.util.ArrayList;
@@ -60,13 +59,9 @@ public class Model {
     }
 
     public Map<String, Object> toMap() {
-        return toMap(toValue());
-    }
-
-    public Map<String, Object> toMap(Callable1 callable) {
         Map<String, Object> result = new HashMap<String, Object>();
         for (Map.Entry<String, Object> entry : values.entrySet()) {
-            result.put(entry.getKey(), Callers.call(callable, entry.getValue()));
+            result.put(entry.getKey(), toValue(entry.getValue()));
         }
         return result;
     }

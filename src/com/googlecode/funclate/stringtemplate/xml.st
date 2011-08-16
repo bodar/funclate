@@ -1,1 +1,1 @@
-$entries.keys: { key | $entries.(key):{value | <$key$>$value$</$key$>}$}$
+$entries: { entry | $entry.value: {value | <$entry.key$>$value$</$entry.key$>}$}$
