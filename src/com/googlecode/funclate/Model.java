@@ -1,9 +1,14 @@
 package com.googlecode.funclate;
 
 import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Callers;
 import com.googlecode.totallylazy.Sequences;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @SuppressWarnings("unchecked")
 public class Model {
@@ -55,9 +60,13 @@ public class Model {
     }
 
     public Map<String, Object> toMap() {
+        return toMap(toValue());
+    }
+
+    public Map<String, Object> toMap(Callable1 callable) {
         Map<String, Object> result = new HashMap<String, Object>();
         for (Map.Entry<String, Object> entry : values.entrySet()) {
-            result.put(entry.getKey(), toValue(entry.getValue()));
+            result.put(entry.getKey(), Callers.call(callable, entry.getValue()));
         }
         return result;
     }
@@ -71,19 +80,19 @@ public class Model {
     }
 
     private Object toValue(Object value) {
-        if(value instanceof Model){
+        if (value instanceof Model) {
             return ((Model) value).toMap();
         }
-        if(value instanceof List){
-            return Sequences.sequence((List)value).map(toValue()).toList();
+        if (value instanceof List) {
+            return Sequences.sequence((List) value).map(toValue()).toList();
         }
         return value;
     }
 
     private Callable1 toValue() {
         return new Callable1() {
-            public Object call(Object value) throws Exception {
-                return toValue(value);
+            public Object call(Object o) throws Exception {
+                return toValue(o);
             }
         };
     }
