@@ -9,6 +9,16 @@ import static org.hamcrest.Matchers.is;
 
 public class XmlModelRendererTest {
     @Test
+    public void correctlyRendersASingleRootElement() throws Exception {
+        XmlModelRenderer renderer = new XmlModelRenderer();
+        String result = renderer.call(model().
+                add("root", "foo"));
+
+        assertThat(Xml.format(Xml.load(result)),
+                is("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n" +
+                "<root>foo</root>\n"));
+    }
+    @Test
     public void correctlyRendersAModel() throws Exception {
         XmlModelRenderer renderer = new XmlModelRenderer();
         String result = renderer.call(model().

@@ -37,9 +37,9 @@ public class EnhancedStringTemplateGroup extends StringTemplateGroup {
         };
     }
 
-    private String format(String fileName) {
+    static String format(String fileName) {
         if(fileName.startsWith("jar:")){
-            return fileName.replaceFirst("//([^/]+)$", "/$1");
+            return fileName.replaceFirst("(!.*)//(.*)$", "$1/$2");
         }
         return fileName;
     }

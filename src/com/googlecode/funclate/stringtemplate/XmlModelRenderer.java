@@ -4,7 +4,6 @@ import com.googlecode.funclate.Model;
 import com.googlecode.totallylazy.Callable1;
 import org.antlr.stringtemplate.StringTemplate;
 
-import static com.googlecode.totallylazy.Callables.returnArgument;
 import static com.googlecode.totallylazy.Predicates.instanceOf;
 import static com.googlecode.totallylazy.URLs.packageUrl;
 
