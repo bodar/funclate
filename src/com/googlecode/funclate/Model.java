@@ -1,7 +1,5 @@
 package com.googlecode.funclate;
 
-import com.googlecode.funclate.stringtemplate.Json;
-import com.googlecode.funclate.stringtemplate.JsonModelRenderer;
 import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Sequences;
@@ -12,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static com.googlecode.funclate.stringtemplate.Json.toJson;
+import static com.googlecode.funclate.json.Json.toJson;
 import static com.googlecode.totallylazy.Sequences.sequence;
 
 @SuppressWarnings("unchecked")

@@ -1,4 +1,4 @@
-package com.googlecode.funclate.stringtemplate;
+package com.googlecode.funclate.json;
 
 import org.junit.Test;
 
@@ -14,7 +14,7 @@ public class JsonModelRendererTest {
                 add("root", "text"));
 
         assertThat(result,
-                is("{'root': 'text'}"));
+                is("{\"root\": \"text\"}"));
     }
 
     @Test
@@ -26,7 +26,7 @@ public class JsonModelRendererTest {
                         add("child", "text")));
 
         assertThat(result,
-                is("{'root': {'child': [1, 'text']}}"));
+                is("{\"root\": {\"child\": [1, \"text\"]}}"));
     }
 
     @Test
@@ -36,10 +36,11 @@ public class JsonModelRendererTest {
                 add("root", model().
                         add("foo", "bar").
                         add("foo", model().
-                                add("baz", "lo"))));
+                                add("baz", 1).
+                                add("baz", 2))));
 
         assertThat(result,
-                is("{'root': {'foo': ['bar', {'baz': 'lo'}]}}"));
+                is("{\"root\": {\"foo\": [\"bar\", {\"baz\": [1, 2]}]}}"));
     }
 
 

@@ -1,4 +1,4 @@
-package com.googlecode.funclate.stringtemplate;
+package com.googlecode.funclate.json;
 
 import com.googlecode.totallylazy.Callable1;
 

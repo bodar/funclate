@@ -1,4 +1,4 @@
-package com.googlecode.funclate.stringtemplate;
+package com.googlecode.funclate.json;
 
 import com.googlecode.funclate.Model;
 import com.googlecode.totallylazy.Callable1;
@@ -31,7 +31,7 @@ public class Json {
     }
 
     public static  String quote(String value) {
-        return format("'%s'", value);
+        return format("\"%s\"", value);
     }
 
     public static  String toArray(Collection values) {
