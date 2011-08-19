@@ -5,7 +5,6 @@ import com.googlecode.totallylazy.Pair;
 import org.codehaus.jparsec.Parser;
 import org.codehaus.jparsec.Parsers;
 import org.codehaus.jparsec.Scanners;
-import org.codehaus.jparsec._;
 import org.codehaus.jparsec.functors.Map;
 import org.codehaus.jparsec.functors.Tuple3;
 
@@ -16,8 +15,8 @@ import static com.googlecode.totallylazy.Sequences.sequence;
 import static org.codehaus.jparsec.Scanners.isChar;
 
 public class Grammar {
-    public static final Parser<_> OPTIONAL_WHITESPACE = Scanners.WHITESPACES.optional();
-    public static final Parser<_> SEPARATOR = ignoreWhitespace(isChar(',')).optional();
+    public static final Parser<Void> OPTIONAL_WHITESPACE = Scanners.WHITESPACES.optional();
+    public static final Parser<Void> SEPARATOR = ignoreWhitespace(isChar(',')).optional();
 
     private static <T> Parser<T> ignoreWhitespace(Parser<T> parser) {
         return Parsers.between(OPTIONAL_WHITESPACE, parser, OPTIONAL_WHITESPACE);
@@ -33,8 +32,8 @@ public class Grammar {
     private static final Parser.Reference<Object> value = Parser.newReference();
     public static final Parser<Object> VALUE = value.lazy();
 
-    public static final Parser<Pair<String, Object>> PAIR = Parsers.tuple(STRING, ignoreWhitespace(isChar(':')), VALUE).map(new Map<Tuple3<String, _, Object>, Pair<String, Object>>() {
-        public Pair<String, Object> map(Tuple3<String, _, Object> triple) {
+    public static final Parser<Pair<String, Object>> PAIR = Parsers.tuple(STRING, ignoreWhitespace(isChar(':')), VALUE).map(new Map<Tuple3<String, Void, Object>, Pair<String, Object>>() {
+        public Pair<String, Object> map(Tuple3<String, Void, Object> triple) {
             return Pair.pair(triple.a, triple.c);
         }
     });
