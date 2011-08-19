@@ -1,16 +1,25 @@
 package com.googlecode.funclate.json;
 
+import com.googlecode.funclate.Model;
 import org.junit.Test;
+
+import java.util.Map;
 
 import static com.googlecode.funclate.Model.model;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-public class JsonModelRendererTest {
+public class JsonTest {
+    @Test
+    public void correctlyParsesASingleRootElement() throws Exception {
+        Map<String, Object> result = Json.parse(("{\"root\": \"text\"}"));
+
+        assertThat((String) result.get("root"), is("text"));
+    }
+
     @Test
     public void correctlyRendersASingleRootElement() throws Exception {
-        JsonModelRenderer renderer = new JsonModelRenderer();
-        String result = renderer.call(model().
+        String result = Json.toJson(model().
                 add("root", "text"));
 
         assertThat(result,
@@ -19,8 +28,7 @@ public class JsonModelRendererTest {
 
     @Test
     public void correctlyRendersIntegersAndText() throws Exception {
-        JsonModelRenderer renderer = new JsonModelRenderer();
-        String result = renderer.call(model().
+        String result = Json.toJson(model().
                 add("root", model().
                         add("child", 1).
                         add("child", "text")));
@@ -31,8 +39,7 @@ public class JsonModelRendererTest {
 
     @Test
     public void correctlyRendersAModel() throws Exception {
-        JsonModelRenderer renderer = new JsonModelRenderer();
-        String result = renderer.call(model().
+        String result = Json.toJson(model().
                 add("root", model().
                         add("foo", "bar").
                         add("foo", model().
