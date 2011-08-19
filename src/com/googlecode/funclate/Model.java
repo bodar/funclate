@@ -1,6 +1,9 @@
 package com.googlecode.funclate;
 
+import com.googlecode.funclate.stringtemplate.Json;
+import com.googlecode.funclate.stringtemplate.JsonModelRenderer;
 import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Sequences;
 
 import java.util.ArrayList;
@@ -8,6 +11,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import static com.googlecode.funclate.stringtemplate.Json.toJson;
+import static com.googlecode.totallylazy.Sequences.sequence;
 
 @SuppressWarnings("unchecked")
 public class Model {
@@ -90,6 +96,25 @@ public class Model {
                 return toValue(o);
             }
         };
+    }
+
+    @Override
+    public String toString() {
+        return toJson(this);
+    }
+
+    @Override
+    public final boolean equals(final Object o) {
+        return o instanceof Model && myFields().equals(((Model) o).myFields());
+    }
+
+    @Override
+    public final int hashCode() {
+        return myFields().hashCode();
+    }
+
+    protected Sequence myFields() {
+        return sequence(entries());
     }
 
 }
