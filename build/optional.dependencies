@@ -1,2 +1,6 @@
+mvn:antlr:antlr:jar:2.7.7
+mvn:org.antlr:stringtemplate:jar:3.2.1
+
+http://dist.codehaus.org/jparsec/jars/jparsec-2.0.jar
 
 
