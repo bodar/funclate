@@ -8,15 +8,13 @@ import org.codehaus.jparsec.Scanners;
 import org.codehaus.jparsec.functors.Map;
 import org.codehaus.jparsec.functors.Tuple3;
 
-import java.util.HashMap;
 import java.util.List;
 
-import static com.googlecode.totallylazy.Sequences.sequence;
 import static org.codehaus.jparsec.Scanners.isChar;
 
 public class Grammar {
     public static final Parser<Void> OPTIONAL_WHITESPACE = Scanners.WHITESPACES.optional();
-    public static final Parser<Void> SEPARATOR = ignoreWhitespace(isChar(',')).optional();
+    public static final Parser<Void> SEPARATOR = ignoreWhitespace(isChar(','));
 
     private static <T> Parser<T> ignoreWhitespace(Parser<T> parser) {
         return Parsers.between(OPTIONAL_WHITESPACE, parser, OPTIONAL_WHITESPACE);
@@ -38,11 +36,11 @@ public class Grammar {
         }
     });
 
-    public static final Parser<List<Object>> ARRAY = Parsers.between(ignoreWhitespace(isChar('[')), VALUE.followedBy(SEPARATOR).many(), ignoreWhitespace(isChar(']')));
+    public static final Parser<List<Object>> ARRAY = Parsers.between(ignoreWhitespace(isChar('[')), VALUE.sepBy(SEPARATOR), ignoreWhitespace(isChar(']')));
 
-    public static final Parser<java.util.Map<String, Object>> OBJECT = Parsers.between(ignoreWhitespace(isChar('{')), PAIR.followedBy(SEPARATOR).many(), ignoreWhitespace(isChar('}'))).map(new Map<List<Pair<String, Object>>, java.util.Map<String, Object>>() {
+    public static final Parser<java.util.Map<String, Object>> OBJECT = Parsers.between(ignoreWhitespace(isChar('{')), PAIR.sepBy(SEPARATOR), ignoreWhitespace(isChar('}'))).map(new Map<List<Pair<String, Object>>, java.util.Map<String, Object>>() {
         public java.util.Map<String, Object> map(List<Pair<String, Object>> pairs) {
-            return sequence(pairs).fold(new HashMap<String, Object>(), Maps.<String, Object>asMap());
+            return Maps.map(pairs);
         }
     });
 
