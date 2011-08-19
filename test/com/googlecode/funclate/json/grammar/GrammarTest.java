@@ -66,7 +66,7 @@ public class GrammarTest {
 
     @Test
     public void canParseNestedJson() throws Exception{
-        Map map = (Map) Grammar.VALUE.parse(" { \"root\"  : { \"foo\" : [ \"bar\", { \"baz\" : [ 1 , \"foo\"] } ] } }  ");
+        Map map = (Map) Grammar.VALUE.parse(" { \"root\"  : { \"foo\" : [ \"bar\", { \"baz\" : [ 1 , 123] } ] } }  ");
         Map root = (Map) map.get("root");
         List foo = (List) root.get("foo");
         assertThat((String) foo.get(0), is("bar"));
