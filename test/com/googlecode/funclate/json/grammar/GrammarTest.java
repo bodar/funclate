@@ -56,7 +56,7 @@ public class GrammarTest {
 
     @Test
     public void canParseObjectLiteral() throws Exception {
-        Map<String, Object> mapOfOne = Grammar.OBJECT.parse("{\"foo\":123}");
+        Map<String, Object> mapOfOne = Grammar.OBJECT.parse("{ \"foo\" : 123 } ");
         assertThat((Number) mapOfOne.get("foo"), NumberMatcher.is(123));
         Map<String, Object> mapOfTwo = Grammar.OBJECT.parse("{\"foo\":123,\"bar\":\"baz\"}");
         assertThat((Number) mapOfTwo.get("foo"), NumberMatcher.is(123));
@@ -78,7 +78,7 @@ public class GrammarTest {
 
     @Test
     public void canParseNestedJson() throws Exception {
-        Map map = (Map) Grammar.VALUE.parse(" { \"root\"  : { \"foo\" : [ \"bar\", { \"baz\" : [1, null, true, false, 12.3] } ] } }  ");
+        Map map = (Map) Grammar.VALUE.parse(" { \"root\"  : { \"foo\" : [ \"bar\", { \"baz\" : [1, null, true, false, 12.3 ] } ] } }  ");
         Map root = (Map) map.get("root");
         List foo = (List) root.get("foo");
         assertThat(foo.get(0), is((Object) "bar"));
