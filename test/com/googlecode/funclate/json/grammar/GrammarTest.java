@@ -52,6 +52,8 @@ public class GrammarTest {
         List<Object> listOfTwo = Grammar.ARRAY.parse("[\"foo\",123]");
         assertThat((String) listOfTwo.get(0), is("foo"));
         assertThat((Number) listOfTwo.get(1), NumberMatcher.is(123));
+        List<Object> empty = Grammar.ARRAY.parse("[]");
+        assertThat(empty.isEmpty(), is(true));
     }
 
     @Test
@@ -61,6 +63,9 @@ public class GrammarTest {
         Map<String, Object> mapOfTwo = Grammar.OBJECT.parse("{\"foo\":123,\"bar\":\"baz\"}");
         assertThat((Number) mapOfTwo.get("foo"), NumberMatcher.is(123));
         assertThat((String) mapOfTwo.get("bar"), is("baz"));
+        Map<String, Object> empty = Grammar.OBJECT.parse("{}");
+        assertThat(empty.isEmpty(), is(true));
+
     }
 
     @Test
