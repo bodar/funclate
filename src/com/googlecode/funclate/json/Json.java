@@ -22,8 +22,8 @@ public class Json {
         if (value instanceof Map) {
             return toObjectLiteral((Map) value);
         }
-        if (value instanceof Collection) {
-            return toArray((Collection) value);
+        if (value instanceof Iterable) {
+            return toArray((Iterable) value);
         }
         return String.valueOf(value);
     }
@@ -36,7 +36,7 @@ public class Json {
         return format("%s: %s", quote(String.valueOf(key)), toJson(value));
     }
 
-    public static  String toArray(Collection values) {
+    public static  String toArray(Iterable values) {
         return sequence(values).map(toJson()).toString("[", ", ", "]", Integer.MAX_VALUE);
     }
 
