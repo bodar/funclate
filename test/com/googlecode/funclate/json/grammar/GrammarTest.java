@@ -9,18 +9,30 @@ import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 
 public class GrammarTest {
     @Test
+    public void canParseNull() throws Exception {
+        assertThat(Grammar.NULL.parse("null"), is(nullValue()));
+    }
+
+    @Test
+    public void canParseABoolean() throws Exception {
+        assertThat(Grammar.BOOLEAN.parse("true"), is(true));
+        assertThat(Grammar.BOOLEAN.parse("false"), is(false));
+    }
+
+    @Test
     public void canParseString() throws Exception {
-        String string = Grammar.STRING.parse("\"foo\"");
-        assertThat(string, is("foo"));
+        assertThat(Grammar.STRING.parse("\"Word\""), is("Word"));
+        assertThat(Grammar.STRING.parse("\"This is some \\\" random string\""), is("This is some \\\" random string"));
     }
 
     @Test
     public void canParseNumber() throws Exception {
-        Integer number = Grammar.INTEGER.parse("12");
-        assertThat(number, is(12));
+        assertThat(Grammar.NUMBER.parse("12"), NumberMatcher.is(12));
+        assertThat(Grammar.NUMBER.parse("12.1"), NumberMatcher.is(12.1));
     }
 
     @Test
@@ -30,7 +42,7 @@ public class GrammarTest {
         assertThat((String) pair.second(), is("value"));
         Pair<String, Object> parse = Grammar.PAIR.parse("\"foo\":123");
         assertThat(parse.first(), is("foo"));
-        assertThat((Integer) parse.second(), is(123));
+        assertThat((Number) parse.second(), NumberMatcher.is(123));
     }
 
     @Test
@@ -39,39 +51,45 @@ public class GrammarTest {
         assertThat((String) listOfOne.get(0), is("foo"));
         List<Object> listOfTwo = Grammar.ARRAY.parse("[\"foo\",123]");
         assertThat((String) listOfTwo.get(0), is("foo"));
-        assertThat((Integer) listOfTwo.get(1), is(123));
+        assertThat((Number) listOfTwo.get(1), NumberMatcher.is(123));
     }
 
     @Test
     public void canParseObjectLiteral() throws Exception {
         Map<String, Object> mapOfOne = Grammar.OBJECT.parse("{\"foo\":123}");
-        assertThat((Integer) mapOfOne.get("foo"), is(123));
+        assertThat((Number) mapOfOne.get("foo"), NumberMatcher.is(123));
         Map<String, Object> mapOfTwo = Grammar.OBJECT.parse("{\"foo\":123,\"bar\":\"baz\"}");
-        assertThat((Integer) mapOfTwo.get("foo"), is(123));
+        assertThat((Number) mapOfTwo.get("foo"), NumberMatcher.is(123));
         assertThat((String) mapOfTwo.get("bar"), is("baz"));
     }
 
     @Test
     public void canParseAValue() throws Exception {
-        Object number = Grammar.VALUE.parse("1");
-        assertThat(number, is((Object)1));
-        Object string = Grammar.VALUE.parse("\"foo\"");
-        assertThat(string, is((Object) "foo"));
-        Object map = Grammar.VALUE.parse("{\"foo\":123}");
-        assertThat(((Map)map).get("foo"), is((Object) 123));
-        Object array = Grammar.VALUE.parse("[\"foo\",123]");
-        assertThat(((List)array).get(0), is((Object) "foo"));
-        assertThat(((List)array).get(1), is((Object) 123));
+        Number number = (Number) Grammar.VALUE.parse("1");
+        assertThat(number, NumberMatcher.is(1));
+        String string = (String) Grammar.VALUE.parse("\"foo\"");
+        assertThat(string, is("foo"));
+        Map map = (Map) Grammar.VALUE.parse("{\"foo\":123}");
+        assertThat((Number) map.get("foo"), NumberMatcher.is(123));
+        List array = (List) Grammar.VALUE.parse("[\"foo\",123]");
+        assertThat(array.get(0), is((Object) "foo"));
+        assertThat((Number) array.get(1), NumberMatcher.is(123));
     }
 
     @Test
-    public void canParseNestedJson() throws Exception{
-        Map map = (Map) Grammar.VALUE.parse(" { \"root\"  : { \"foo\" : [ \"bar\", { \"baz\" : [ 1 , 123] } ] } }  ");
+    public void canParseNestedJson() throws Exception {
+        Map map = (Map) Grammar.VALUE.parse(" { \"root\"  : { \"foo\" : [ \"bar\", { \"baz\" : [1, null, true, false, 12.3] } ] } }  ");
         Map root = (Map) map.get("root");
         List foo = (List) root.get("foo");
-        assertThat((String) foo.get(0), is("bar"));
+        assertThat(foo.get(0), is((Object) "bar"));
+        Map child = (Map) foo.get(1);
+        List baz = (List) child.get("baz");
+        assertThat((Number)baz.get(0), NumberMatcher.is(1));
+        assertThat(baz.get(1), is((nullValue())));
+        assertThat(baz.get(2), is(((Object) true)));
+        assertThat(baz.get(3), is(((Object) false)));
+        assertThat((Number) baz.get(4), NumberMatcher.is(12.3));
     }
-
 
 
 }
