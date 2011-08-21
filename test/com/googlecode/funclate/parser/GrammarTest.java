@@ -2,6 +2,7 @@ package com.googlecode.funclate.parser;
 
 import com.googlecode.funclate.BaseFunclates;
 import com.googlecode.funclate.Funclates;
+import com.googlecode.totallylazy.Pair;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -30,8 +31,7 @@ public class GrammarTest {
             put("name", "Dan");
         }};
         Funclates funclates = new BaseFunclates();
-        template.funclates(funclates);
-        String call = (String) template.call(map);
+        String call = (String) template.render(Pair.pair(map, funclates));
         assertThat(call, is("Hello Dan!"));
     }
 }

@@ -1,20 +1,20 @@
 package com.googlecode.funclate.parser;
 
+import com.googlecode.funclate.Funclates;
+import com.googlecode.funclate.Renderer;
 import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Value;
 
 import java.util.Map;
 
-public class Text implements Value<String>, Callable1<Map<String, Object>, Object> {
+public class Text implements Value<String>, Renderer<Pair<Map<String, Object>, Funclates>> {
     private final String value;
 
     public Text(String value) {
         this.value = value;
     }
 
-    public Object call(Map<String, Object> map) throws Exception {
-        return value;
-    }
 
     public String value() {
         return value;
@@ -22,6 +22,10 @@ public class Text implements Value<String>, Callable1<Map<String, Object>, Objec
 
     @Override
     public String toString() {
+        return value;
+    }
+
+    public String render(Pair<Map<String, Object>, Funclates> pair) throws Exception {
         return value;
     }
 }
