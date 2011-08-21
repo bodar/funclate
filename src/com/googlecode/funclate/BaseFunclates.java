@@ -21,7 +21,7 @@ public class BaseFunclates implements Funclates{
     }
 
     public String call(String name, Object value) throws Exception {
-        return funclates.get(name).call(value).toString();
+        return String.valueOf(funclates.get(name).call(value));
     }
 
     public String render(Object value) throws Exception {
