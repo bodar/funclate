@@ -49,7 +49,7 @@ public class GrammarTest {
     public void canParseArray() throws Exception {
         List<Object> listOfOne = Grammar.ARRAY.parse("[\"foo\"]");
         assertThat((String) listOfOne.get(0), is("foo"));
-        List<Object> listOfTwo = Grammar.ARRAY.parse("[\"foo\",123]");
+        List<Object> listOfTwo = Grammar.ARRAY.parse("[\"foo\", 123 ]");
         assertThat((String) listOfTwo.get(0), is("foo"));
         assertThat((Number) listOfTwo.get(1), NumberMatcher.is(123));
         List<Object> empty = Grammar.ARRAY.parse("[]");
@@ -65,7 +65,6 @@ public class GrammarTest {
         assertThat((String) mapOfTwo.get("bar"), is("baz"));
         Map<String, Object> empty = Grammar.OBJECT.parse("{}");
         assertThat(empty.isEmpty(), is(true));
-
     }
 
     @Test
@@ -95,6 +94,4 @@ public class GrammarTest {
         assertThat(baz.get(3), is(((Object) false)));
         assertThat((Number) baz.get(4), NumberMatcher.is(12.3));
     }
-
-
 }
