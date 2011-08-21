@@ -1,6 +1,9 @@
 package com.googlecode.funclate.parser;
 
+import com.googlecode.funclate.Funclates;
+import com.googlecode.funclate.Renderer;
 import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Pair;
 import org.codehaus.jparsec.Parser;
 import org.codehaus.jparsec.Parsers;
 import org.codehaus.jparsec.Scanners;
@@ -24,9 +27,9 @@ public class Grammar {
         }
     });
 
-    public static final Parser<Template> TEMPLATE = Parsers.<Callable1<java.util.Map<String, Object>, Object>>or(ATTRIBUTE, TEXT).many().map(new Map<List<Callable1<java.util.Map<String, Object>, Object>>, Template>() {
-        public Template map(List<Callable1<java.util.Map<String, Object>, Object>> callables) {
-            return new Template(callables);
+    public static final Parser<Template> TEMPLATE = Parsers.<Renderer<Pair<java.util.Map<String, Object>, Funclates>>>or(ATTRIBUTE, TEXT).many().map(new Map<List<Renderer<Pair<java.util.Map<String, Object>, Funclates>>>, Template>() {
+        public Template map(List<Renderer<Pair<java.util.Map<String, Object>, Funclates>>> renderers) {
+            return new Template(renderers);
         }
     });
 }
