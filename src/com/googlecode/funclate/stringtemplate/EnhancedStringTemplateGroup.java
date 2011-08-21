@@ -14,10 +14,16 @@ import java.net.URL;
 import static com.googlecode.totallylazy.Closeables.using;
 
 public class EnhancedStringTemplateGroup extends StringTemplateGroup {
-    private final Renderers renderers = new Renderers();
+    private final Renderers renderers;
 
     public EnhancedStringTemplateGroup(URL baseUrl) {
+        this(baseUrl, new Renderers());
+
+    }
+
+    public EnhancedStringTemplateGroup(URL baseUrl, Renderers renderers) {
         super(baseUrl.toString(), baseUrl.toString());
+        this.renderers = renderers;
     }
 
     @Override
