@@ -8,6 +8,7 @@ import org.junit.Test;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.googlecode.totallylazy.Pair.pair;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
@@ -27,11 +28,11 @@ public class GrammarTest {
     @Test
     public void canParseATemplate() throws Exception {
         Template template = Grammar.TEMPLATE.parse("Hello $name$!");
-        Map<String, Object> map = new HashMap() {{
+        Map<String, Object> map = new HashMap<String, Object>() {{
             put("name", "Dan");
         }};
         Funclates funclates = new BaseFunclates();
-        String call = (String) template.render(Pair.pair(map, funclates));
+        String call = template.render(pair(map, funclates));
         assertThat(call, is("Hello Dan!"));
     }
 }
