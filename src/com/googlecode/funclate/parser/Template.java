@@ -24,7 +24,7 @@ public class Template implements Callable1<Map<String, Object>, Object>{
     public Object call(final Map<String, Object> map) throws Exception {
         return objects.map(new Callable1<Callable1<Map<String, Object>, Object>, Object>() {
             public Object call(Callable1<Map<String, Object>, Object> callable) throws Exception {
-                return funclates.call(callable.call(map));
+                return funclates.render(callable.call(map));
             }
         }).toString(Strings.EMPTY, Strings.EMPTY, Strings.EMPTY, Integer.MAX_VALUE);
     }

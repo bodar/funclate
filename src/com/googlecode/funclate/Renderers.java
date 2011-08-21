@@ -7,23 +7,39 @@ import java.util.List;
 
 import static com.googlecode.totallylazy.Callables.first;
 import static com.googlecode.totallylazy.Callables.second;
+import static com.googlecode.totallylazy.Predicates.in;
 import static com.googlecode.totallylazy.Predicates.where;
 import static com.googlecode.totallylazy.Sequences.sequence;
 
-public class Renderers implements Callable1<Object, String>{
-    private final List<Pair<Predicate, Callable1>> pairs = new ArrayList<Pair<Predicate, Callable1>>();
+public class Renderers implements Renderer<Object>{
+    private final List<Pair<Predicate, Renderer>> pairs = new ArrayList<Pair<Predicate, Renderer>>();
 
-    public String call(Object value) {
-        Object result = Callers.call(sequence(pairs).find(where(first(Predicate.class), (Predicate<? super Predicate>) Predicates.matches(value))).
-                map(second(Callable1.class)).getOrElse(Callables.<Object>asString()), value);
-        if(value instanceof String && result instanceof String){
-            return (String) result;
-        }
-        return call(result);
+    @SuppressWarnings("unchecked")
+    public String render(Object value) throws Exception {
+        return sequence(pairs).find(where(first(Predicate.class), (Predicate<? super Predicate>) Predicates.matches(value))).
+                map(second(Renderer.class)).
+                getOrElse(asString()).
+                render(value);
     }
 
-    public <T, R> Renderers add(Predicate<? super T> predicate, Callable1<T, R> callable) {
-        pairs.add(Pair.<Predicate, Callable1>pair(predicate, callable));
+    public <T, R> Renderers add(Predicate<? super T> predicate, Renderer<T> callable) {
+        pairs.add(Pair.<Predicate, Renderer>pair(predicate, callable));
         return this;
+    }
+
+    public static Renderer<Object> asString() {
+        return new Renderer<Object>() {
+            public String render(Object instance) {
+                return String.valueOf(instance);
+            }
+        };
+    }
+
+    public static <T> Renderer<T> renderer(final Callable1<? super T, ?> callable){
+        return new Renderer<T>() {
+            public String render(T instance) throws Exception {
+                return String.valueOf(callable.call(instance));
+            }
+        };
     }
 }

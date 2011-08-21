@@ -5,6 +5,7 @@ import org.junit.Test;
 
 import java.net.URLEncoder;
 
+import static com.googlecode.funclate.Renderers.renderer;
 import static com.googlecode.totallylazy.Predicates.instanceOf;
 import static com.googlecode.totallylazy.Strings.format;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -22,8 +23,8 @@ public class BaseFunclatesTest {
     @Test
     public void supportsImplicitFunclates() throws Exception {
         Funclates funclates = new BaseFunclates();
-        funclates.add(instanceOf(String.class), encode());
-        String result = funclates.call("Hello Dan");
+        funclates.add(instanceOf(String.class), renderer(encode()));
+        String result = funclates.render("Hello Dan");
         assertThat(result, is("Hello+Dan"));
     }
 

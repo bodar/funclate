@@ -15,8 +15,8 @@ public class BaseFunclates implements Funclates{
         return this;
     }
 
-    public <T> Funclates add(Predicate<? super T> predicate, Callable1<T, ?> callable) {
-        renderers.add(predicate, callable);
+    public <T> Funclates add(Predicate<? super T> predicate, Renderer<T> renderer) {
+        renderers.add(predicate, renderer);
         return this;
     }
 
@@ -24,7 +24,7 @@ public class BaseFunclates implements Funclates{
         return funclates.get(name).call(value).toString();
     }
 
-    public String call(Object value) throws Exception {
-        return renderers.call(value);
+    public String render(Object value) throws Exception {
+        return renderers.render(value);
     }
 }
