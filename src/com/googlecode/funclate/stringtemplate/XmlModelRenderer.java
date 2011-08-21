@@ -1,14 +1,15 @@
 package com.googlecode.funclate.stringtemplate;
 
 import com.googlecode.funclate.Model;
+import com.googlecode.funclate.Renderer;
 import com.googlecode.totallylazy.Callable1;
 import org.antlr.stringtemplate.StringTemplate;
 
 import static com.googlecode.totallylazy.Predicates.instanceOf;
 import static com.googlecode.totallylazy.URLs.packageUrl;
 
-public class XmlModelRenderer implements Callable1<Model, String> {
-    public String call(Model model) throws Exception {
+public class XmlModelRenderer implements Renderer<Model> {
+    public String render(Model model) {
         EnhancedStringTemplateGroup group = new EnhancedStringTemplateGroup(packageUrl(getClass()));
         group.registerRenderer(instanceOf(Model.class), new XmlModelRenderer());
         StringTemplate template = group.getInstanceOf("xml");

@@ -11,7 +11,7 @@ public class XmlModelRendererTest {
     @Test
     public void correctlyRendersASingleRootElement() throws Exception {
         XmlModelRenderer renderer = new XmlModelRenderer();
-        String result = renderer.call(model().
+        String result = renderer.render(model().
                 add("root", "foo"));
 
         assertThat(Xml.format(Xml.load(result)),
@@ -21,7 +21,7 @@ public class XmlModelRendererTest {
     @Test
     public void correctlyRendersAModel() throws Exception {
         XmlModelRenderer renderer = new XmlModelRenderer();
-        String result = renderer.call(model().
+        String result = renderer.render(model().
                 add("root", model().
                         add("foo", "bar").
                         add("foo", model().
