@@ -2,11 +2,14 @@ package com.googlecode.funclate.parser;
 
 import com.googlecode.funclate.BaseFunclates;
 import com.googlecode.funclate.Funclates;
+import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Pair;
 import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.googlecode.totallylazy.Pair.pair;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
@@ -24,14 +27,27 @@ public class GrammarTest {
     }
 
     @Test
+    public void canParseTemplateCall() throws Exception {
+        TemplateCall noArguments = Grammar.TEMPLATE_CALL.parse("$template()$");
+        assertThat(noArguments.name(), is("template"));
+        TemplateCall templateCall = Grammar.TEMPLATE_CALL.parse("$template(foo=bar)$");
+        assertThat(templateCall.name(), is("template"));
+        assertThat(templateCall.arguments().get("foo"), is("bar"));
+    }
+
+    @Test
     public void canParseATemplate() throws Exception {
-        Template template = Grammar.TEMPLATE.parse("Hello $name$!");
-        Map<String, Object> map = new HashMap() {{
+        Template template = Grammar.TEMPLATE.parse("Hello $name$ $template()$");
+        Map<String, Object> map = new HashMap<String, Object>() {{
             put("name", "Dan");
         }};
         Funclates funclates = new BaseFunclates();
-        template.funclates(funclates);
-        String call = (String) template.call(map);
-        assertThat(call, is("Hello Dan!"));
+        funclates.add("template", new Callable1<Object, String>() {
+            public String call(Object o) throws Exception {
+                return "Bodart";
+            }
+        });
+        String call = template.render(pair(map, funclates));
+        assertThat(call, is("Hello Dan Bodart"));
     }
 }

@@ -1,6 +1,5 @@
 package com.googlecode.funclate.json.grammar;
 
-import com.googlecode.funclate.json.Json;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.matchers.NumberMatcher;
 import org.junit.Test;
@@ -50,7 +49,7 @@ public class GrammarTest {
     public void canParseArray() throws Exception {
         List<Object> listOfOne = Grammar.ARRAY.parse("[\"foo\"]");
         assertThat((String) listOfOne.get(0), is("foo"));
-        List<Object> listOfTwo = Grammar.ARRAY.parse("[\"foo\",123]");
+        List<Object> listOfTwo = Grammar.ARRAY.parse("[\"foo\", 123 ]");
         assertThat((String) listOfTwo.get(0), is("foo"));
         assertThat((Number) listOfTwo.get(1), NumberMatcher.is(123));
         List<Object> empty = Grammar.ARRAY.parse("[]");
@@ -66,7 +65,6 @@ public class GrammarTest {
         assertThat((String) mapOfTwo.get("bar"), is("baz"));
         Map<String, Object> empty = Grammar.OBJECT.parse("{}");
         assertThat(empty.isEmpty(), is(true));
-
     }
 
     @Test

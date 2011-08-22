@@ -1,5 +1,6 @@
 package com.googlecode.funclate.stringtemplate;
 
+import com.googlecode.funclate.Renderer;
 import com.googlecode.funclate.Renderers;
 import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Predicate;
@@ -14,10 +15,16 @@ import java.net.URL;
 import static com.googlecode.totallylazy.Closeables.using;
 
 public class EnhancedStringTemplateGroup extends StringTemplateGroup {
-    private final Renderers renderers = new Renderers();
+    private final Renderers renderers;
 
     public EnhancedStringTemplateGroup(URL baseUrl) {
+        this(baseUrl, new Renderers());
+
+    }
+
+    public EnhancedStringTemplateGroup(URL baseUrl, Renderers renderers) {
         super(baseUrl.toString(), baseUrl.toString());
+        this.renderers = renderers;
     }
 
     @Override
@@ -53,10 +60,8 @@ public class EnhancedStringTemplateGroup extends StringTemplateGroup {
         return attributeRenderer;
     }
 
-    public <T, R> EnhancedStringTemplateGroup registerRenderer(Predicate<? super T> predicate, Callable1<T, R> callable) {
+    public <T, R> EnhancedStringTemplateGroup registerRenderer(Predicate<? super T> predicate, Renderer<T> callable) {
         renderers.add(predicate, callable);
         return this;
     }
-
-
 }
