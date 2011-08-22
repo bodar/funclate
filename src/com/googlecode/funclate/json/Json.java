@@ -9,6 +9,8 @@ import static com.googlecode.totallylazy.Sequences.sequence;
 import static java.lang.String.format;
 
 public class Json {
+    public static final String SEPARATOR = ",";
+
     public static  String toJson(Object value) {
         if (value instanceof String) {
             return quote((String) value);
@@ -27,15 +29,15 @@ public class Json {
     }
 
     public static String toPair(Object key, Object value) {
-        return format("%s: %s", quote(String.valueOf(key)), toJson(value));
+        return format("%s:%s", quote(String.valueOf(key)), toJson(value));
     }
 
     public static  String toArray(Iterable values) {
-        return sequence(values).map(toJson()).toString("[", ", ", "]", Integer.MAX_VALUE);
+        return sequence(values).map(toJson()).toString("[", SEPARATOR, "]", Integer.MAX_VALUE);
     }
 
     public static  String toObjectLiteral(Map map) {
-        return sequence(map.entrySet()).map(asString()).toString("{", ",", "}", Integer.MAX_VALUE);
+        return sequence(map.entrySet()).map(asString()).toString("{", SEPARATOR, "}", Integer.MAX_VALUE);
     }
 
     public static Callable1<? super Map.Entry, String> asString() {

@@ -1,5 +1,6 @@
 package com.googlecode.funclate.json.grammar;
 
+import com.googlecode.funclate.json.Json;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.matchers.NumberMatcher;
 import org.junit.Test;
@@ -95,6 +96,4 @@ public class GrammarTest {
         assertThat(baz.get(3), is(((Object) false)));
         assertThat((Number) baz.get(4), NumberMatcher.is(12.3));
     }
-
-
 }

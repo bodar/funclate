@@ -12,7 +12,7 @@ import static org.hamcrest.Matchers.is;
 public class JsonTest {
     @Test
     public void correctlyParsesASingleRootElement() throws Exception {
-        Map<String, Object> result = Json.parse(("{\"root\": \"text\"}"));
+        Map<String, Object> result = Json.parse(("{\"root\" : \"text\"}"));
 
         assertThat((String) result.get("root"), is("text"));
     }
@@ -23,7 +23,7 @@ public class JsonTest {
                 add("root", "text"));
 
         assertThat(result,
-                is("{\"root\": \"text\"}"));
+                is("{\"root\":\"text\"}"));
     }
 
     @Test
@@ -34,7 +34,7 @@ public class JsonTest {
                         add("child", "text")));
 
         assertThat(result,
-                is("{\"root\": {\"child\": [1, \"text\"]}}"));
+                is("{\"root\":{\"child\":[1,\"text\"]}}"));
     }
 
     @Test
@@ -47,8 +47,6 @@ public class JsonTest {
                                 add("baz", 2))));
 
         assertThat(result,
-                is("{\"root\": {\"foo\": [\"bar\", {\"baz\": [1, 2]}]}}"));
+                is("{\"root\":{\"foo\":[\"bar\",{\"baz\":[1,2]}]}}"));
     }
-
-
 }
