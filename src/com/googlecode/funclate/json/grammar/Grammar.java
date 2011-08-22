@@ -12,6 +12,7 @@ import org.codehaus.jparsec.pattern.CharPredicates;
 import java.math.BigDecimal;
 import java.util.List;
 
+import static com.googlecode.totallylazy.Sequences.characters;
 import static org.codehaus.jparsec.Scanners.isChar;
 import static org.codehaus.jparsec.Scanners.string;
 
@@ -36,8 +37,7 @@ public class Grammar {
 
     public static final Parser<String> STRING = Scanners.DOUBLE_QUOTE_STRING.map(new Map<String, String>() {
         public String map(String withQuotes) {
-            String substring = withQuotes.substring(1);
-            return substring.substring(0, substring.length() - 1);
+            return characters(withQuotes).tail().init().toString("", "", "", Integer.MAX_VALUE);
         }
     });
 
