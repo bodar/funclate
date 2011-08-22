@@ -75,7 +75,6 @@ public class ModelTest {
                                 add("tel", "978532")));
 
         String serialized = original.toString();
-        System.out.println("serialized = " + serialized);
         Model result = Model.parse(serialized);
         assertThat(result, is(original));
     }
