@@ -61,7 +61,21 @@ public class ModelTest {
 
         Model reversed = Model.fromMap(root);
         assertThat(reversed, is(original));
+    }
 
+    @Test
+    public void supportsConvertingToStringAndBack() throws Exception {
+        Model original = model().
+                add("users", model().
+                        add("user", model().
+                                add("name", "Dan").
+                                add("tel", "34567890")).
+                        add("user", model().
+                                add("name", "Mat").
+                                add("tel", "978532")));
 
+        String serialized = original.toString();
+        Model result = Model.parse(serialized);
+        assertThat(result, is(original));
     }
 }

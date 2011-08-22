@@ -1,5 +1,6 @@
 package com.googlecode.funclate;
 
+import com.googlecode.funclate.json.Json;
 import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Callable2;
 import com.googlecode.totallylazy.Sequence;
@@ -136,5 +137,10 @@ public class Model {
             }).toList();
         }
         return value;
+    }
+
+    public static Model parse(String value) {
+        Map<String, Object> map = Json.parse(value);
+        return fromMap(map);
     }
 }
