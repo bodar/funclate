@@ -1,11 +1,8 @@
 package com.googlecode.funclate.json;
 
-import com.googlecode.funclate.Model;
 import com.googlecode.funclate.json.grammar.Grammar;
 import com.googlecode.totallylazy.Callable1;
-import com.googlecode.totallylazy.regex.Regex;
 
-import java.util.Collection;
 import java.util.Map;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
@@ -15,9 +12,6 @@ public class Json {
     public static  String toJson(Object value) {
         if (value instanceof String) {
             return quote((String) value);
-        }
-        if (value instanceof Model) {
-            return toObjectLiteral(((Model) value).toMap());
         }
         if (value instanceof Map) {
             return toObjectLiteral((Map) value);

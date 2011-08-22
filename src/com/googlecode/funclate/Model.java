@@ -1,6 +1,7 @@
 package com.googlecode.funclate;
 
 import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Callable2;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Sequences;
 
@@ -98,7 +99,7 @@ public class Model {
 
     @Override
     public String toString() {
-        return toJson(this);
+        return toJson(this.toMap());
     }
 
     @Override
@@ -115,4 +116,25 @@ public class Model {
         return sequence(entries());
     }
 
+    public static Model fromMap(Map<String, Object> map) {
+        return sequence(map.entrySet()).fold(model(), new Callable2<Model, Map.Entry<String, Object>, Model>() {
+            public Model call(Model model, Map.Entry<String, Object> entry) throws Exception {
+                return model.add(entry.getKey(), convert(entry.getValue()));
+            }
+        });
+    }
+
+    private static Object convert(final Object value) {
+        if (value instanceof Map) {
+            return fromMap((Map<String, Object>) value);
+        }
+        if (value instanceof List) {
+            return sequence((List<Object>) value).map(new Callable1<Object, Object>() {
+                public Object call(Object o) throws Exception {
+                    return convert(o);
+                }
+            }).toList();
+        }
+        return value;
+    }
 }

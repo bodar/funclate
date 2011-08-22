@@ -36,7 +36,7 @@ public class ModelTest {
 
     @Test
     public void canConvertToAMap() throws Exception {
-        Model model = model().
+        Model original = model().
                 add("users", model().
                         add("user", model().
                                 add("name", "Dan").
@@ -45,15 +45,23 @@ public class ModelTest {
                                 add("name", "Mat").
                                 add("tel", "978532")));
 
-        Map<String, Object> root = (Map<String, Object>) model.toMap().get("users");
-        List<Map<String, Object>> users = (List<Map<String, Object>>) root.get("user");
+        Map<String, Object> root = original.toMap();
+        Map<String, Object> users = (Map<String, Object>) root.get("users");
+        List<Map<String, Object>> user = (List<Map<String, Object>>) users.get("user");
 
-        Map<String, Object> dan = users.get(0);
+        Map<String, Object> dan = user.get(0);
         assertThat((String) dan.get("name"), is("Dan"));
         assertThat((String) dan.get("tel"), is("34567890"));
 
-        Map<String, Object> mat = users.get(1);
+        Map<String, Object> mat = user.get(1);
         assertThat((String) mat.get("name"), is("Mat"));
         assertThat((String) mat.get("tel"), is("978532"));
+
+        // reverse it
+
+        Model reversed = Model.fromMap(root);
+        assertThat(reversed, is(original));
+
+
     }
 }
