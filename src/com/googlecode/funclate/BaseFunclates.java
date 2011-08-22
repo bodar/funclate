@@ -7,24 +7,24 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class BaseFunclates implements Funclates{
-    private final Map<String, Callable1> funclates = new HashMap<String, Callable1>();
-    private final Renderers renderers = new Renderers();
+    protected final Map<String, Callable1> funclates = new HashMap<String, Callable1>();
+    protected final Renderers renderers = new Renderers();
 
-    public Funclates add(String name, Callable1<?, String> callable) {
+    public Funclates add(String name, Callable1 callable) {
         funclates.put(name, callable);
         return this;
     }
 
-    public <T> Funclates add(Predicate<? super T> predicate, Callable1<T, ?> callable) {
-        renderers.add(predicate, callable);
+    public <T> Funclates add(Predicate<? super T> predicate, Renderer<T> renderer) {
+        renderers.add(predicate, renderer);
         return this;
     }
 
     public String call(String name, Object value) throws Exception {
-        return funclates.get(name).call(value).toString();
+        return String.valueOf(funclates.get(name).call(value));
     }
 
-    public String call(Object value) throws Exception {
-        return renderers.call(value);
+    public String render(Object value) throws Exception {
+        return renderers.render(value);
     }
 }
