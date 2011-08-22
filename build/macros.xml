@@ -1,5 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
+
+    <macrodef name="embed.jparsec">
+        <sequential>
+            <taskdef name="jarjar" classname="com.tonicsystems.jarjar.JarJarTask"
+                     classpathref="all.dependancies"/>
+            <property name="release.no.depemdencies.jar" value="${artifacts}/${release.name}-no-depemdencies.jar"/>
+
+            <jarjar jarfile="${release.no.depemdencies.jar}" manifest="${release.jar.path}.mf">
+                <zipfileset src="${release.jar.path}"/>
+                <zipgroupfileset dir="${build.dependencies.dir}" includes="jparsec-*.jar"/>
+                <rule pattern="org.codehaus.jparsec.**"
+                      result="com.googlecode.funclate.internal.jparsec.@1"/>
+            </jarjar>
+            <delete file="${release.jar.path}"/>
+            <move file="${release.no.depemdencies.jar}" tofile="${release.jar.path}"/>
+        </sequential>
+    </macrodef>
+
 	<macrodef name="compile.and.jar">
         <attribute name="src"/>
         <attribute name="jar"/>
