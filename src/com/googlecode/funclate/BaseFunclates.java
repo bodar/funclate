@@ -6,6 +6,9 @@ import com.googlecode.totallylazy.Predicate;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.googlecode.totallylazy.Maps.map;
+import static com.googlecode.totallylazy.Pair.pair;
+
 public class BaseFunclates implements Funclates{
     protected final Map<String, Callable1> funclates = new HashMap<String, Callable1>();
     protected final Renderers renderers = new Renderers();
@@ -26,5 +29,15 @@ public class BaseFunclates implements Funclates{
 
     public String render(Object value) throws Exception {
         return renderers.render(value);
+    }
+
+    protected Map convertToMap(Object value) {
+        if (value instanceof Map) {
+            return (Map) value;
+        }
+        if (value instanceof Model) {
+            return ((Model) value).toMap();
+        }
+        return map(pair("value", value));
     }
 }
