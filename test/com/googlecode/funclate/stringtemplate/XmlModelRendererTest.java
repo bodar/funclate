@@ -4,6 +4,7 @@ import com.googlecode.totallylazy.records.xml.Xml;
 import org.junit.Test;
 
 import static com.googlecode.funclate.Model.model;
+import static com.googlecode.totallylazy.records.xml.Xml.document;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
@@ -14,7 +15,7 @@ public class XmlModelRendererTest {
         String result = renderer.render(model().
                 add("root", "foo"));
 
-        assertThat(Xml.format(Xml.load(result)),
+        assertThat(Xml.format(document(result)),
                 is("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n" +
                 "<root>foo</root>\n"));
     }
@@ -27,7 +28,7 @@ public class XmlModelRendererTest {
                         add("foo", model().
                                 add("baz", "lo"))));
 
-        assertThat(Xml.format(Xml.load(result)),
+        assertThat(Xml.format(document(result)),
                 is("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n" +
                 "<root>\n" +
                 "    <foo>bar</foo>\n" +
