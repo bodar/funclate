@@ -39,7 +39,7 @@ public class Model {
     }
 
     public <T> T get(String key, Class<T> aClass) {
-        return get(key);
+        return this.<T>get(key);
     }
 
     public <T> T get(String key) {
@@ -51,7 +51,7 @@ public class Model {
     }
 
     public <T> List<T> getValues(String key, Class<T> aClass) {
-        return getValues(key);
+        return this.<T>getValues(key);
     }
 
     public <T> List<T> getValues(String key) {
