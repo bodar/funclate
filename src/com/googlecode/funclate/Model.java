@@ -39,6 +39,10 @@ public class Model {
     }
 
     public <T> T get(String key, Class<T> aClass) {
+        return get(key);
+    }
+
+    public <T> T get(String key) {
         T t = (T) values.get(key);
         if (t instanceof List) {
             return (T) ((List) t).get(0);
@@ -47,6 +51,10 @@ public class Model {
     }
 
     public <T> List<T> getValues(String key, Class<T> aClass) {
+        return getValues(key);
+    }
+
+    public <T> List<T> getValues(String key) {
         final Object value = getObject(key);
         if (value instanceof List) {
             return (List) value;
