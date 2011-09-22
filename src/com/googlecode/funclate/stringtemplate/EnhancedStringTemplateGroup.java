@@ -70,7 +70,7 @@ public class EnhancedStringTemplateGroup extends StringTemplateGroup {
         return this;
     }
 
-    public <T, R> EnhancedStringTemplateGroup registerRenderer(Predicate<? super T> predicate, Callable1<T, String> callable) {
+    public <T, R> EnhancedStringTemplateGroup registerRenderer(Predicate<? super T> predicate, Callable1<? super T, String> callable) {
         renderers.add(predicate, callable);
         return this;
     }
