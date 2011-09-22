@@ -18,12 +18,12 @@ public class BaseFunclates implements Funclates{
         return this;
     }
 
-    public <T> Funclates add(Predicate<? super T> predicate, Renderer<? super T> renderer) {
+    public <T> Funclates add(Predicate<? super T> predicate, Renderer<T> renderer) {
         renderers.add(predicate, renderer);
         return this;
     }
 
-    public <T> Funclates add(Predicate<? super T> predicate, Callable1<? super T, String> renderer) {
+    public <T> Funclates add(Predicate<? super T> predicate, Callable1<T, String> renderer) {
         renderers.add(predicate, renderer);
         return this;
     }
@@ -31,7 +31,7 @@ public class BaseFunclates implements Funclates{
     public String call(String name, Object value) throws Exception {
         return String.valueOf(funclates.get(name).call(value));
     }
-
+    
     public String render(Object value) throws Exception {
         return renderers.render(value);
     }

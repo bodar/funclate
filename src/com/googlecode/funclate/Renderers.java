@@ -22,16 +22,16 @@ public class Renderers implements Renderer<Object>{
                 call(value);
     }
 
-    public <T, R> Renderers add(Predicate<? super T> predicate, Renderer<? super T> renderer) {
+    public <T, R> Renderers add(Predicate<? super T> predicate, Renderer<T> renderer) {
         return add(predicate, callable(renderer));
     }
 
-    public <T, R> Renderers add(Predicate<? super T> predicate, Callable1<? super T, String> callable) {
+    public <T, R> Renderers add(Predicate<? super T> predicate, Callable1<T, String> callable) {
         pairs.add(Pair.<Predicate, Callable1<Object, String>>pair(predicate, (Callable1<Object, String>) callable));
         return this;
     }
 
-    private static <T> Callable1<? super T, String> callable(final Renderer<T> renderer) {
+    private static <T> Callable1<T, String> callable(final Renderer<T> renderer) {
         return new Callable1<T, String>() {
             public String call(T t) throws Exception {
                 return renderer.render(t);
