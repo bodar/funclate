@@ -9,5 +9,5 @@ public interface Funclates extends Callable2<String, Object, String>, Renderer<O
 
     <T> Funclates add(Predicate<? super T> predicate, Renderer<T> renderer);
 
-    <T> Funclates add(Predicate<? super T> predicate, Callable1<T, String> renderer);
+    <T> Funclates add(Predicate<? super T> predicate, Callable1<? super T, String> renderer);
 }
