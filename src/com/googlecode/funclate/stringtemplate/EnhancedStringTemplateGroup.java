@@ -13,13 +13,17 @@ import java.io.*;
 import java.net.URL;
 
 import static com.googlecode.totallylazy.Closeables.using;
+import static com.googlecode.totallylazy.URLs.packageUrl;
 
 public class EnhancedStringTemplateGroup extends StringTemplateGroup {
     private final Renderers renderers;
 
     public EnhancedStringTemplateGroup(URL baseUrl) {
         this(baseUrl, new Renderers());
+    }
 
+    public EnhancedStringTemplateGroup(Class classInPackage) {
+        this(packageUrl(classInPackage), new Renderers());
     }
 
     public EnhancedStringTemplateGroup(URL baseUrl, Renderers renderers) {
