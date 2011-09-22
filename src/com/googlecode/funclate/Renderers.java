@@ -12,34 +12,31 @@ import static com.googlecode.totallylazy.Predicates.where;
 import static com.googlecode.totallylazy.Sequences.sequence;
 
 public class Renderers implements Renderer<Object>{
-    private final List<Pair<Predicate, Renderer>> pairs = new ArrayList<Pair<Predicate, Renderer>>();
+    private final List<Pair<Predicate, Callable1<Object, String>>> pairs = new ArrayList<Pair<Predicate, Callable1<Object, String>>>();
 
     @SuppressWarnings("unchecked")
     public String render(Object value) throws Exception {
         return sequence(pairs).find(where(first(Predicate.class), (Predicate<? super Predicate>) Predicates.matches(value))).
-                map(second(Renderer.class)).
-                getOrElse(asString()).
-                render(value);
+                map(Callables.<Callable1<Object, String>>second()).
+                getOrElse(Callables.asString()).
+                call(value);
     }
 
-    public <T, R> Renderers add(Predicate<? super T> predicate, Renderer<T> callable) {
-        pairs.add(Pair.<Predicate, Renderer>pair(predicate, callable));
+    public <T, R> Renderers add(Predicate<? super T> predicate, Renderer<? super T> renderer) {
+        return add(predicate, callable(renderer));
+    }
+
+    public <T, R> Renderers add(Predicate<? super T> predicate, Callable1<? super T, String> callable) {
+        pairs.add(Pair.<Predicate, Callable1<Object, String>>pair(predicate, (Callable1<Object, String>) callable));
         return this;
     }
 
-    public static Renderer<Object> asString() {
-        return new Renderer<Object>() {
-            public String render(Object instance) {
-                return String.valueOf(instance);
+    private static <T> Callable1<? super T, String> callable(final Renderer<T> renderer) {
+        return new Callable1<T, String>() {
+            public String call(T t) throws Exception {
+                return renderer.render(t);
             }
         };
     }
 
-    public static <T> Renderer<T> renderer(final Callable1<? super T, ?> callable){
-        return new Renderer<T>() {
-            public String render(T instance) throws Exception {
-                return String.valueOf(callable.call(instance));
-            }
-        };
-    }
 }

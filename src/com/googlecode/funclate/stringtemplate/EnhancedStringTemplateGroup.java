@@ -4,12 +4,13 @@ import com.googlecode.funclate.Renderer;
 import com.googlecode.funclate.Renderers;
 import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Predicate;
-import com.googlecode.totallylazy.Strings;
 import org.antlr.stringtemplate.AttributeRenderer;
 import org.antlr.stringtemplate.StringTemplate;
 import org.antlr.stringtemplate.StringTemplateGroup;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 
 import static com.googlecode.totallylazy.Closeables.using;
@@ -65,6 +66,11 @@ public class EnhancedStringTemplateGroup extends StringTemplateGroup {
     }
 
     public <T, R> EnhancedStringTemplateGroup registerRenderer(Predicate<? super T> predicate, Renderer<T> callable) {
+        renderers.add(predicate, callable);
+        return this;
+    }
+
+    public <T, R> EnhancedStringTemplateGroup registerRenderer(Predicate<? super T> predicate, Callable1<T, String> callable) {
         renderers.add(predicate, callable);
         return this;
     }
