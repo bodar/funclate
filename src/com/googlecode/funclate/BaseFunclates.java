@@ -23,7 +23,7 @@ public class BaseFunclates implements Funclates{
         return this;
     }
 
-    public <T> Funclates add(Predicate<? super T> predicate, Callable1<T, String> renderer) {
+    public <T> Funclates add(Predicate<? super T> predicate, Callable1<? super T, String> renderer) {
         renderers.add(predicate, renderer);
         return this;
     }
