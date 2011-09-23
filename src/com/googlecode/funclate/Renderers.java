@@ -22,7 +22,7 @@ public class Renderers implements Renderer<Object>{
                 call(value);
     }
 
-    public <T, R> Renderers add(Predicate<? super T> predicate, Renderer<T> renderer) {
+    public <T, R> Renderers add(Predicate<? super T> predicate, Renderer<? super T> renderer) {
         return add(predicate, callable(renderer));
     }
 

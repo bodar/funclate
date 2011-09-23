@@ -18,7 +18,7 @@ public class BaseFunclates implements Funclates{
         return this;
     }
 
-    public <T> Funclates add(Predicate<? super T> predicate, Renderer<T> renderer) {
+    public <T> Funclates add(Predicate<? super T> predicate, Renderer<? super T> renderer) {
         renderers.add(predicate, renderer);
         return this;
     }
