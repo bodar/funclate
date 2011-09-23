@@ -65,7 +65,7 @@ public class EnhancedStringTemplateGroup extends StringTemplateGroup {
         return attributeRenderer;
     }
 
-    public <T, R> EnhancedStringTemplateGroup registerRenderer(Predicate<? super T> predicate, Renderer<T> callable) {
+    public <T, R> EnhancedStringTemplateGroup registerRenderer(Predicate<? super T> predicate, Renderer<? super T> callable) {
         renderers.add(predicate, callable);
         return this;
     }
