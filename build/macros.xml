@@ -9,9 +9,9 @@
 
             <jarjar jarfile="${release.no.depemdencies.jar}" manifest="${release.jar.path}.mf">
                 <zipfileset src="${release.jar.path}"/>
-                <zipgroupfileset dir="${build.dependencies.dir}" includes="jparsec-*.jar"/>
-                <rule pattern="org.codehaus.jparsec.**"
-                      result="com.googlecode.funclate.internal.jparsec.@1"/>
+                <zipgroupfileset dir="${build.dependencies.dir}" includes="lazyparsec-*.jar"/>
+                <rule pattern="com.googlecode.lazyparsec.**"
+                      result="com.googlecode.funclate.internal.lazyparsec.@1"/>
             </jarjar>
             <delete file="${release.jar.path}"/>
             <move file="${release.no.depemdencies.jar}" tofile="${release.jar.path}"/>
