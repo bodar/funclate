@@ -8,6 +8,7 @@ import java.util.Map;
 import static com.googlecode.funclate.Model.model;
 import static com.googlecode.totallylazy.matchers.IterableMatcher.hasExactly;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
 
 public class ModelTest {
@@ -16,6 +17,11 @@ public class ModelTest {
         Model model = model().
                 add("key", "value");
         assertThat(model.get("key", String.class), is("value"));
+    }
+
+    @Test
+    public void returnsEmptyListWhenNoValues() throws Exception {
+        assertThat(model().getValues("key"), is(empty()));
     }
 
     @Test
