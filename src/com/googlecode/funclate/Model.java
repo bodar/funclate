@@ -7,6 +7,7 @@ import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Sequences;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,6 +57,9 @@ public class Model {
 
     public <T> List<T> getValues(String key) {
         final Object value = getObject(key);
+        if(value == null) {
+            return Collections.emptyList();
+        }
         if (value instanceof List) {
             return (List) value;
         }
