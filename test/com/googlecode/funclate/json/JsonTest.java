@@ -1,6 +1,5 @@
 package com.googlecode.funclate.json;
 
-import com.googlecode.funclate.Model;
 import org.junit.Test;
 
 import java.util.Map;
@@ -48,5 +47,15 @@ public class JsonTest {
 
         assertThat(result,
                 is("{\"root\":{\"foo\":[\"bar\",{\"baz\":[1,2]}]}}"));
+    }
+
+    @Test
+    public void handlesQuotedText() throws Exception {
+        String result = Json.toJson(model().add("text", "He said \"Hello\" then ..."));
+
+        assertThat(result, is("{\"text\":\"He said \\\"Hello\\\" then ...\"}"));
+
+        Map<String, Object> parsed = Json.parse(result);
+        assertThat((String)parsed.get("text"), is("He said \"Hello\" then ..."));
     }
 }
