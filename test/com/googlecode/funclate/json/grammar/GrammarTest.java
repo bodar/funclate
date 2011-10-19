@@ -26,7 +26,7 @@ public class GrammarTest {
     @Test
     public void canParseString() throws Exception {
         assertThat(Grammar.STRING.parse("\"Word\""), is("Word"));
-        assertThat(Grammar.STRING.parse("\"This is some \\\" random string\""), is("This is some \\\" random string"));
+        assertThat(Grammar.STRING.parse("\"This is some \\\" random string\""), is("This is some \" random string"));
     }
 
     @Test

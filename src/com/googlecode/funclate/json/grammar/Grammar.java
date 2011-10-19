@@ -37,9 +37,13 @@ public class Grammar {
 
     public static final Parser<String> STRING = Scanners.DOUBLE_QUOTE_STRING.map(new Callable1<String, String>() {
         public String call(String withQuotes) {
-            return characters(withQuotes).tail().init().toString("", "", "", Integer.MAX_VALUE);
+            return unescape(characters(withQuotes).tail().init().toString("", "", "", Integer.MAX_VALUE));
         }
     });
+
+    private static String unescape(String value) {
+        return value.replaceAll("\\\\(.)", "$1");
+    }
 
     public static final Parser<Number> NUMBER = Scanners.DECIMAL.map(new Callable1<String, Number>() {
         public Number call(String s) {
