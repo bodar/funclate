@@ -7,6 +7,7 @@ import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Sequences;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -29,8 +30,12 @@ public class Model {
             values.put(key, value);
             return this;
         }
-        List list = getValues(key, value.getClass());
-        list.add(value);
+        List list = new ArrayList(getValues(key, value.getClass()));
+        if (value instanceof List) {
+            list.addAll((List)value);
+        } else {
+            list.add(value);
+        }
         values.put(key, list);
         return this;
     }

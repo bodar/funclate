@@ -2,6 +2,8 @@ package com.googlecode.funclate;
 
 import org.junit.Test;
 
+import java.util.Arrays;
+
 import static com.googlecode.funclate.Model.model;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static java.util.Arrays.asList;
@@ -37,6 +39,16 @@ public class ModelsTest {
         Model b = model().add("sharedKey", model().add("bModel", "bSharedValue"));
 
         Model expected = model().add("sharedKey", asList(model().add("aModel", "aSharedValue"), model().add("bModel", "bSharedValue")));
+
+        assertThat(sequence(a, b).reduce(Models.merge()), is(expected));
+    }
+
+    @Test
+    public void mergeExample() throws Exception {
+        Model a = model().add("action", sequence(model().add("name", "aName").add("value", "aValue")).toList());
+        Model b = model().add("action", sequence(model().add("name", "bName").add("value", "bValue")).toList());
+
+        Model expected = model().add("action", sequence(model().add("name", "aName").add("value", "aValue"), model().add("name", "bName").add("value", "bValue")).toList());
 
         assertThat(sequence(a, b).reduce(Models.merge()), is(expected));
     }

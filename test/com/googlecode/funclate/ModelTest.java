@@ -1,11 +1,13 @@
 package com.googlecode.funclate;
 
+import com.googlecode.totallylazy.Arrays;
 import org.junit.Test;
 
 import java.util.List;
 import java.util.Map;
 
 import static com.googlecode.funclate.Model.model;
+import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.matchers.IterableMatcher.hasExactly;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
@@ -29,6 +31,14 @@ public class ModelTest {
         Model model = model().
                 add("key", "one").
                 add("key", "two");
+        assertThat(model.getValues("key", String.class), hasExactly("one", "two"));
+    }
+    
+    @Test
+    public void supportsListMultiValues() throws Exception {
+        Model model = model().
+                add("key", Arrays.list("one")).
+                add("key", Arrays.list("two"));
         assertThat(model.getValues("key", String.class), hasExactly("one", "two"));
     }
 
