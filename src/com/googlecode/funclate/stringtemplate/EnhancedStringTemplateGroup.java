@@ -14,6 +14,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 
 import static com.googlecode.totallylazy.Closeables.using;
+import static com.googlecode.totallylazy.Predicates.instanceOf;
 import static com.googlecode.totallylazy.URLs.packageUrl;
 
 public class EnhancedStringTemplateGroup extends StringTemplateGroup {
@@ -30,6 +31,28 @@ public class EnhancedStringTemplateGroup extends StringTemplateGroup {
     public EnhancedStringTemplateGroup(URL baseUrl, Renderers renderers) {
         super(baseUrl.toString(), baseUrl.toString());
         this.renderers = renderers;
+    }
+
+    @Override
+    public void setSuperGroup(StringTemplateGroup superGroup) {
+        super.setSuperGroup(superGroup);
+        if(superGroup instanceof EnhancedStringTemplateGroup){
+            renderers.parent(((EnhancedStringTemplateGroup) superGroup).renderers);
+        }
+    }
+
+    @Override
+    public void registerRenderer(Class attributeClassType, Object instance) {
+        final AttributeRenderer renderer = (AttributeRenderer) instance;
+        registerRenderer(instanceOf(attributeClassType), renderer(renderer));
+    }
+
+    public static Renderer<Object> renderer(final AttributeRenderer renderer) {
+        return new Renderer<Object>() {
+            public String render(Object instance) throws Exception {
+                return renderer.toString(instance);
+            }
+        };
     }
 
     @Override
@@ -50,7 +73,7 @@ public class EnhancedStringTemplateGroup extends StringTemplateGroup {
     }
 
     static String format(String fileName) {
-        if(fileName.startsWith("jar:")){
+        if (fileName.startsWith("jar:")) {
             return fileName.replaceFirst("(!.*)//(.*)$", "$1/$2");
         }
         return fileName;
@@ -58,11 +81,7 @@ public class EnhancedStringTemplateGroup extends StringTemplateGroup {
 
     @Override
     public AttributeRenderer getAttributeRenderer(Class attributeClassType) {
-        AttributeRenderer attributeRenderer = super.getAttributeRenderer(attributeClassType);
-        if(attributeRenderer == null){
-            return new RendererAdapter(renderers);
-        }
-        return attributeRenderer;
+        return new RendererAdapter(renderers);
     }
 
     public <T, R> EnhancedStringTemplateGroup registerRenderer(Predicate<? super T> predicate, Renderer<? super T> callable) {

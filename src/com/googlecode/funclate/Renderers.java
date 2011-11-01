@@ -14,12 +14,26 @@ import static com.googlecode.totallylazy.Sequences.sequence;
 
 public class Renderers implements Renderer<Object>{
     private final List<Pair<Predicate<Object>, Callable1<Object, String>>> pairs = new ArrayList<Pair<Predicate<Object>, Callable1<Object, String>>>();
+    private Callable1<Object, String> parent;
+
+    public Renderers() {
+        parent = Callables.asString();
+    }
+
+    public Renderers(Renderer<Object> parent) {
+        this.parent = callable(parent);
+    }
+
+    public Renderers parent(Renderer<Object> parent) {
+        this.parent = callable(parent);
+        return this;
+    }
 
     public String render(Object value) throws Exception {
         Predicate<Predicate<Object>> matches = Predicates.matches(value);
         return sequence(pairs).find(where(Callables.<Predicate<Object>>first(), matches)).
                 map(Callables.<Callable1<Object, String>>second()).
-                getOrElse(Callables.asString()).
+                getOrElse(parent).
                 call(value);
     }
 
@@ -33,7 +47,7 @@ public class Renderers implements Renderer<Object>{
         return this;
     }
 
-    public static <T> Callable1<? super T, String> callable(final Renderer<T> renderer) {
+    public static <T> Callable1<T, String> callable(final Renderer<T> renderer) {
         return new Callable1<T, String>() {
             public String call(T t) throws Exception {
                 return renderer.render(t);
