@@ -1,37 +1,18 @@
 package com.googlecode.funclate.stringtemplate;
 
 import com.googlecode.funclate.Renderer;
-import com.googlecode.totallylazy.Callable1;
-import com.googlecode.totallylazy.LazyException;
-import com.googlecode.totallylazy.Xml;
+import com.googlecode.funclate.Renderers;
 import org.antlr.stringtemplate.AttributeRenderer;
 
-import java.net.URLEncoder;
-import java.util.Arrays;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
-import static com.googlecode.totallylazy.Callables.asString;
 
 class RendererAdapter implements AttributeRenderer {
     private final Renderer<Object> renderer;
-    public static final Map<String, Callable1<? super String, String>> ENCODERS = new ConcurrentHashMap<String, Callable1<? super String,String>> () {{
-        put("xml", Xml.escape());
-        put("html", Xml.escape());
-        put("url", urlEncode());
-        put("", asString());
-    }};
+    private final Map<String, Renderers> namedRenderers;
 
-    public RendererAdapter(Renderer<Object> renderer) {
+    public RendererAdapter(Renderer<Object> renderer, Map<String, Renderers> namedRenderers) {
         this.renderer = renderer;
-    }
-
-    private static Callable1<String, String> urlEncode() {
-        return new Callable1<String, String>() {
-            public String call(String s) throws Exception {
-                return URLEncoder.encode(s, "UTF-8");
-            }
-        };
+        this.namedRenderers = namedRenderers;
     }
 
     public String toString(Object value) {
@@ -44,28 +25,21 @@ class RendererAdapter implements AttributeRenderer {
 
     public String toString(Object value, String formats) {
         String[] parts = formats.split(",");
-        String currentResult;
-        if(parts[0].equals("raw")){
-            currentResult = value.toString();
-            parts = Arrays.copyOfRange(parts, 1, parts.length);
-        } else {
-            currentResult = toString(value);
+        Object currentResult = value;
+        for (String format : parts) {
+            currentResult = format(currentResult, format);
         }
-
-        for (String part : parts) {
-            currentResult = format(currentResult, part);
-        }
-        return currentResult;
+        return currentResult.toString();
     }
 
-    private String format(String value, String format) {
-        if(!ENCODERS.containsKey(format)){
-            throw new IllegalArgumentException(String.format("Invalid format argument: '%s'", format));
+    private String format(Object value, String format) {
+        if(namedRenderers.containsKey(format)) {
+            try {
+                return namedRenderers.get(format).render(value);
+            } catch (Exception e) {
+                throw new UnsupportedOperationException(e);
+            }
         }
-        try {
-            return ENCODERS.get(format).call(value);
-        } catch (Exception e) {
-            throw new LazyException(e);
-        }
+        throw new IllegalArgumentException(String.format("Invalid format argument: '%s'", format));
     }
 }

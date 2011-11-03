@@ -3,7 +3,9 @@ package com.googlecode.funclate.stringtemplate;
 import com.googlecode.funclate.Renderer;
 import com.googlecode.funclate.Renderers;
 import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Callables;
 import com.googlecode.totallylazy.Predicate;
+import com.googlecode.totallylazy.Xml;
 import org.antlr.stringtemplate.AttributeRenderer;
 import org.antlr.stringtemplate.StringTemplate;
 import org.antlr.stringtemplate.StringTemplateGroup;
@@ -12,13 +14,17 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.googlecode.totallylazy.Closeables.using;
-import static com.googlecode.totallylazy.Predicates.instanceOf;
+import static com.googlecode.totallylazy.Predicates.always;
 import static com.googlecode.totallylazy.URLs.packageUrl;
 
 public class EnhancedStringTemplateGroup extends StringTemplateGroup {
     private final Renderers renderers;
+    private final Map<String, Renderers> namedRenderers;
 
     public EnhancedStringTemplateGroup(URL baseUrl) {
         this(baseUrl, new Renderers());
@@ -31,6 +37,17 @@ public class EnhancedStringTemplateGroup extends StringTemplateGroup {
     public EnhancedStringTemplateGroup(URL baseUrl, Renderers renderers) {
         super(baseUrl.toString(), baseUrl.toString());
         this.renderers = renderers;
+        namedRenderers = defaultEncoders();
+    }
+
+    public static HashMap<String, Renderers> defaultEncoders() {
+        return new HashMap<String, Renderers>(){{
+            put("", new Renderers().add(always(), Callables.asString()));
+            put("raw", new Renderers().add(always(), Callables.asString()));
+            put("html", new Renderers().add(always(), Xml.escape()));
+            put("xml", new Renderers().add(always(), Xml.escape()));
+            put("url", new Renderers().add(always(), urlEncode()));
+        }};
     }
 
     @Override
@@ -43,8 +60,7 @@ public class EnhancedStringTemplateGroup extends StringTemplateGroup {
 
     @Override
     public void registerRenderer(Class attributeClassType, Object instance) {
-        final AttributeRenderer renderer = (AttributeRenderer) instance;
-        registerRenderer(instanceOf(attributeClassType), renderer(renderer));
+        throw new IllegalArgumentException(String.format("Please call 'registerRenderer(instanceOf(%s.class), renderer)' or 'registerRenderer(instanceOf(%1$s.class), 'format', renderer)'", attributeClassType.getSimpleName()));
     }
 
     public static Renderer<Object> renderer(final AttributeRenderer renderer) {
@@ -81,7 +97,7 @@ public class EnhancedStringTemplateGroup extends StringTemplateGroup {
 
     @Override
     public AttributeRenderer getAttributeRenderer(Class attributeClassType) {
-        return new RendererAdapter(renderers);
+        return new RendererAdapter(renderers, namedRenderers);
     }
 
     public <T, R> EnhancedStringTemplateGroup registerRenderer(Predicate<? super T> predicate, Renderer<? super T> callable) {
@@ -92,5 +108,30 @@ public class EnhancedStringTemplateGroup extends StringTemplateGroup {
     public <T, R> EnhancedStringTemplateGroup registerRenderer(Predicate<? super T> predicate, Callable1<? super T, String> callable) {
         renderers.add(predicate, callable);
         return this;
+    }
+
+    public <T, R> EnhancedStringTemplateGroup registerRenderer(Predicate<? super T> predicate, String format, Renderer<? super T> callable) {
+        get(format).add(predicate, callable);
+        return this;
+    }
+
+    public <T, R> EnhancedStringTemplateGroup registerRenderer(Predicate<? super T> predicate, String format, Callable1<? super T, String> callable) {
+        get(format).add(predicate, callable);
+        return this;
+    }
+
+    private Renderers get(String name) {
+        if(!namedRenderers.containsKey(name)){
+            namedRenderers.put(name, new Renderers());
+        }
+        return namedRenderers.get(name);
+    }
+
+    private static Callable1<String, String> urlEncode() {
+        return new Callable1<String, String>() {
+            public String call(String s) throws Exception {
+                return URLEncoder.encode(s, "UTF-8");
+            }
+        };
     }
 }
