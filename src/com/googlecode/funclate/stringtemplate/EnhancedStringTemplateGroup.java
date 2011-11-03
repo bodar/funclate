@@ -18,6 +18,7 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.googlecode.funclate.stringtemplate.RendererAdapter.*;
 import static com.googlecode.totallylazy.Closeables.using;
 import static com.googlecode.totallylazy.Predicates.always;
 import static com.googlecode.totallylazy.URLs.packageUrl;
@@ -121,10 +122,10 @@ public class EnhancedStringTemplateGroup extends StringTemplateGroup {
     }
 
     private Renderers get(String name) {
-        if(!namedRenderers.containsKey(name)){
-            namedRenderers.put(name, new Renderers());
+        if(!namedRenderers.containsKey(normalise(name))) {
+            namedRenderers.put(normalise(name), new Renderers());
         }
-        return namedRenderers.get(name);
+        return namedRenderers.get(normalise(name));
     }
 
     private static Callable1<String, String> urlEncode() {
