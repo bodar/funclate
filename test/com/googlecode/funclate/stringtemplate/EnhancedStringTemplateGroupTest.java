@@ -24,6 +24,18 @@ public class EnhancedStringTemplateGroupTest {
         assertThat(result, is("jar:file:/home/dev/Projects/baron-greenback/build/artifacts/baron-greenback-dev.build.jar!/com/googlecode/barongreenback/search/list.st"));
     }
 
+
+    @Test
+    public void ignoresCaseAndTrimsWhitespace() throws Exception {
+        EnhancedStringTemplateGroup group = new EnhancedStringTemplateGroup(getClass());
+        group.registerRenderer(instanceOf(URI.class), " link ", toLink());
+
+        StringTemplate linkTemplate = group.getInstanceOf("customFormat");
+        linkTemplate.setAttribute("URI", URI.create("http://foo/?name=bar&id=12"));
+        linkTemplate.setAttribute("formatToUse", "     LINK       ");
+        assertThat(linkTemplate.toString(), is("<a href=\"http://foo/?name=bar&id=12\">http://foo/?name=bar&id=12</a>"));
+    }
+
     @Test
     public void supportsCustomFormats() throws Exception {
         EnhancedStringTemplateGroup group = new EnhancedStringTemplateGroup(getClass());

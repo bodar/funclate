@@ -32,14 +32,18 @@ class RendererAdapter implements AttributeRenderer {
         return currentResult.toString();
     }
 
-    private String format(Object value, String format) {
-        if(namedRenderers.containsKey(format)) {
+    private String format(Object value, String name) {
+        if(namedRenderers.containsKey(normalise(name))) {
             try {
-                return namedRenderers.get(format).render(value);
+                return namedRenderers.get(normalise(name)).render(value);
             } catch (Exception e) {
                 throw new UnsupportedOperationException(e);
             }
         }
-        throw new IllegalArgumentException(String.format("Invalid format argument: '%s'", format));
+        throw new IllegalArgumentException(String.format("Invalid format argument: '%s'", name));
+    }
+
+    public static String normalise(String name) {
+        return name.trim().toLowerCase();
     }
 }
