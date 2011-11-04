@@ -14,8 +14,8 @@ public class BaseFunclatesTest {
     @Test
     public void supportsNamedFunclates() throws Exception {
         Funclates funclates = new BaseFunclates();
-        funclates.add(instanceOf(String.class), "encode", encode());
-        String result = funclates.call("encode", "Hello Dan");
+        funclates.add("encode", instanceOf(String.class), encode());
+        String result = funclates.get("encode").render("Hello Dan");
         assertThat(result, is("Hello+Dan"));
     }
 
@@ -30,8 +30,8 @@ public class BaseFunclatesTest {
     @Test
     public void canIntegrateWithStringFormat() throws Exception {
         Funclates funclates = new BaseFunclates();
-        funclates.add(instanceOf(String.class), "format", format("Hello %s"));
-        String result = funclates.call("format", "Dan");
+        funclates.add("format", instanceOf(String.class), format("Hello %s"));
+        String result = funclates.get("format").render("Dan");
         assertThat(result, is("Hello Dan"));
     }
 
