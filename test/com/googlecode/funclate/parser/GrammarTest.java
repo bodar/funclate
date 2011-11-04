@@ -3,13 +3,13 @@ package com.googlecode.funclate.parser;
 import com.googlecode.funclate.BaseFunclates;
 import com.googlecode.funclate.Funclates;
 import com.googlecode.totallylazy.Callable1;
-import com.googlecode.totallylazy.Pair;
 import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static com.googlecode.totallylazy.Pair.pair;
+import static com.googlecode.totallylazy.Predicates.always;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
@@ -42,7 +42,7 @@ public class GrammarTest {
             put("name", "Dan");
         }};
         Funclates funclates = new BaseFunclates();
-        funclates.add("template", new Callable1<Object, String>() {
+        funclates.add(always(), "template", new Callable1<Object, String>() {
             public String call(Object o) throws Exception {
                 return "Bodart";
             }
