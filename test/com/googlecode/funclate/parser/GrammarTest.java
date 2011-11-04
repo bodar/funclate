@@ -42,7 +42,7 @@ public class GrammarTest {
             put("name", "Dan");
         }};
         Funclates funclates = new BaseFunclates();
-        funclates.add(always(), "template", new Callable1<Object, String>() {
+        funclates.add("template", always(), new Callable1<Object, String>() {
             public String call(Object o) throws Exception {
                 return "Bodart";
             }

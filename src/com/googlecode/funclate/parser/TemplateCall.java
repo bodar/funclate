@@ -24,6 +24,6 @@ public class TemplateCall implements Renderer<Pair<Map<String, Object>, Funclate
     }
 
     public String render(Pair<Map<String, Object>, Funclates> instance) throws Exception {
-        return instance.second().call(name, arguments);
+        return instance.second().get(name).render(arguments);
     }
 }
