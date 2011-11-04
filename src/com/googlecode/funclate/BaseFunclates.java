@@ -9,23 +9,22 @@ import java.util.Map;
 public class BaseFunclates implements Funclates{
     public static final String NO_NAME = "";
     protected final Map<String, Renderers> funclates = new HashMap<String, Renderers>();
-    private Renderer<Object> parent;
+    private final Renderer<Object> parent;
 
     public BaseFunclates(Renderer<Object> parent) {
         this.parent = parent;
     }
 
     public BaseFunclates() {
-        this.parent = new Renderer<Object>() {
+        this.parent = asString();
+    }
+
+    private Renderer<Object> asString() {
+        return new Renderer<Object>() {
             public String render(Object instance) throws Exception {
                 return instance.toString();
             }
         };
-    }
-
-    public Funclates parent(Renderer<Object> parent) {
-        this.parent = parent;
-        return this;
     }
 
     public <T> Funclates add(String name, Predicate<? super T> predicate, Renderer<? super T> renderer) {
@@ -63,11 +62,9 @@ public class BaseFunclates implements Funclates{
     protected Renderers renderersFor(String name) {
         String normalisedName = normalise(name);
         if(!contains(normalisedName)) {
-            funclates.put(normalisedName, new Renderers());
+            funclates.put(normalisedName, new Renderers(parent));
         }
-        Renderers renderers = funclates.get(normalisedName);
-        renderers.parent(parent);
-        return renderers;
+        return funclates.get(normalisedName);
     }
 
     public static String normalise(String name) {

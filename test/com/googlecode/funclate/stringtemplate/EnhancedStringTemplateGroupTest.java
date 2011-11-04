@@ -24,10 +24,9 @@ public class EnhancedStringTemplateGroupTest {
         assertThat(result, is("jar:file:/home/dev/Projects/baron-greenback/build/artifacts/baron-greenback-dev.build.jar!/com/googlecode/barongreenback/search/list.st"));
     }
 
-
     @Test
     public void canCallANamedRendererJustLikeATemplate() throws Exception {
-        EnhancedStringTemplateGroup group = new EnhancedStringTemplateGroup(getClass(), true);
+        EnhancedStringTemplateGroup group = new EnhancedStringTemplateGroup(getClass()).enableFormatsAsFunctions();
         group.registerRenderer("link", instanceOf(URI.class), toLink());
 
         StringTemplate linkTemplate = group.getInstanceOf("linkFormat");
@@ -83,9 +82,8 @@ public class EnhancedStringTemplateGroupTest {
         EnhancedStringTemplateGroup superGroup = new EnhancedStringTemplateGroup(getClass());
         superGroup.registerRenderer(instanceOf(URI.class), returns("superGroup called"));
 
-        EnhancedStringTemplateGroup subGroup = new EnhancedStringTemplateGroup(getClass());
+        EnhancedStringTemplateGroup subGroup = new EnhancedStringTemplateGroup(getClass(), superGroup);
         subGroup.registerRenderer(instanceOf(URI.class), returns("subGroup called"));
-        subGroup.setSuperGroup(superGroup);
 
         StringTemplate template = subGroup.getInstanceOf("value");
         template.setAttribute("value", URI.create("http://foo/?name=bar&id=12"));
@@ -97,8 +95,7 @@ public class EnhancedStringTemplateGroupTest {
         EnhancedStringTemplateGroup superGroup = new EnhancedStringTemplateGroup(getClass());
         superGroup.registerRenderer(instanceOf(Date.class), returns("superGroup called"));
 
-        EnhancedStringTemplateGroup subGroup = new EnhancedStringTemplateGroup(getClass());
-        subGroup.setSuperGroup(superGroup);
+        EnhancedStringTemplateGroup subGroup = new EnhancedStringTemplateGroup(getClass(), superGroup);
 
         StringTemplate template = subGroup.getInstanceOf("value");
         template.setAttribute("value", date(2001, 1, 1));
@@ -106,6 +103,7 @@ public class EnhancedStringTemplateGroupTest {
     }
 
     @Test
+    @SuppressWarnings("deprecation")
     public void doesNotSupportsOldStyleClassRegistration() throws Exception {
         EnhancedStringTemplateGroup group = new EnhancedStringTemplateGroup(getClass());
         try {

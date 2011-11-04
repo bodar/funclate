@@ -1,8 +1,8 @@
 package com.googlecode.funclate.stringtemplate;
 
+import com.googlecode.funclate.BaseFunclates;
 import com.googlecode.funclate.Funclates;
 import com.googlecode.funclate.Renderer;
-import com.googlecode.funclate.Renderers;
 import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Predicate;
 import org.antlr.stringtemplate.AttributeRenderer;
@@ -14,45 +14,51 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 
-import static com.googlecode.funclate.Funclates.methods.defaultFunclates;
+import static com.googlecode.funclate.Funclates.methods.addDefaultEncoders;
 import static com.googlecode.totallylazy.Closeables.using;
 import static com.googlecode.totallylazy.URLs.packageUrl;
 
 public class EnhancedStringTemplateGroup extends StringTemplateGroup {
-    private final boolean enableFormatsAsFunctions;
+    private boolean enableFormatsAsFunctions = false;
     private final Funclates funclates;
 
-    public EnhancedStringTemplateGroup(URL baseUrl) {
-        this(baseUrl, false);
-    }
-
-    public EnhancedStringTemplateGroup(URL baseUrl, boolean enableFormatsAsFunctions) {
-        this(baseUrl, new Renderers(), enableFormatsAsFunctions);
-    }
-
     public EnhancedStringTemplateGroup(Class classInPackage) {
-        this(classInPackage, false);
+        this(packageUrl(classInPackage));
     }
 
-    public EnhancedStringTemplateGroup(Class classInPackage, boolean enableFormatsAsFunctions) {
-        this(packageUrl(classInPackage), new Renderers(), enableFormatsAsFunctions);
+    public EnhancedStringTemplateGroup(URL baseUrl) {
+        this(baseUrl, null);
     }
 
-    public EnhancedStringTemplateGroup(URL baseUrl, Renderers renderers, boolean enableFormatsAsFunctions) {
+    public EnhancedStringTemplateGroup(Class classInPackage, StringTemplateGroup parent) {
+        this(packageUrl(classInPackage), parent);
+    }
+    
+    public EnhancedStringTemplateGroup(URL baseUrl, StringTemplateGroup parent) {
         super(baseUrl.toString(), baseUrl.toString());
-        this.enableFormatsAsFunctions = enableFormatsAsFunctions;
-        funclates = defaultFunclates();
+        funclates = addDefaultEncoders(createFunclates(parent));
     }
 
-    @Override
-    public void setSuperGroup(StringTemplateGroup superGroup) {
-        super.setSuperGroup(superGroup);
-        if(superGroup instanceof EnhancedStringTemplateGroup){
-            funclates.parent(((EnhancedStringTemplateGroup) superGroup).funclates);
+    private Funclates createFunclates(StringTemplateGroup parent) {
+        if(parent instanceof EnhancedStringTemplateGroup) {
+            return new BaseFunclates(((EnhancedStringTemplateGroup)parent).funclates);
         }
+        return new BaseFunclates();
+    }
+
+    public EnhancedStringTemplateGroup enableFormatsAsFunctions() {
+        this.enableFormatsAsFunctions = true;
+        return this;
     }
 
     @Override
+    @Deprecated
+    public void setSuperGroup(StringTemplateGroup superGroup) {
+        throw new UnsupportedOperationException("Please use the constructor to set the super goup");
+    }
+
+    @Override
+    @Deprecated
     public void registerRenderer(Class attributeClassType, Object instance) {
         throw new IllegalArgumentException(String.format("Please call 'registerRenderer(instanceOf(%s.class), renderer)' or 'registerRenderer(instanceOf(%1$s.class), 'format', renderer)'", attributeClassType.getSimpleName()));
     }

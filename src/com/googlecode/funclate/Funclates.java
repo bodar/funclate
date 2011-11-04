@@ -10,8 +10,6 @@ import java.net.URLEncoder;
 import static com.googlecode.totallylazy.Predicates.always;
 
 public interface Funclates extends Renderer<Object> {
-    Funclates parent(Renderer<Object> parent);
-
     <T> Funclates add(String name, Predicate<? super T> predicate, Renderer<? super T> renderer);
 
     <T> Funclates add(String name, Predicate<? super T> predicate, Callable1<? super T, String> callable);
