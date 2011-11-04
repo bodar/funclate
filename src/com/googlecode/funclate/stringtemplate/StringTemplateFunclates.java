@@ -8,7 +8,7 @@ public class StringTemplateFunclates extends BaseFunclates {
     private final EnhancedStringTemplateGroup group;
 
     public StringTemplateFunclates(URL base) {
-        group = new EnhancedStringTemplateGroup(base, renderers, true);
+        group = new EnhancedStringTemplateGroup(base, true);
     }
 
     public String call(String name, Object value) throws Exception {

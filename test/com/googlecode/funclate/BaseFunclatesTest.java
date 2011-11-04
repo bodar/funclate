@@ -14,7 +14,7 @@ public class BaseFunclatesTest {
     @Test
     public void supportsNamedFunclates() throws Exception {
         Funclates funclates = new BaseFunclates();
-        funclates.add("encode", encode());
+        funclates.add(instanceOf(String.class), "encode", encode());
         String result = funclates.call("encode", "Hello Dan");
         assertThat(result, is("Hello+Dan"));
     }
@@ -30,14 +30,14 @@ public class BaseFunclatesTest {
     @Test
     public void canIntegrateWithStringFormat() throws Exception {
         Funclates funclates = new BaseFunclates();
-        funclates.add("format", format("Hello %s"));
+        funclates.add(instanceOf(String.class), "format", format("Hello %s"));
         String result = funclates.call("format", "Dan");
         assertThat(result, is("Hello Dan"));
     }
 
 
     private static Callable1<String, String> encode() {
-        return new Callable1<String, String>(){
+        return new Callable1<String, String>() {
             public String call(String value) throws Exception {
                 return URLEncoder.encode(value, "UTF-8");
             }

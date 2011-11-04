@@ -10,30 +10,35 @@ import static com.googlecode.totallylazy.Maps.map;
 import static com.googlecode.totallylazy.Pair.pair;
 
 public class BaseFunclates implements Funclates{
-    protected final Map<String, Callable1> funclates = new HashMap<String, Callable1>();
-    protected final Renderers renderers = new Renderers();
+    public static final String NO_NAME = "";
+    protected final Map<String, Renderers> funclates = new HashMap<String, Renderers>();
 
-    public Funclates add(String name, Callable1 callable) {
-        funclates.put(name, callable);
+    public <T> Funclates add(Predicate<? super T> predicate, String format, Renderer<? super T> renderer) {
+        get(format).add(predicate, renderer);
+        return this;
+    }
+
+    public <T> Funclates add(Predicate<? super T> predicate, String format, Callable1<? super T, String> callable) {
+        get(format).add(predicate, callable);
         return this;
     }
 
     public <T> Funclates add(Predicate<? super T> predicate, Renderer<? super T> renderer) {
-        renderers.add(predicate, renderer);
+        get(NO_NAME).add(predicate, renderer);
         return this;
     }
 
     public <T> Funclates add(Predicate<? super T> predicate, Callable1<? super T, String> renderer) {
-        renderers.add(predicate, renderer);
+        get(NO_NAME).add(predicate, renderer);
         return this;
     }
 
     public String call(String name, Object value) throws Exception {
-        return String.valueOf(funclates.get(name).call(value));
+        return funclates.get(name).render(value);
     }
     
     public String render(Object value) throws Exception {
-        return renderers.render(value);
+        return get(NO_NAME).render(value);
     }
 
     protected Map convertToMap(Object value) {
@@ -45,4 +50,17 @@ public class BaseFunclates implements Funclates{
         }
         return map(pair("value", value));
     }
+
+    public Renderers get(String name) {
+        if(!funclates.containsKey(normalise(name))) {
+            funclates.put(normalise(name), new Renderers());
+        }
+        return funclates.get(normalise(name));
+    }
+
+    public static String normalise(String name) {
+        return name.trim().toLowerCase();
+    }
+
+
 }
