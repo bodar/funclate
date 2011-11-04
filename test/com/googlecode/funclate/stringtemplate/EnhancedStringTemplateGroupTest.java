@@ -26,6 +26,16 @@ public class EnhancedStringTemplateGroupTest {
 
 
     @Test
+    public void canCallANamedRendererJustLikeATemplate() throws Exception {
+        EnhancedStringTemplateGroup group = new EnhancedStringTemplateGroup(getClass(), true);
+        group.registerRenderer(instanceOf(URI.class), "link", toLink());
+
+        StringTemplate linkTemplate = group.getInstanceOf("linkFormat");
+        linkTemplate.setAttribute("URI", URI.create("http://foo/?name=bar&id=12"));
+        assertThat(linkTemplate.toString(), is("<a href=\"http://foo/?name=bar&id=12\">http://foo/?name=bar&id=12</a>"));
+    }
+
+    @Test
     public void ignoresCaseAndTrimsWhitespace() throws Exception {
         EnhancedStringTemplateGroup group = new EnhancedStringTemplateGroup(getClass());
         group.registerRenderer(instanceOf(URI.class), " link ", toLink());
