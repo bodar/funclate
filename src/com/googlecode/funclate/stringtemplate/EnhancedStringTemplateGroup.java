@@ -18,26 +18,36 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.googlecode.funclate.stringtemplate.RendererAdapter.*;
+import static com.googlecode.funclate.stringtemplate.RendererAdapter.normalise;
 import static com.googlecode.totallylazy.Closeables.using;
 import static com.googlecode.totallylazy.Predicates.always;
 import static com.googlecode.totallylazy.URLs.packageUrl;
 
 public class EnhancedStringTemplateGroup extends StringTemplateGroup {
     private final Renderers renderers;
+    private final boolean enableFormatsAsFunctions;
     private final Map<String, Renderers> namedRenderers;
 
     public EnhancedStringTemplateGroup(URL baseUrl) {
-        this(baseUrl, new Renderers());
+        this(baseUrl, false);
+    }
+
+    public EnhancedStringTemplateGroup(URL baseUrl, boolean enableFormatsAsFunctions) {
+        this(baseUrl, new Renderers(), enableFormatsAsFunctions);
     }
 
     public EnhancedStringTemplateGroup(Class classInPackage) {
-        this(packageUrl(classInPackage), new Renderers());
+        this(classInPackage, false);
     }
 
-    public EnhancedStringTemplateGroup(URL baseUrl, Renderers renderers) {
+    public EnhancedStringTemplateGroup(Class classInPackage, boolean enableFormatsAsFunctions) {
+        this(packageUrl(classInPackage), new Renderers(), enableFormatsAsFunctions);
+    }
+
+    public EnhancedStringTemplateGroup(URL baseUrl, Renderers renderers, boolean enableFormatsAsFunctions) {
         super(baseUrl.toString(), baseUrl.toString());
         this.renderers = renderers;
+        this.enableFormatsAsFunctions = enableFormatsAsFunctions;
         namedRenderers = defaultEncoders();
     }
 
@@ -74,6 +84,9 @@ public class EnhancedStringTemplateGroup extends StringTemplateGroup {
 
     @Override
     protected StringTemplate loadTemplate(final String name, String fileName) {
+        if(enableFormatsAsFunctions && namedRenderers.containsKey(normalise(name))) {
+            return new ConvertTemplateToFunctionCall(namedRenderers, normalise(name));
+        }
         try {
             return using(new URL(format(fileName)).openStream(), loadTemplate(name));
         } catch (Exception e) {
@@ -135,4 +148,5 @@ public class EnhancedStringTemplateGroup extends StringTemplateGroup {
             }
         };
     }
+
 }
