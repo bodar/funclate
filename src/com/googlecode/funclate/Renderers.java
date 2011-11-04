@@ -6,14 +6,14 @@ import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Predicates;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 import static com.googlecode.totallylazy.Predicates.where;
 import static com.googlecode.totallylazy.Sequences.sequence;
 
 public class Renderers implements Renderer<Object>{
-    private final List<Pair<Predicate<Object>, Callable1<Object, String>>> pairs = new ArrayList<Pair<Predicate<Object>, Callable1<Object, String>>>();
+    private final Deque<Pair<Predicate<Object>, Callable1<Object, String>>> pairs = new ArrayDeque<Pair<Predicate<Object>, Callable1<Object, String>>>();
     private Callable1<Object, String> parent;
 
     public Renderers() {
@@ -43,7 +43,7 @@ public class Renderers implements Renderer<Object>{
 
     @SuppressWarnings("unchecked")
     public <T, R> Renderers add(Predicate<? super T> predicate, Callable1<? super T, String> callable) {
-        pairs.add(Pair.<Predicate<Object>, Callable1<Object, String>>pair((Predicate<Object>) predicate, (Callable1<Object, String>) callable));
+        pairs.addFirst(Pair.<Predicate<Object>, Callable1<Object, String>>pair((Predicate<Object>) predicate, (Callable1<Object, String>) callable));
         return this;
     }
 
