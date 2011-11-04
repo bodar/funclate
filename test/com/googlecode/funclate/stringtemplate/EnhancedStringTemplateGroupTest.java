@@ -28,7 +28,7 @@ public class EnhancedStringTemplateGroupTest {
     @Test
     public void canCallANamedRendererJustLikeATemplate() throws Exception {
         EnhancedStringTemplateGroup group = new EnhancedStringTemplateGroup(getClass(), true);
-        group.registerRenderer(instanceOf(URI.class), "link", toLink());
+        group.registerRenderer("link", instanceOf(URI.class), toLink());
 
         StringTemplate linkTemplate = group.getInstanceOf("linkFormat");
         linkTemplate.setAttribute("URI", URI.create("http://foo/?name=bar&id=12"));
@@ -38,7 +38,7 @@ public class EnhancedStringTemplateGroupTest {
     @Test
     public void ignoresCaseAndTrimsWhitespace() throws Exception {
         EnhancedStringTemplateGroup group = new EnhancedStringTemplateGroup(getClass());
-        group.registerRenderer(instanceOf(URI.class), " link ", toLink());
+        group.registerRenderer(" link ", instanceOf(URI.class), toLink());
 
         StringTemplate linkTemplate = group.getInstanceOf("customFormat");
         linkTemplate.setAttribute("URI", URI.create("http://foo/?name=bar&id=12"));
@@ -49,9 +49,9 @@ public class EnhancedStringTemplateGroupTest {
     @Test
     public void supportsCustomFormats() throws Exception {
         EnhancedStringTemplateGroup group = new EnhancedStringTemplateGroup(getClass());
-        group.registerRenderer(instanceOf(URI.class), "link", toLink());
-        group.registerRenderer(always(), "plain", Callables.asString());
-        group.registerRenderer(instanceOf(String.class), "uppercase", Strings.toUpperCase());
+        group.registerRenderer("link", instanceOf(URI.class), toLink());
+        group.registerRenderer("plain", always(), Callables.asString());
+        group.registerRenderer("uppercase", instanceOf(String.class), Strings.toUpperCase());
 
         StringTemplate linkTemplate = group.getInstanceOf("customFormat");
         linkTemplate.setAttribute("URI", URI.create("http://foo/?name=bar&id=12"));

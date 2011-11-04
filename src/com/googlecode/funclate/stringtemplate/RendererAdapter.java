@@ -1,23 +1,19 @@
 package com.googlecode.funclate.stringtemplate;
 
+import com.googlecode.funclate.Funclates;
 import com.googlecode.funclate.Renderer;
-import com.googlecode.funclate.Renderers;
 import org.antlr.stringtemplate.AttributeRenderer;
 
-import java.util.Map;
+public class RendererAdapter implements AttributeRenderer {
+    private final Funclates funclates;
 
-class RendererAdapter implements AttributeRenderer {
-    private final Renderer<Object> renderer;
-    private final Map<String, Renderers> namedRenderers;
-
-    public RendererAdapter(Renderer<Object> renderer, Map<String, Renderers> namedRenderers) {
-        this.renderer = renderer;
-        this.namedRenderers = namedRenderers;
+    public RendererAdapter(Funclates funclates) {
+        this.funclates = funclates;
     }
 
     public String toString(Object value) {
         try {
-            return renderer.render(value);
+            return funclates.render(value);
         } catch (Exception e) {
             throw new UnsupportedOperationException(e);
         }
@@ -33,9 +29,9 @@ class RendererAdapter implements AttributeRenderer {
     }
 
     private String format(Object value, String name) {
-        if(namedRenderers.containsKey(normalise(name))) {
+        if(funclates.contains(name)) {
             try {
-                return namedRenderers.get(normalise(name)).render(value);
+                return funclates.get(name).render(value);
             } catch (Exception e) {
                 throw new UnsupportedOperationException(e);
             }
@@ -43,7 +39,11 @@ class RendererAdapter implements AttributeRenderer {
         throw new IllegalArgumentException(String.format("Invalid format argument: '%s'", name));
     }
 
-    public static String normalise(String name) {
-        return name.trim().toLowerCase();
+    public static Renderer<Object> renderer(final AttributeRenderer renderer) {
+        return new Renderer<Object>() {
+            public String render(Object instance) throws Exception {
+                return renderer.toString(instance);
+            }
+        };
     }
 }

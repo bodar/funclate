@@ -20,6 +20,7 @@ public class StringTemplateFunclates extends BaseFunclates {
     }
 
     public StringTemplateFunclates(URL base) {
+        super();
         group = new EnhancedStringTemplateGroup(base, true);
     }
 
