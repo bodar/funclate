@@ -9,7 +9,7 @@ import java.net.URLEncoder;
 
 import static com.googlecode.totallylazy.Predicates.always;
 
-public interface Funclate extends Renderer<Object> {
+public interface Funclate extends NamedRenderer {
     <T> Funclate add(String name, Predicate<? super T> predicate, Renderer<? super T> renderer);
 
     <T> Funclate add(String name, Predicate<? super T> predicate, Callable1<? super T, String> callable);
@@ -17,8 +17,6 @@ public interface Funclate extends Renderer<Object> {
     <T> Funclate add(Predicate<? super T> predicate, Renderer<? super T> renderer);
 
     <T> Funclate add(Predicate<? super T> predicate, Callable1<? super T, String> callable);
-
-    Renderer<Object> get(String name);
 
     boolean contains(String name);
 
