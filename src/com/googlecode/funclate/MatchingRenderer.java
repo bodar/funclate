@@ -12,20 +12,20 @@ import java.util.Deque;
 import static com.googlecode.totallylazy.Predicates.where;
 import static com.googlecode.totallylazy.Sequences.sequence;
 
-public class Renderers implements Renderer<Object>{
+public class MatchingRenderer implements Renderer<Object>{
     private final Deque<Pair<Predicate<Object>, Callable1<Object, String>>> pairs = new ArrayDeque<Pair<Predicate<Object>, Callable1<Object, String>>>();
-    private Callable1<Object, String> parent;
+    private Callable1<Object, String> noMatchRenderer;
 
-    public Renderers() {
-        parent = Callables.asString();
+    public MatchingRenderer() {
+        noMatchRenderer = Callables.asString();
     }
 
-    public Renderers(Renderer<Object> parent) {
-        this.parent = callable(parent);
+    public MatchingRenderer(Renderer<Object> noMatchRenderer) {
+        this.noMatchRenderer = callable(noMatchRenderer);
     }
 
-    public Renderers parent(Renderer<Object> parent) {
-        this.parent = callable(parent);
+    public MatchingRenderer parent(Renderer<Object> noMatchRenderer) {
+        this.noMatchRenderer = callable(noMatchRenderer);
         return this;
     }
 
@@ -33,16 +33,16 @@ public class Renderers implements Renderer<Object>{
         Predicate<Predicate<Object>> matches = Predicates.matches(value);
         return sequence(pairs).find(where(Callables.<Predicate<Object>>first(), matches)).
                 map(Callables.<Callable1<Object, String>>second()).
-                getOrElse(parent).
+                getOrElse(noMatchRenderer).
                 call(value);
     }
 
-    public <T, R> Renderers add(Predicate<? super T> predicate, Renderer<? super T> renderer) {
+    public <T, R> MatchingRenderer add(Predicate<? super T> predicate, Renderer<? super T> renderer) {
         return add(predicate, callable(renderer));
     }
 
     @SuppressWarnings("unchecked")
-    public <T, R> Renderers add(Predicate<? super T> predicate, Callable1<? super T, String> callable) {
+    public <T, R> MatchingRenderer add(Predicate<? super T> predicate, Callable1<? super T, String> callable) {
         pairs.addFirst(Pair.<Predicate<Object>, Callable1<Object, String>>pair((Predicate<Object>) predicate, (Callable1<Object, String>) callable));
         return this;
     }

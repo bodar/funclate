@@ -9,7 +9,7 @@ import java.net.URLEncoder;
 
 import static com.googlecode.totallylazy.Predicates.always;
 
-public interface Funclate extends NamedRenderer {
+public interface Funclate extends RendererContainer, Renderer<Object> {
     <T> Funclate add(String name, Predicate<? super T> predicate, Renderer<? super T> renderer);
 
     <T> Funclate add(String name, Predicate<? super T> predicate, Callable1<? super T, String> callable);
