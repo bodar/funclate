@@ -8,10 +8,10 @@ import java.util.Map;
 
 public class BaseFunclate implements Funclate {
     public static final String NO_NAME = "";
-    protected final Map<String, Renderers> funclates = new HashMap<String, Renderers>();
-    private final Renderer<Object> parent;
+    protected final Map<String, MatchingRenderer> funclates = new HashMap<String, MatchingRenderer>();
+    private final NamedRenderer parent;
 
-    public BaseFunclate(Renderer<Object> parent) {
+    public BaseFunclate(NamedRenderer parent) {
         this.parent = parent;
     }
 
@@ -19,10 +19,14 @@ public class BaseFunclate implements Funclate {
         this.parent = asString();
     }
 
-    private Renderer<Object> asString() {
-        return new Renderer<Object>() {
+    private NamedRenderer asString() {
+        return new NamedRenderer() {
             public String render(Object instance) throws Exception {
                 return instance.toString();
+            }
+
+            public Renderer<Object> get(String name) {
+                return this;
             }
         };
     }
@@ -59,10 +63,10 @@ public class BaseFunclate implements Funclate {
         return funclates.containsKey(normalise(name));
     }
 
-    protected Renderers renderersFor(String name) {
+    protected MatchingRenderer renderersFor(String name) {
         String normalisedName = normalise(name);
         if(!contains(normalisedName)) {
-            funclates.put(normalisedName, new Renderers(parent));
+            funclates.put(normalisedName, new MatchingRenderer(parent.get(normalisedName)));
         }
         return funclates.get(normalisedName);
     }

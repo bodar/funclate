@@ -24,7 +24,6 @@ public class StringTemplateFunclate extends BaseFunclate {
         group = new EnhancedStringTemplateGroup(base);
     }
 
-    @Override
     public Renderer<Object> get(final String name) {
         if (funclates.containsKey(name)) {
             return super.get(name);
