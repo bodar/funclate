@@ -9,9 +9,9 @@ import java.util.Map;
 public class BaseFunclate implements Funclate {
     public static final String NO_NAME = "";
     protected final Map<String, MatchingRenderer> funclates = new HashMap<String, MatchingRenderer>();
-    private final NamedRenderer parent;
+    private final RendererContainer parent;
 
-    public BaseFunclate(NamedRenderer parent) {
+    public BaseFunclate(RendererContainer parent) {
         this.parent = parent;
     }
 
@@ -19,14 +19,14 @@ public class BaseFunclate implements Funclate {
         this.parent = asString();
     }
 
-    private NamedRenderer asString() {
-        return new NamedRenderer() {
-            public String render(Object instance) throws Exception {
-                return instance.toString();
-            }
-
+    private RendererContainer asString() {
+        return new RendererContainer() {
             public Renderer<Object> get(String name) {
-                return this;
+                return new Renderer<Object>() {
+                    public String render(Object instance) throws Exception {
+                        return instance.toString();
+                    }
+                };
             }
         };
     }

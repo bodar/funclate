@@ -10,7 +10,26 @@ import static com.googlecode.totallylazy.Strings.format;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-public class BaseFunclatesTest {
+public class BaseFunclateTest {
+    @Test
+    public void callsCorrectParentRender() throws Exception {
+        Funclate parent = new BaseFunclate();
+        parent.add(instanceOf(String.class), returns("BUG"));
+        parent.add("encode", instanceOf(String.class), returns("Correct"));
+
+        Funclate child = new BaseFunclate(parent);
+        String result = child.get("encode").render("Hello Dan");
+        assertThat(result, is("Correct"));
+    }
+
+    private Renderer<Object> returns(final String value) {
+        return new Renderer<Object>() {
+            public String render(Object instance) throws Exception {
+                return value;
+            }
+        };
+    }
+
     @Test
     public void supportsNamedFunclates() throws Exception {
         Funclate funclate = new BaseFunclate();
