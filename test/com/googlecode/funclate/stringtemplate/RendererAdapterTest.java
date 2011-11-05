@@ -3,7 +3,7 @@ package com.googlecode.funclate.stringtemplate;
 import com.googlecode.funclate.Renderer;
 import org.junit.Test;
 
-import static com.googlecode.funclate.Funclates.methods.defaultFunclates;
+import static com.googlecode.funclate.Funclate.methods.defaultFunclates;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 

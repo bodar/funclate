@@ -6,16 +6,16 @@ import com.googlecode.totallylazy.Predicate;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BaseFunclates implements Funclates{
+public class BaseFunclate implements Funclate {
     public static final String NO_NAME = "";
     protected final Map<String, Renderers> funclates = new HashMap<String, Renderers>();
     private final Renderer<Object> parent;
 
-    public BaseFunclates(Renderer<Object> parent) {
+    public BaseFunclate(Renderer<Object> parent) {
         this.parent = parent;
     }
 
-    public BaseFunclates() {
+    public BaseFunclate() {
         this.parent = asString();
     }
 
@@ -27,22 +27,22 @@ public class BaseFunclates implements Funclates{
         };
     }
 
-    public <T> Funclates add(String name, Predicate<? super T> predicate, Renderer<? super T> renderer) {
+    public <T> Funclate add(String name, Predicate<? super T> predicate, Renderer<? super T> renderer) {
         renderersFor(name).add(predicate, renderer);
         return this;
     }
 
-    public <T> Funclates add(String name, Predicate<? super T> predicate, Callable1<? super T, String> callable) {
+    public <T> Funclate add(String name, Predicate<? super T> predicate, Callable1<? super T, String> callable) {
         renderersFor(name).add(predicate, callable);
         return this;
     }
 
-    public <T> Funclates add(Predicate<? super T> predicate, Renderer<? super T> renderer) {
+    public <T> Funclate add(Predicate<? super T> predicate, Renderer<? super T> renderer) {
         renderersFor(NO_NAME).add(predicate, renderer);
         return this;
     }
 
-    public <T> Funclates add(Predicate<? super T> predicate, Callable1<? super T, String> renderer) {
+    public <T> Funclate add(Predicate<? super T> predicate, Callable1<? super T, String> renderer) {
         renderersFor(NO_NAME).add(predicate, renderer);
         return this;
     }

@@ -9,26 +9,26 @@ import java.net.URLEncoder;
 
 import static com.googlecode.totallylazy.Predicates.always;
 
-public interface Funclates extends Renderer<Object> {
-    <T> Funclates add(String name, Predicate<? super T> predicate, Renderer<? super T> renderer);
+public interface Funclate extends Renderer<Object> {
+    <T> Funclate add(String name, Predicate<? super T> predicate, Renderer<? super T> renderer);
 
-    <T> Funclates add(String name, Predicate<? super T> predicate, Callable1<? super T, String> callable);
+    <T> Funclate add(String name, Predicate<? super T> predicate, Callable1<? super T, String> callable);
 
-    <T> Funclates add(Predicate<? super T> predicate, Renderer<? super T> renderer);
+    <T> Funclate add(Predicate<? super T> predicate, Renderer<? super T> renderer);
 
-    <T> Funclates add(Predicate<? super T> predicate, Callable1<? super T, String> callable);
+    <T> Funclate add(Predicate<? super T> predicate, Callable1<? super T, String> callable);
 
     Renderer<Object> get(String name);
 
     boolean contains(String name);
 
     public static class methods{
-        public static Funclates defaultFunclates() {
-            return addDefaultEncoders(new BaseFunclates());
+        public static Funclate defaultFunclates() {
+            return addDefaultEncoders(new BaseFunclate());
         }
 
-        public static Funclates addDefaultEncoders(Funclates funclates) {
-            return funclates.
+        public static Funclate addDefaultEncoders(Funclate funclate) {
+            return funclate.
                     add("raw", always(), Callables.asString()).
                     add("html", always(), Xml.escape()).
                     add("xml", always(), Xml.escape()).

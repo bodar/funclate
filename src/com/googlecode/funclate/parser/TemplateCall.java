@@ -1,18 +1,19 @@
 package com.googlecode.funclate.parser;
 
-import com.googlecode.funclate.Funclates;
+import com.googlecode.funclate.Funclate;
 import com.googlecode.funclate.Renderer;
-import com.googlecode.totallylazy.Pair;
 
 import java.util.Map;
 
-public class TemplateCall implements Renderer<Pair<Map<String, Object>, Funclates>> {
+public class TemplateCall implements Renderer<Map<String, Object>> {
     private final String name;
     private final Map<String, String> arguments;
+    private final Funclate funclate;
 
-    public TemplateCall(final String name, final Map<String, String> arguments) {
+    public TemplateCall(final String name, final Map<String, String> arguments, final Funclate funclate) {
         this.name = name;
         this.arguments = arguments;
+        this.funclate = funclate;
     }
 
     public String name() {
@@ -23,7 +24,7 @@ public class TemplateCall implements Renderer<Pair<Map<String, Object>, Funclate
         return arguments;
     }
 
-    public String render(Pair<Map<String, Object>, Funclates> instance) throws Exception {
-        return instance.second().get(name).render(arguments);
+    public String render(Map<String, Object> map) throws Exception {
+        return funclate.get(name).render(arguments);
     }
 }

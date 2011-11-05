@@ -1,7 +1,7 @@
 package com.googlecode.funclate.stringtemplate;
 
-import com.googlecode.funclate.BaseFunclates;
-import com.googlecode.funclate.Funclates;
+import com.googlecode.funclate.BaseFunclate;
+import com.googlecode.funclate.Funclate;
 import com.googlecode.funclate.Renderer;
 import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Predicate;
@@ -14,13 +14,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 
-import static com.googlecode.funclate.Funclates.methods.addDefaultEncoders;
+import static com.googlecode.funclate.Funclate.methods.addDefaultEncoders;
 import static com.googlecode.totallylazy.Closeables.using;
 import static com.googlecode.totallylazy.URLs.packageUrl;
 
 public class EnhancedStringTemplateGroup extends StringTemplateGroup {
     private boolean enableFormatsAsFunctions = false;
-    private final Funclates funclates;
+    private final Funclate funclate;
 
     public EnhancedStringTemplateGroup(Class classInPackage) {
         this(packageUrl(classInPackage));
@@ -36,14 +36,14 @@ public class EnhancedStringTemplateGroup extends StringTemplateGroup {
     
     public EnhancedStringTemplateGroup(URL baseUrl, StringTemplateGroup parent) {
         super(baseUrl.toString(), baseUrl.toString());
-        funclates = addDefaultEncoders(createFunclates(parent));
+        funclate = addDefaultEncoders(createFunclates(parent));
     }
 
-    private Funclates createFunclates(StringTemplateGroup parent) {
+    private Funclate createFunclates(StringTemplateGroup parent) {
         if(parent instanceof EnhancedStringTemplateGroup) {
-            return new BaseFunclates(((EnhancedStringTemplateGroup)parent).funclates);
+            return new BaseFunclate(((EnhancedStringTemplateGroup)parent).funclate);
         }
-        return new BaseFunclates();
+        return new BaseFunclate();
     }
 
     public EnhancedStringTemplateGroup enableFormatsAsFunctions() {
@@ -65,8 +65,8 @@ public class EnhancedStringTemplateGroup extends StringTemplateGroup {
 
     @Override
     protected StringTemplate loadTemplate(final String name, String fileName) {
-        if(enableFormatsAsFunctions && funclates.contains(name)) {
-            return new ConvertTemplateToFunctionCall(funclates, name);
+        if(enableFormatsAsFunctions && funclate.contains(name)) {
+            return new ConvertTemplateToFunctionCall(funclate, name);
         }
         try {
             return using(new URL(format(fileName)).openStream(), loadTemplate(name));
@@ -92,26 +92,26 @@ public class EnhancedStringTemplateGroup extends StringTemplateGroup {
 
     @Override
     public AttributeRenderer getAttributeRenderer(Class attributeClassType) {
-        return new RendererAdapter(funclates);
+        return new RendererAdapter(funclate);
     }
 
     public <T, R> EnhancedStringTemplateGroup registerRenderer(Predicate<? super T> predicate, Renderer<? super T> callable) {
-        funclates.add(predicate, callable);
+        funclate.add(predicate, callable);
         return this;
     }
 
     public <T, R> EnhancedStringTemplateGroup registerRenderer(Predicate<? super T> predicate, Callable1<? super T, String> callable) {
-        funclates.add(predicate, callable);
+        funclate.add(predicate, callable);
         return this;
     }
 
     public <T, R> EnhancedStringTemplateGroup registerRenderer(String format, Predicate<? super T> predicate, Renderer<? super T> callable) {
-        funclates.add(format, predicate, callable);
+        funclate.add(format, predicate, callable);
         return this;
     }
 
     public <T, R> EnhancedStringTemplateGroup registerRenderer(String format, Predicate<? super T> predicate, Callable1<? super T, String> callable) {
-        funclates.add(format, predicate, callable);
+        funclate.add(format, predicate, callable);
         return this;
     }
 
