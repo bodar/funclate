@@ -13,25 +13,25 @@ import static org.hamcrest.Matchers.is;
 public class BaseFunclatesTest {
     @Test
     public void supportsNamedFunclates() throws Exception {
-        Funclates funclates = new BaseFunclates();
-        funclates.add("encode", instanceOf(String.class), encode());
-        String result = funclates.get("encode").render("Hello Dan");
+        Funclate funclate = new BaseFunclate();
+        funclate.add("encode", instanceOf(String.class), encode());
+        String result = funclate.get("encode").render("Hello Dan");
         assertThat(result, is("Hello+Dan"));
     }
 
     @Test
     public void supportsImplicitFunclates() throws Exception {
-        Funclates funclates = new BaseFunclates();
-        funclates.add(instanceOf(String.class), encode());
-        String result = funclates.render("Hello Dan");
+        Funclate funclate = new BaseFunclate();
+        funclate.add(instanceOf(String.class), encode());
+        String result = funclate.render("Hello Dan");
         assertThat(result, is("Hello+Dan"));
     }
 
     @Test
     public void canIntegrateWithStringFormat() throws Exception {
-        Funclates funclates = new BaseFunclates();
-        funclates.add("format", instanceOf(String.class), format("Hello %s"));
-        String result = funclates.get("format").render("Dan");
+        Funclate funclate = new BaseFunclate();
+        funclate.add("format", instanceOf(String.class), format("Hello %s"));
+        String result = funclate.get("format").render("Dan");
         assertThat(result, is("Hello Dan"));
     }
 

@@ -1,6 +1,6 @@
 package com.googlecode.funclate.stringtemplate;
 
-import com.googlecode.funclate.Funclates;
+import com.googlecode.funclate.Funclate;
 import org.antlr.stringtemplate.StringTemplate;
 import org.antlr.stringtemplate.StringTemplateWriter;
 import org.antlr.stringtemplate.language.FormalArgument;
@@ -10,12 +10,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ConvertTemplateToFunctionCall extends StringTemplate {
-    private final Funclates funclates;
+    private final Funclate funclate;
     private final String functionName;
 
-    public ConvertTemplateToFunctionCall(Funclates funclates, String functionName) {
+    public ConvertTemplateToFunctionCall(Funclate funclate, String functionName) {
         super("$item$");
-        this.funclates = funclates;
+        this.funclate = funclate;
         this.functionName = functionName;
     }
 
@@ -28,7 +28,7 @@ public class ConvertTemplateToFunctionCall extends StringTemplate {
     public int write(StringTemplateWriter out) throws IOException {
         try {
             Object value = argumentContext.get("item");
-            String rendered = funclates.get(functionName).render(value);
+            String rendered = funclate.get(functionName).render(value);
             return out.write(rendered);
         } catch (Exception e) {
             throw new UnsupportedOperationException(e);

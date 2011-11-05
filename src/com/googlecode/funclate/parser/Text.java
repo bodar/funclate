@@ -1,14 +1,11 @@
 package com.googlecode.funclate.parser;
 
-import com.googlecode.funclate.Funclates;
 import com.googlecode.funclate.Renderer;
-import com.googlecode.totallylazy.Callable1;
-import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Value;
 
 import java.util.Map;
 
-public class Text implements Value<String>, Renderer<Pair<Map<String, Object>, Funclates>> {
+public class Text implements Value<String>, Renderer<Map<String, Object>> {
     private final String value;
 
     public Text(String value) {
@@ -25,7 +22,7 @@ public class Text implements Value<String>, Renderer<Pair<Map<String, Object>, F
         return value;
     }
 
-    public String render(Pair<Map<String, Object>, Funclates> pair) throws Exception {
+    public String render(Map<String, Object> map) throws Exception {
         return value;
     }
 }

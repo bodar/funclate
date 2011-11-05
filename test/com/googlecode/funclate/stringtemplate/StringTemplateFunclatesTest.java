@@ -1,6 +1,6 @@
 package com.googlecode.funclate.stringtemplate;
 
-import com.googlecode.funclate.Funclates;
+import com.googlecode.funclate.Funclate;
 import org.junit.Test;
 
 import static com.googlecode.funclate.Model.model;
@@ -10,8 +10,8 @@ import static org.hamcrest.Matchers.is;
 public class StringTemplateFunclatesTest {
     @Test
     public void loadsTemplates() throws Exception {
-        Funclates funclates = new StringTemplateFunclates(StringTemplateFunclatesTest.class);
-        String result = funclates.get("test").render(model().add("foo", "bar"));
+        Funclate funclate = new StringTemplateFunclate(StringTemplateFunclatesTest.class);
+        String result = funclate.get("test").render(model().add("foo", "bar"));
         assertThat(result, is("bar"));
     }
 }

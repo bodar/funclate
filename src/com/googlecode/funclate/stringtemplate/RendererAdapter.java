@@ -1,19 +1,19 @@
 package com.googlecode.funclate.stringtemplate;
 
-import com.googlecode.funclate.Funclates;
+import com.googlecode.funclate.Funclate;
 import com.googlecode.funclate.Renderer;
 import org.antlr.stringtemplate.AttributeRenderer;
 
 public class RendererAdapter implements AttributeRenderer {
-    private final Funclates funclates;
+    private final Funclate funclate;
 
-    public RendererAdapter(Funclates funclates) {
-        this.funclates = funclates;
+    public RendererAdapter(Funclate funclate) {
+        this.funclate = funclate;
     }
 
     public String toString(Object value) {
         try {
-            return funclates.render(value);
+            return funclate.render(value);
         } catch (Exception e) {
             throw new UnsupportedOperationException(e);
         }
@@ -29,9 +29,9 @@ public class RendererAdapter implements AttributeRenderer {
     }
 
     private String format(Object value, String name) {
-        if(funclates.contains(name)) {
+        if(funclate.contains(name)) {
             try {
-                return funclates.get(name).render(value);
+                return funclate.get(name).render(value);
             } catch (Exception e) {
                 throw new UnsupportedOperationException(e);
             }
