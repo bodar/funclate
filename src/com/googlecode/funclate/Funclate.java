@@ -22,7 +22,7 @@ public interface Funclate extends RendererContainer, Renderer<Object> {
 
     public static class methods{
         public static Funclate defaultFunclates() {
-            return addDefaultEncoders(new BaseFunclate());
+            return addDefaultEncoders(new CompositeFunclate());
         }
 
         public static Funclate addDefaultEncoders(Funclate funclate) {

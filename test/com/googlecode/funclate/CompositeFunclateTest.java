@@ -10,14 +10,14 @@ import static com.googlecode.totallylazy.Strings.format;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-public class BaseFunclateTest {
+public class CompositeFunclateTest {
     @Test
     public void callsCorrectParentRender() throws Exception {
-        Funclate parent = new BaseFunclate();
+        Funclate parent = new CompositeFunclate();
         parent.add(instanceOf(String.class), returns("BUG"));
         parent.add("encode", instanceOf(String.class), returns("Correct"));
 
-        Funclate child = new BaseFunclate(parent);
+        Funclate child = new CompositeFunclate(parent);
         String result = child.get("encode").render("Hello Dan");
         assertThat(result, is("Correct"));
     }
@@ -32,7 +32,7 @@ public class BaseFunclateTest {
 
     @Test
     public void supportsNamedFunclates() throws Exception {
-        Funclate funclate = new BaseFunclate();
+        Funclate funclate = new CompositeFunclate();
         funclate.add("encode", instanceOf(String.class), encode());
         String result = funclate.get("encode").render("Hello Dan");
         assertThat(result, is("Hello+Dan"));
@@ -40,7 +40,7 @@ public class BaseFunclateTest {
 
     @Test
     public void supportsImplicitFunclates() throws Exception {
-        Funclate funclate = new BaseFunclate();
+        Funclate funclate = new CompositeFunclate();
         funclate.add(instanceOf(String.class), encode());
         String result = funclate.render("Hello Dan");
         assertThat(result, is("Hello+Dan"));
@@ -48,7 +48,7 @@ public class BaseFunclateTest {
 
     @Test
     public void canIntegrateWithStringFormat() throws Exception {
-        Funclate funclate = new BaseFunclate();
+        Funclate funclate = new CompositeFunclate();
         funclate.add("format", instanceOf(String.class), format("Hello %s"));
         String result = funclate.get("format").render("Dan");
         assertThat(result, is("Hello Dan"));

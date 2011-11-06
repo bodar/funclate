@@ -1,6 +1,6 @@
 package com.googlecode.funclate.stringtemplate;
 
-import com.googlecode.funclate.BaseFunclate;
+import com.googlecode.funclate.CompositeFunclate;
 import com.googlecode.funclate.Funclate;
 import com.googlecode.funclate.Renderer;
 import com.googlecode.totallylazy.Callable1;
@@ -27,23 +27,27 @@ public class EnhancedStringTemplateGroup extends StringTemplateGroup {
     }
 
     public EnhancedStringTemplateGroup(URL baseUrl) {
-        this(baseUrl, null);
+        this(baseUrl, (StringTemplateGroup) null);
     }
 
     public EnhancedStringTemplateGroup(Class classInPackage, StringTemplateGroup parent) {
         this(packageUrl(classInPackage), parent);
     }
-    
+
     public EnhancedStringTemplateGroup(URL baseUrl, StringTemplateGroup parent) {
-        super(baseUrl.toString(), baseUrl.toString());
-        funclate = addDefaultEncoders(createFunclates(parent));
+        this(baseUrl, addDefaultEncoders(createFunclates(parent)));
     }
 
-    private Funclate createFunclates(StringTemplateGroup parent) {
-        if(parent instanceof EnhancedStringTemplateGroup) {
-            return new BaseFunclate(((EnhancedStringTemplateGroup)parent).funclate);
+    public EnhancedStringTemplateGroup(URL baseUrl, Funclate parent) {
+        super(baseUrl.toString(), baseUrl.toString());
+        funclate = parent;
+    }
+
+    private static Funclate createFunclates(StringTemplateGroup parent) {
+        if (parent instanceof EnhancedStringTemplateGroup) {
+            return new CompositeFunclate(((EnhancedStringTemplateGroup) parent).funclate);
         }
-        return new BaseFunclate();
+        return new CompositeFunclate();
     }
 
     public EnhancedStringTemplateGroup enableFormatsAsFunctions() {
@@ -65,7 +69,7 @@ public class EnhancedStringTemplateGroup extends StringTemplateGroup {
 
     @Override
     protected StringTemplate loadTemplate(final String name, String fileName) {
-        if(enableFormatsAsFunctions && funclate.contains(name)) {
+        if (enableFormatsAsFunctions && funclate.contains(name)) {
             return new ConvertTemplateToFunctionCall(funclate, name);
         }
         try {

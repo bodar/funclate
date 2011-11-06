@@ -1,6 +1,6 @@
 package com.googlecode.funclate.stringtemplate;
 
-import com.googlecode.funclate.BaseFunclate;
+import com.googlecode.funclate.CompositeFunclate;
 import com.googlecode.funclate.Model;
 import com.googlecode.funclate.Renderer;
 import org.antlr.stringtemplate.StringTemplateGroup;
@@ -12,7 +12,7 @@ import static com.googlecode.totallylazy.Maps.map;
 import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.totallylazy.URLs.packageUrl;
 
-public class StringTemplateFunclate extends BaseFunclate {
+public class StringTemplateFunclate extends CompositeFunclate {
     private final EnhancedStringTemplateGroup group;
 
     public StringTemplateFunclate(Class base) {
