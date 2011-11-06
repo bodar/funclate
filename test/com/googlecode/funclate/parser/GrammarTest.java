@@ -1,6 +1,6 @@
 package com.googlecode.funclate.parser;
 
-import com.googlecode.funclate.BaseFunclate;
+import com.googlecode.funclate.CompositeFunclate;
 import com.googlecode.funclate.Funclate;
 import com.googlecode.totallylazy.Callable1;
 import org.junit.Test;
@@ -15,7 +15,7 @@ import static org.hamcrest.Matchers.is;
 public class GrammarTest {
     @Test
     public void canParseAttribute() throws Exception {
-        Attribute attribute = Grammar.ATTRIBUTE(new BaseFunclate()).parse("$foo$");
+        Attribute attribute = Grammar.ATTRIBUTE(new CompositeFunclate()).parse("$foo$");
         assertThat(attribute.value(), is("foo"));
     }
 
@@ -27,16 +27,16 @@ public class GrammarTest {
 
     @Test
     public void canParseTemplateCall() throws Exception {
-        TemplateCall noArguments = Grammar.TEMPLATE_CALL(new BaseFunclate()).parse("$template()$");
+        TemplateCall noArguments = Grammar.TEMPLATE_CALL(new CompositeFunclate()).parse("$template()$");
         assertThat(noArguments.name(), is("template"));
-        TemplateCall templateCall = Grammar.TEMPLATE_CALL(new BaseFunclate()).parse("$template(foo=bar)$");
+        TemplateCall templateCall = Grammar.TEMPLATE_CALL(new CompositeFunclate()).parse("$template(foo=bar)$");
         assertThat(templateCall.name(), is("template"));
         assertThat(templateCall.arguments().get("foo"), is("bar"));
     }
 
     @Test
     public void canParseATemplate() throws Exception {
-        Funclate funclate = new BaseFunclate();
+        Funclate funclate = new CompositeFunclate();
         funclate.add("template", always(), new Callable1<Object, String>() {
             public String call(Object o) throws Exception {
                 return "Bodart";

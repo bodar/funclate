@@ -6,29 +6,19 @@ import com.googlecode.totallylazy.Predicate;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BaseFunclate implements Funclate {
+import static com.googlecode.funclate.RendererContainer.methods.noParent;
+
+public class CompositeFunclate implements Funclate {
     public static final String NO_NAME = "";
     protected final Map<String, MatchingRenderer> funclates = new HashMap<String, MatchingRenderer>();
     private final RendererContainer parent;
 
-    public BaseFunclate(RendererContainer parent) {
+    public CompositeFunclate(RendererContainer parent) {
         this.parent = parent;
     }
 
-    public BaseFunclate() {
-        this.parent = asString();
-    }
-
-    private RendererContainer asString() {
-        return new RendererContainer() {
-            public Renderer<Object> get(String name) {
-                return new Renderer<Object>() {
-                    public String render(Object instance) throws Exception {
-                        return instance.toString();
-                    }
-                };
-            }
-        };
+    public CompositeFunclate() {
+        this(noParent());
     }
 
     public <T> Funclate add(String name, Predicate<? super T> predicate, Renderer<? super T> renderer) {
@@ -66,9 +56,13 @@ public class BaseFunclate implements Funclate {
     protected MatchingRenderer renderersFor(String name) {
         String normalisedName = normalise(name);
         if(!contains(normalisedName)) {
-            funclates.put(normalisedName, new MatchingRenderer(parent.get(normalisedName)));
+            create(normalisedName);
         }
         return funclates.get(normalisedName);
+    }
+
+    protected void create(String normalisedName) {
+        funclates.put(normalisedName, new MatchingRenderer(parent.get(normalisedName)));
     }
 
     public static String normalise(String name) {
