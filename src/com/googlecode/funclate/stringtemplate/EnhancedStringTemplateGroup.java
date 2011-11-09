@@ -36,6 +36,7 @@ public class EnhancedStringTemplateGroup extends StringTemplateGroup {
 
     public EnhancedStringTemplateGroup(URL baseUrl, StringTemplateGroup parent) {
         this(baseUrl, addDefaultEncoders(createFunclates(parent)));
+        super.setSuperGroup(parent);
     }
 
     public EnhancedStringTemplateGroup(URL baseUrl, Funclate parent) {

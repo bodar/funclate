@@ -1,12 +1,16 @@
 package com.googlecode.funclate.stringtemplate;
 
 import com.googlecode.funclate.Renderer;
+import com.googlecode.funclate.stringtemplate.sharedtemplates.SharedTemplateClass;
 import com.googlecode.totallylazy.Callables;
 import com.googlecode.totallylazy.Strings;
+import com.googlecode.totallylazy.Uri;
 import org.antlr.stringtemplate.StringTemplate;
+import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import java.net.URI;
+import java.net.URL;
 import java.util.Date;
 
 import static com.googlecode.funclate.LinkRenderer.toLink;
@@ -16,6 +20,7 @@ import static com.googlecode.totallylazy.time.Dates.date;
 import static junit.framework.Assert.fail;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 
 public class EnhancedStringTemplateGroupTest {
     @Test
@@ -112,6 +117,17 @@ public class EnhancedStringTemplateGroupTest {
         } catch (IllegalArgumentException e){
             assertThat(e.getMessage(), is("Please call 'registerRenderer(instanceOf(Date.class), renderer)' or 'registerRenderer(instanceOf(Date.class), 'format', renderer)'"));
         }
+    }
+
+    @Test
+    public void supportsTemplatesFromParentGroup() throws Exception {
+        EnhancedStringTemplateGroup shared = new EnhancedStringTemplateGroup(SharedTemplateClass.class);
+        
+        EnhancedStringTemplateGroup templateGroup = new EnhancedStringTemplateGroup(getClass(), shared);
+
+        assertThat(templateGroup.getInstanceOf("test"), is(notNullValue()));
+        assertThat(templateGroup.getInstanceOf("sharedTemplate"), is(notNullValue()));
+
     }
 
     private Renderer<Object> returns(final String value) {
