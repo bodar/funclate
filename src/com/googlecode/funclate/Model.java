@@ -45,7 +45,7 @@ public class Model {
         return remove(key);
     }
 
-    private <T> T remove(String key) {
+    public <T> T remove(String key) {
         return (T) values.remove(key);
     }
 
