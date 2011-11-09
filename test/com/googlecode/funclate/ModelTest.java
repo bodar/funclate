@@ -12,6 +12,8 @@ import static com.googlecode.totallylazy.matchers.IterableMatcher.hasExactly;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.sameInstance;
 
 public class ModelTest {
     @Test
@@ -19,6 +21,22 @@ public class ModelTest {
         Model model = model().
                 add("key", "value");
         assertThat(model.get("key", String.class), is("value"));
+    }
+
+    @Test
+    public void supportsRemove() throws Exception {
+        Model model = model().
+                add("key", "value");
+        assertThat(model.remove("key", String.class), is("value"));
+    }
+
+    @Test
+    public void supportsCopy() throws Exception {
+        Model model = model().
+                add("key", "value");
+        Model copy = model.copy();
+        assertThat(copy, is(not(sameInstance(model))));
+        assertThat(copy, is(model));
     }
 
     @Test
