@@ -6,6 +6,7 @@ import com.googlecode.totallylazy.Callable2;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Sequences;
 
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -38,6 +39,14 @@ public class Model {
         }
         values.put(key, list);
         return this;
+    }
+
+    public <T> T remove(String key, Class<T> aClass) {
+        return remove(key);
+    }
+
+    private <T> T remove(String key) {
+        return (T) values.remove(key);
     }
 
     public boolean contains(String key) {
@@ -167,5 +176,9 @@ public class Model {
     public static Model parse(String value) {
         Map<String, Object> map = Json.parse(value);
         return fromMap(map);
+    }
+
+    public Model copy() {
+        return fromMap(toMap());
     }
 }
