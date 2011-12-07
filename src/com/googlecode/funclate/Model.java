@@ -41,6 +41,12 @@ public class Model {
         return this;
     }
 
+    public <T> Model set(String name, T value) {
+        values.put(name, value);
+        return this;
+    }
+
+
     public <T> T remove(String key, Class<T> aClass) {
         return remove(key);
     }
