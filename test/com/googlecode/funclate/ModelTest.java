@@ -24,6 +24,13 @@ public class ModelTest {
     }
 
     @Test
+    public void supportsSet() throws Exception {
+        Model model = model().add("key", "value");
+        model.set("key", "foo");
+        assertThat(model.get("key", String.class), is("foo"));
+    }
+
+    @Test
     public void supportsRemove() throws Exception {
         Model model = model().
                 add("key", "value");
