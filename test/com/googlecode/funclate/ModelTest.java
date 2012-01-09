@@ -1,8 +1,8 @@
 package com.googlecode.funclate;
 
 import com.googlecode.totallylazy.Arrays;
-import com.googlecode.totallylazy.records.Keyword;
-import com.googlecode.totallylazy.records.Keywords;
+import com.googlecode.lazyrecords.Keyword;
+import com.googlecode.lazyrecords.Keywords;
 import org.junit.Test;
 
 import java.util.List;
