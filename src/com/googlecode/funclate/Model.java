@@ -1,15 +1,13 @@
 package com.googlecode.funclate;
 
 import com.googlecode.funclate.json.Json;
+import com.googlecode.lazyrecords.Keyword;
 import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Callable2;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Sequences;
-import com.googlecode.lazyrecords.Keyword;
 
-import java.io.FileReader;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;

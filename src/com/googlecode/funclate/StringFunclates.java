@@ -25,7 +25,7 @@ public class StringFunclates extends CompositeFunclate{
             String template = Strings.toString(templateUri.toURL().openStream());
             return new StringFunclate(template, this);
         } catch (IOException e) {
-            throw new LazyException(e);
+            throw LazyException.lazyException(e);
         }
     }
 }
