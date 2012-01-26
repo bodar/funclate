@@ -9,7 +9,7 @@ import com.googlecode.totallylazy.Sequences;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -19,7 +19,7 @@ import static com.googlecode.totallylazy.Sequences.sequence;
 
 @SuppressWarnings("unchecked")
 public class Model {
-    private final Map<String, Object> values = new HashMap<String, Object>();
+    private final Map<String, Object> values = new LinkedHashMap<String, Object>();
 
     public static Model model() {
         return new Model();
@@ -119,7 +119,7 @@ public class Model {
     }
 
     public Map<String, Object> toMap() {
-        Map<String, Object> result = new HashMap<String, Object>();
+        Map<String, Object> result = new LinkedHashMap<String, Object>();
         for (Map.Entry<String, Object> entry : values.entrySet()) {
             result.put(entry.getKey(), toValue(entry.getValue()));
         }
