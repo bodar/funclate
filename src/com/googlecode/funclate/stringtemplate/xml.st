@@ -1,0 +1,1 @@
+$entries: { entry | $entry.value: {value | <$entry.key$>$value$</$entry.key$>}$}$
