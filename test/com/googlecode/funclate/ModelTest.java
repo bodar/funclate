@@ -1,8 +1,6 @@
 package com.googlecode.funclate;
 
 import com.googlecode.totallylazy.Arrays;
-import com.googlecode.totallylazy.records.Keyword;
-import com.googlecode.totallylazy.records.Keywords;
 import org.junit.Test;
 
 import java.util.List;
@@ -18,19 +16,6 @@ import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.sameInstance;
 
 public class ModelTest {
-    @Test
-    public void supportsKeywords() throws Exception {
-        Keyword<String> key = Keywords.keyword("key", String.class);
-        Model model = model().add(key, "one");
-        assertThat(model.get(key), is("one"));
-        model.add(key, "two");
-        assertThat(model.getValues(key), hasExactly("one", "two"));
-        model.set(key, "bar");
-        assertThat(model.get(key), is("bar"));
-        assertThat(model.remove(key), is("bar"));
-        assertThat(model.contains(key), is(false));
-    }
-
     @Test
     public void supportsSingleValues() throws Exception {
         Model model = model().

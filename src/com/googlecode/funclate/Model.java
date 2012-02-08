@@ -6,11 +6,9 @@ import com.googlecode.totallylazy.Callable2;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Sequences;
 
-import java.io.FileReader;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -20,14 +18,10 @@ import static com.googlecode.totallylazy.Sequences.sequence;
 
 @SuppressWarnings("unchecked")
 public class Model {
-    private final Map<String, Object> values = new HashMap<String, Object>();
+    private final Map<String, Object> values = new LinkedHashMap<String, Object>();
 
     public static Model model() {
         return new Model();
-    }
-
-    public <T> Model add(Keyword<T> keyword, T value) {
-        return add(keyword.name(), value);
     }
 
     public <T> Model add(String key, T value) {
@@ -45,17 +39,9 @@ public class Model {
         return this;
     }
 
-    public <T> Model set(Keyword<T> keyword, T value) {
-        return set(keyword.name(), value);
-    }
-
     public <T> Model set(String name, T value) {
         values.put(name, value);
         return this;
-    }
-
-    public <T> T remove(Keyword<T> key) {
-        return remove(key.name());
     }
 
     public <T> T remove(String key, Class<T> aClass) {
@@ -66,20 +52,12 @@ public class Model {
         return (T) values.remove(key);
     }
 
-    public boolean contains(Keyword<?> keyword) {
-        return contains(keyword.name());
-    }
-
     public boolean contains(String key) {
         return values.containsKey(key);
     }
 
     public <T> T get(String key, Class<T> aClass) {
         return this.<T>get(key);
-    }
-
-    public <T> T get(Keyword<T> keyword) {
-        return get(keyword.name());
     }
 
     public <T> T get(String key) {
@@ -92,10 +70,6 @@ public class Model {
 
     public <T> List<T> getValues(String key, Class<T> aClass) {
         return this.<T>getValues(key);
-    }
-
-    public <T> List<T> getValues(Keyword<T> keyword) {
-        return getValues(keyword.name());
     }
 
     public <T> List<T> getValues(String key) {
@@ -120,7 +94,7 @@ public class Model {
     }
 
     public Map<String, Object> toMap() {
-        Map<String, Object> result = new HashMap<String, Object>();
+        Map<String, Object> result = new LinkedHashMap<String, Object>();
         for (Map.Entry<String, Object> entry : values.entrySet()) {
             result.put(entry.getKey(), toValue(entry.getValue()));
         }
