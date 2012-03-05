@@ -96,6 +96,11 @@ public class EnhancedStringTemplateGroup extends StringTemplateGroup {
     }
 
     @Override
+    public EnhancedStringTemplate createStringTemplate() {
+        return new EnhancedStringTemplate();
+    }
+
+    @Override
     public AttributeRenderer getAttributeRenderer(Class attributeClassType) {
         return new RendererAdapter(funclate);
     }
