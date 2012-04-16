@@ -1,16 +1,22 @@
 package com.googlecode.funclate;
 
+import com.googlecode.funclate.json.Json;
 import com.googlecode.totallylazy.Arrays;
+import com.googlecode.totallylazy.Sequences;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static com.googlecode.funclate.Model.model;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.matchers.IterableMatcher.hasExactly;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.sameInstance;
@@ -119,4 +125,28 @@ public class ModelTest {
         Model result = Model.parse(serialized);
         assertThat(result, is(original));
     }
+
+    @Test
+    public void shouldPreserveOrdering() throws Exception {
+        Model original = model().
+                add("1", "1").add("2", "2").add("2", "3");
+
+        Set<Map.Entry<String,Object>> entries = original.entries();
+        Iterator<Map.Entry<String, Object>> iterator = entries.iterator();
+        Map.Entry<String, Object> first = iterator.next();
+        Map.Entry<String, Object> second = iterator.next();
+        assertThat(first.getKey(), is("1"));
+        assertThat(first.getValue(), equalTo((Object) "1"));
+        assertThat(second.getKey(), is("2"));
+        assertThat(second.getValue(), equalTo((Object)new ArrayList<String>(Arrays.list("2", "3"))));
+    }
+
+    @Test
+    public void shouldPreserveOrderingWhenConvertingToJson() throws Exception {
+        Model original = model().
+                add("2", "2").add("2", "3").add("1", "1");
+
+        assertThat(original, equalTo(Model.parse(Json.toJson(original))));
+    }
+
 }
