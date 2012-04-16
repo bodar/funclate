@@ -25,7 +25,7 @@ public class Json {
     }
 
     public static  String quote(String value) {
-        return format("\"%s\"", value.replace("\"", "\\\""));
+        return format("\"%s\"", value.replace("\\", "\\\\").replace("\"", "\\\""));
     }
 
     public static String toPair(Object key, Object value) {

@@ -50,6 +50,15 @@ public class JsonTest {
     }
 
     @Test
+    public void shouldPreserveNewLineCharacters() throws Exception {
+
+        String result = Json.toJson(model().add("text", "this is \\n a test"));
+        Map<String, Object> parsed = Json.parse(result);
+        assertThat((String) parsed.get("text"), is("this is \\n a test"));
+    }
+
+
+    @Test
     public void handlesQuotedText() throws Exception {
         String result = Json.toJson(model().add("text", "He said \"Hello\" then ..."));
 

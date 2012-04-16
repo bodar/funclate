@@ -176,8 +176,8 @@ public class Model {
         return value;
     }
 
-    public static Model parse(String value) {
-        Map<String, Object> map = Json.parse(value);
+    public static Model parse(String json) {
+        Map<String, Object> map = Json.parse(json);
         return fromMap(map);
     }
 
