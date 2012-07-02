@@ -33,11 +33,11 @@ public class Json {
     }
 
     public static  String toArray(Iterable values) {
-        return sequence(values).map(toJson()).toString("[", SEPARATOR, "]", Integer.MAX_VALUE);
+        return sequence(values).map(toJson()).toString("[", SEPARATOR, "]");
     }
 
     public static  String toObjectLiteral(Map map) {
-        return sequence(map.entrySet()).map(asString()).toString("{", SEPARATOR, "}", Integer.MAX_VALUE);
+        return sequence(map.entrySet()).map(asString()).toString("{", SEPARATOR, "}");
     }
 
     public static Callable1<? super Map.Entry, String> asString() {
