@@ -21,6 +21,6 @@ public class Template implements Renderer<Map<String, Object>> {
             public Object call(Renderer<Map<String, Object>> renderer) throws Exception {
                 return renderer.render(map);
             }
-        }).toString(Strings.EMPTY, Strings.EMPTY, Strings.EMPTY, Integer.MAX_VALUE);
+        }).toString(Strings.EMPTY);
     }
 }
