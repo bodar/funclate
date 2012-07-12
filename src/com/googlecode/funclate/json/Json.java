@@ -1,5 +1,6 @@
 package com.googlecode.funclate.json;
 
+import com.googlecode.funclate.Model;
 import com.googlecode.funclate.json.grammar.Grammar;
 import com.googlecode.totallylazy.Callable1;
 
@@ -12,16 +13,12 @@ public class Json {
     public static final String SEPARATOR = ",";
 
     public static  String toJson(Object value) {
-        if (value instanceof String) {
-            return quote((String) value);
-        }
-        if (value instanceof Map) {
-            return toObjectLiteral((Map) value);
-        }
-        if (value instanceof Iterable) {
-            return toArray((Iterable) value);
-        }
-        return String.valueOf(value);
+        if (value instanceof String) return quote((String) value);
+        if (value instanceof Map) return toObjectLiteral((Map) value);
+        if (value instanceof Iterable) return toArray((Iterable) value);
+        if (value instanceof Number) return String.valueOf(value);
+        if (value instanceof Model) return String.valueOf(value);
+        return quote(String.valueOf(value));
     }
 
     public static  String quote(String value) {
