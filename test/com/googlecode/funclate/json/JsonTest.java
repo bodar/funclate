@@ -1,6 +1,8 @@
 package com.googlecode.funclate.json;
 
 import com.googlecode.funclate.Model;
+import com.googlecode.totallylazy.Randoms;
+import com.googlecode.totallylazy.Uri;
 import org.junit.Test;
 
 import java.math.BigDecimal;
@@ -29,7 +31,6 @@ public class JsonTest {
 
     @Test
     public void correctlyRendersAndParsesIntegersAndText() throws Exception {
-
         Model model = model().
                 add("root", model().
                         add("child", BigDecimal.valueOf(1)).
@@ -42,6 +43,22 @@ public class JsonTest {
                 is("{\"root\":{\"child\":[1,-5,\"text\"]}}"));
 
         assertThat(Json.parse(json), is(model.toMap()));
+    }
+
+    @Test
+    public void handlesOtherDataType() throws Exception {
+        String json = Json.toJson(model().add("uri", Uri.uri("http://code.google.com/p/funclate/")));
+
+        assertThat(json, is("{\"uri\":\"http://code.google.com/p/funclate/\"}"));
+    }
+
+    @Test
+    public void handlesNumbers() throws Exception {
+        Integer number = Randoms.integers().head();
+
+        String json = Json.toJson(model().add("number", number));
+
+        assertThat(json, is("{\"number\":" + number + "}"));
     }
 
     @Test
@@ -59,7 +76,6 @@ public class JsonTest {
 
     @Test
     public void shouldPreserveNewLineCharacters() throws Exception {
-
         String result = Json.toJson(model().add("text", "this is \\n a test"));
         Map<String, Object> parsed = Json.parse(result);
         assertThat((String) parsed.get("text"), is("this is \\n a test"));
@@ -73,6 +89,6 @@ public class JsonTest {
         assertThat(result, is("{\"text\":\"He said \\\"Hello\\\" then ...\"}"));
 
         Map<String, Object> parsed = Json.parse(result);
-        assertThat((String)parsed.get("text"), is("He said \"Hello\" then ..."));
+        assertThat((String) parsed.get("text"), is("He said \"Hello\" then ..."));
     }
 }
