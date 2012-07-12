@@ -16,6 +16,7 @@ public class Json {
         if (value instanceof String) return quote((String) value);
         if (value instanceof Map) return toObjectLiteral((Map) value);
         if (value instanceof Iterable) return toArray((Iterable) value);
+        if (value instanceof Boolean) return String.valueOf(value);
         if (value instanceof Number) return String.valueOf(value);
         if (value instanceof Model) return String.valueOf(value);
         return quote(String.valueOf(value));
