@@ -33,6 +33,7 @@ public class GrammarTest {
     public void canParseNumber() throws Exception {
         assertThat(Grammar.NUMBER.parse("12"), NumberMatcher.is(12));
         assertThat(Grammar.NUMBER.parse("12.1"), NumberMatcher.is(12.1));
+        assertThat(Grammar.NUMBER.parse("-12"), NumberMatcher.is(-12));
     }
 
     @Test

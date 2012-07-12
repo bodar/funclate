@@ -1,7 +1,9 @@
 package com.googlecode.funclate.json;
 
+import com.googlecode.funclate.Model;
 import org.junit.Test;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 import static com.googlecode.funclate.Model.model;
@@ -26,14 +28,20 @@ public class JsonTest {
     }
 
     @Test
-    public void correctlyRendersIntegersAndText() throws Exception {
-        String result = Json.toJson(model().
-                add("root", model().
-                        add("child", 1).
-                        add("child", "text")));
+    public void correctlyRendersAndParsesIntegersAndText() throws Exception {
 
-        assertThat(result,
-                is("{\"root\":{\"child\":[1,\"text\"]}}"));
+        Model model = model().
+                add("root", model().
+                        add("child", BigDecimal.valueOf(1)).
+                        add("child", BigDecimal.valueOf(-5)).
+                        add("child", "text"));
+
+        String json = Json.toJson(model);
+
+        assertThat(json,
+                is("{\"root\":{\"child\":[1,-5,\"text\"]}}"));
+
+        assertThat(Json.parse(json), is(model.toMap()));
     }
 
     @Test
