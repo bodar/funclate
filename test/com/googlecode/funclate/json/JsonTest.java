@@ -62,6 +62,12 @@ public class JsonTest {
     }
 
     @Test
+    public void handlesBooleans() throws Exception {
+        assertThat(Json.toJson(model().add("Boolean", Boolean.TRUE)), is("{\"Boolean\":true}"));
+        assertThat(Json.toJson(model().add("boolean", false)), is("{\"boolean\":false}"));
+    }
+
+    @Test
     public void correctlyRendersAModel() throws Exception {
         String result = Json.toJson(model().
                 add("root", model().
