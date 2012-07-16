@@ -13,16 +13,17 @@ public class Json {
     public static final String SEPARATOR = ",";
 
     public static  String toJson(Object value) {
+        if(value == null) return String.valueOf(value);
         if (value instanceof String) return quote((String) value);
         if (value instanceof Map) return toObjectLiteral((Map) value);
         if (value instanceof Iterable) return toArray((Iterable) value);
         if (value instanceof Boolean) return String.valueOf(value);
         if (value instanceof Number) return String.valueOf(value);
         if (value instanceof Model) return String.valueOf(value);
-        return quote(String.valueOf(value));
+        return quote(String.valueOf(value));    
     }
 
-    public static  String quote(String value) {
+    public static String quote(String value) {
         return format("\"%s\"", value.replace("\\", "\\\\").replace("\"", "\\\""));
     }
 
