@@ -97,4 +97,10 @@ public class JsonTest {
         Map<String, Object> parsed = Json.parse(result);
         assertThat((String) parsed.get("text"), is("He said \"Hello\" then ..."));
     }
+
+    @Test
+    public void handlesNulls() throws Exception {
+        Model model = model().add("nullValue", null);
+        assertThat(Json.toJson(model), is("{\"nullValue\":null}"));
+    }
 }
