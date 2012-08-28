@@ -1,13 +1,11 @@
 package com.googlecode.funclate;
 
-import com.googlecode.funclate.json.Json;
 import com.googlecode.totallylazy.Callable1;
-import com.googlecode.totallylazy.Function2;
+import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Sequences;
 import com.googlecode.totallylazy.collections.ImmutableMap;
-import com.googlecode.totallylazy.collections.ImmutableSortedMap;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,9 +14,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static com.googlecode.funclate.Model.immutable.toModel;
 import static com.googlecode.funclate.json.Json.toJson;
 import static com.googlecode.totallylazy.Predicates.is;
 import static com.googlecode.totallylazy.Sequences.sequence;
+import static com.googlecode.totallylazy.collections.ImmutableSortedMap.constructors.sortedMap;
 
 public class ImmutableModel implements Model {
     private final ImmutableMap<String, Object> values;
@@ -28,7 +28,7 @@ public class ImmutableModel implements Model {
     }
 
     static ImmutableModel model(Iterable<? extends Pair<String, Object>> values) {
-        return new ImmutableModel(ImmutableSortedMap.constructors.sortedMap(values));
+        return new ImmutableModel(sortedMap(values));
     }
 
     public <T> Model add(String key, T value) {
@@ -81,12 +81,16 @@ public class ImmutableModel implements Model {
         return new ImmutableModel(values.put(name, value));
     }
 
-    public <T> Pair<Model, T> remove(String key, Class<T> aClass) {
+    public <T> Pair<Model, Option<T>> remove(String key, Class<T> aClass) {
         return remove(key);
     }
 
-    public <T> Pair<Model, T> remove(String key) {
-        return Pair.<Model, T>pair(new ImmutableModel(values.remove(key)), this.<T>get(key));
+    public <T> Pair<Model, Option<T>> remove(String key) {
+        return ImmutableMap.methods.<String, T, ImmutableMap>remove(values, key).map(toModel());
+    }
+
+    public ImmutableModel map(Callable1<? super Object, ?> callable) {
+        return new ImmutableModel(values.map(callable));
     }
 
     public boolean contains(String key) {
@@ -94,7 +98,7 @@ public class ImmutableModel implements Model {
     }
 
     public Model copy() {
-        return fromMap(toMap());
+        return Model.immutable.fromMap(toMap());
     }
 
     public Map<String, Object> toMap() {
@@ -144,31 +148,5 @@ public class ImmutableModel implements Model {
 
     protected Sequence myFields() {
         return sequence(entries());
-    }
-
-    public static Model fromMap(Map<String, Object> map) {
-        return sequence(map.entrySet()).fold(immutable.model(), new Function2<Model, Map.Entry<String, Object>, Model>() {
-            public Model call(Model model, Map.Entry<String, Object> entry) throws Exception {
-                return model.add(entry.getKey(), convert(entry.getValue()));
-            }
-        });
-    }
-
-    private static Object convert(final Object value) {
-        if (value instanceof Map) {
-            return fromMap((Map<String, Object>) value);
-        }
-        if (value instanceof List) {
-            return sequence((List<Object>) value).map(new Callable1<Object, Object>() {
-                public Object call(Object o) throws Exception {
-                    return convert(o);
-                }
-            }).toList();
-        }
-        return value;
-    }
-
-    public static Model parse(String json) {
-        return fromMap(Json.parse(json));
     }
 }

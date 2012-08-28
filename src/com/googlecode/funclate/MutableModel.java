@@ -1,12 +1,11 @@
 package com.googlecode.funclate;
 
-import com.googlecode.funclate.json.Json;
 import com.googlecode.totallylazy.Callable1;
-import com.googlecode.totallylazy.Function2;
+import com.googlecode.totallylazy.Maps;
+import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Sequences;
-import com.googlecode.totallylazy.collections.ImmutableSortedMap;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,7 +26,7 @@ public class MutableModel implements Model {
     }
 
     static MutableModel model(Iterable<? extends Pair<String, Object>> values) {
-        return new MutableModel(ImmutableSortedMap.constructors.sortedMap(values).toMap());
+        return new MutableModel(Maps.map(values));
     }
 
     public <T> Model add(String key, T value) {
@@ -50,14 +49,17 @@ public class MutableModel implements Model {
         return this;
     }
 
-    public <T> Pair<Model, T> remove(String key, Class<T> aClass) {
+    public <T> Pair<Model, Option<T>> remove(String key, Class<T> aClass) {
         return remove(key);
     }
 
-    public <T> Pair<Model, T> remove(String key) {
-        return Pair.<Model, T>pair(this, (T) values.remove(key));
+    public <T> Pair<Model, Option<T>> remove(String key) {
+        return Pair.<Model, Option<T>>pair(this, Option.<T>option((T) values.remove(key)));
     }
 
+    public Model map(Callable1<? super Object, ?> callable) {
+        return new MutableModel(Maps.mapValues(values, callable));
+    }
 
     public boolean contains(String key) {
         return values.containsKey(key);
@@ -162,32 +164,6 @@ public class MutableModel implements Model {
     }
 
     public Model copy() {
-        return fromMap(toMap());
-    }
-
-    public static Model fromMap(Map<String, Object> map) {
-        return sequence(map.entrySet()).fold(mutable.model(), new Function2<Model, Map.Entry<String, Object>, Model>() {
-            public Model call(Model model, Map.Entry<String, Object> entry) throws Exception {
-                return model.add(entry.getKey(), convert(entry.getValue()));
-            }
-        });
-    }
-
-    private static Object convert(final Object value) {
-        if (value instanceof Map) {
-            return fromMap((Map<String, Object>) value);
-        }
-        if (value instanceof List) {
-            return sequence((List<Object>) value).map(new Callable1<Object, Object>() {
-                public Object call(Object o) throws Exception {
-                    return convert(o);
-                }
-            }).toList();
-        }
-        return value;
-    }
-
-    public static Model parse(String json) {
-        return fromMap(Json.parse(json));
+        return Model.mutable.fromMap(toMap());
     }
 }

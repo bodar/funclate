@@ -1,14 +1,18 @@
 package com.googlecode.funclate;
 
 import com.googlecode.totallylazy.Arrays;
+import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
+import org.hamcrest.MatcherAssert;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static com.googlecode.totallylazy.Option.some;
 import static com.googlecode.totallylazy.Sequences.one;
 import static com.googlecode.totallylazy.matchers.IterableMatcher.hasExactly;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -19,9 +23,23 @@ import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.sameInstance;
 
 abstract public class ModelContract {
-    protected abstract Model createModel();
+    private Model createModel() {
+        return modelFactory().create();
+    }
 
-    protected abstract Model createModel(Iterable<Pair<String, Object>> values);
+    private Model createModel(Iterable<Pair<String, Object>> values) {
+        return modelFactory().create(values);
+    }
+
+    private Model fromMap(Map<String, Object> root) {
+        return modelFactory().create(root);
+    }
+
+    private Model parse(String serialized) {
+        return modelFactory().create(serialized);
+    }
+
+    protected abstract ModelFactory modelFactory();
 
     @Test
     public void supportsSingleValues() throws Exception {
@@ -94,8 +112,61 @@ abstract public class ModelContract {
         final Model model = createModel(one(Pair.<String, Object>pair("key", "value")));
         model.remove("key");
         model.add("key", "value");
-        final Pair<Model, String> value = Pair.<Model, String>pair(createModel(), "value");
-        final Pair<Model, String> key = model.remove("key", String.class);
+        final Pair<Model, Option<String>> value = Pair.pair(createModel(), some("value"));
+        final Pair<Model, Option<String>> key = model.remove("key", String.class);
         assertThat(key, is(value));
+    }
+
+    @Test
+    public void shouldPreserveListOrderingWhenConvertingToJson() throws Exception {
+        Model original = createModel().
+                add("2", "3").add("2", "2");
+
+        MatcherAssert.assertThat(original.toString(), equalTo("{\"2\":[\"3\",\"2\"]}"));
+    }
+
+    @Test
+    public void canConvertToAMap() throws Exception {
+        Model original = createModel().
+                add("users", createModel().
+                        add("user", createModel().
+                                add("name", "Dan").
+                                add("tel", "34567890")).
+                        add("user", createModel().
+                                add("name", "Mat").
+                                add("tel", "978532")));
+
+        Map<String, Object> root = original.toMap();
+        Map<String, Object> users = (Map<String, Object>) root.get("users");
+        List<Map<String, Object>> user = (List<Map<String, Object>>) users.get("user");
+
+        Map<String, Object> dan = user.get(0);
+        MatcherAssert.assertThat((String) dan.get("name"), is("Dan"));
+        MatcherAssert.assertThat((String) dan.get("tel"), is("34567890"));
+
+        Map<String, Object> mat = user.get(1);
+        MatcherAssert.assertThat((String) mat.get("name"), is("Mat"));
+        MatcherAssert.assertThat((String) mat.get("tel"), is("978532"));
+
+        // reverse it
+
+        Model reversed = fromMap(root);
+        MatcherAssert.assertThat(reversed, is(original));
+    }
+
+    @Test
+    public void supportsConvertingToStringAndBack() throws Exception {
+        Model original = createModel().
+                add("users", createModel().
+                        add("user", createModel().
+                                add("name", "Dan").
+                                add("tel", "34567890")).
+                        add("user", createModel().
+                                add("name", "Mat").
+                                add("tel", "978532")));
+
+        String serialized = original.toString();
+        Model result = parse(serialized);
+        MatcherAssert.assertThat(result, is(original));
     }
 }

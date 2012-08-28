@@ -1,9 +1,13 @@
 package com.googlecode.funclate;
 
+import com.googlecode.funclate.json.Json;
+import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Function2;
+import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
-import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Sequences;
+import com.googlecode.totallylazy.collections.ImmutableMap;
 
 import java.util.List;
 import java.util.Map;
@@ -32,38 +36,95 @@ public interface Model {
 
     Set<Map.Entry<String, Object>> entries();
 
-    <T> Pair<Model, T> remove(String key, Class<T> aClass);
+    <T> Pair<Model, Option<T>> remove(String key, Class<T> aClass);
 
-    <T> Pair<Model, T> remove(String key);
+    <T> Pair<Model, Option<T>> remove(String key);
 
-    public static final class mutable {
-        private mutable() {
-        }
+    Model map(Callable1<? super Object, ?> callable);
+
+    enum mutable implements ModelFactory {
+        instance;
 
         public static Model model() {
-            return MutableModel.model(Sequences.<Pair<String, Object>>empty());
+            return instance.create();
         }
 
         public static Model model(Iterable<? extends Pair<String, Object>> values) {
+            return instance.create(values);
+        }
+
+        public static Model fromMap(Map<String, Object> values) {
+            return instance.create(values);
+        }
+
+        public static Model parse(String json) {
+            return instance.create(json);
+        }
+
+        public Model create() {
+            return create(Sequences.<Pair<String, Object>>empty());
+        }
+
+        public Model create(Iterable<? extends Pair<String, Object>> values) {
             return MutableModel.model(values);
+        }
+
+        public Model create(Map<String, Object> values) {
+            return ModelFactory.methods.fromMap(instance, values);
+        }
+
+        public Model create(String json) {
+            return fromMap(Json.parse(json));
         }
     }
 
-    public static final class immutable {
-        private immutable() {
-        }
+    enum immutable implements ModelFactory {
+        instance;
 
         public static Model model() {
-            return model(Sequences.<Pair<String, Object>>empty());
+            return instance.create();
         }
 
         public static Model model(Iterable<? extends Pair<String, Object>> values) {
+            return instance.create(values);
+        }
+
+        public static Model fromMap(Map<String, Object> values) {
+            return instance.create(values);
+        }
+
+        public static Model parse(String json) {
+            return instance.create(json);
+        }
+
+        public static Function1<ImmutableMap<String, Object>, Model> toModel() {
+            return new Function1<ImmutableMap<String, Object>, Model>() {
+                public Model call(ImmutableMap<String, Object> map) throws Exception {
+                    return model(map);
+                }
+            };
+        }
+
+        public Model create() {
+            return create(Sequences.<Pair<String, Object>>empty());
+        }
+
+        public Model create(Iterable<? extends Pair<String, Object>> values) {
             return ImmutableModel.model(values);
+        }
+
+        public Model create(Map<String, Object> values) {
+            return ModelFactory.methods.fromMap(instance, values);
+        }
+
+        public Model create(String json) {
+            return fromMap(Json.parse(json));
         }
     }
 
     public static final class functions {
-        private functions() {}
+        private functions() {
+        }
 
         public static Function2<Model, Pair<String, Object>, Model> updateValues() {
             return new Function2<Model, Pair<String, Object>, Model>() {
@@ -73,4 +134,5 @@ public interface Model {
             };
         }
     }
+
 }
