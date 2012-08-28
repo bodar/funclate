@@ -1,8 +1,8 @@
 package com.googlecode.funclate.stringtemplate;
 
 import com.googlecode.funclate.Model;
+import com.googlecode.funclate.MutableModel;
 import com.googlecode.funclate.Renderer;
-import com.googlecode.totallylazy.Callable1;
 import org.antlr.stringtemplate.StringTemplate;
 
 import static com.googlecode.totallylazy.Predicates.instanceOf;

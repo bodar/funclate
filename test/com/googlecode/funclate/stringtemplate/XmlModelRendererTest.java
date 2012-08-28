@@ -3,7 +3,7 @@ package com.googlecode.funclate.stringtemplate;
 import com.googlecode.totallylazy.Xml;
 import org.junit.Test;
 
-import static com.googlecode.funclate.Model.model;
+import static com.googlecode.funclate.Model.mutable.model;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
@@ -17,6 +17,7 @@ public class XmlModelRendererTest {
         assertThat(Xml.format(Xml.document(result)),
                 is("<root>foo</root>\n"));
     }
+
     @Test
     public void correctlyRendersAModel() throws Exception {
         XmlModelRenderer renderer = new XmlModelRenderer();
@@ -28,11 +29,11 @@ public class XmlModelRendererTest {
 
         assertThat(Xml.format(Xml.document(result)),
                 is(
-                "<root>\n" +
-                "    <foo>bar</foo>\n" +
-                "    <foo>\n" +
-                "        <baz>lo</baz>\n" +
-                "    </foo>\n" +
-                "</root>\n"));
+                        "<root>\n" +
+                                "    <foo>bar</foo>\n" +
+                                "    <foo>\n" +
+                                "        <baz>lo</baz>\n" +
+                                "    </foo>\n" +
+                                "</root>\n"));
     }
 }

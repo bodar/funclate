@@ -7,7 +7,6 @@ import java.util.Map;
 import static com.googlecode.totallylazy.Sequences.sequence;
 
 public class Models {
-
     public static Callable2<Model, Model, Model> merge() {
         return new Callable2<Model, Model, Model>() {
             public Model call(final Model result, Model part) throws Exception {

@@ -1,6 +1,7 @@
 package com.googlecode.funclate.json;
 
 import com.googlecode.funclate.Model;
+import com.googlecode.funclate.MutableModel;
 import com.googlecode.funclate.json.grammar.Grammar;
 import com.googlecode.totallylazy.Callable1;
 

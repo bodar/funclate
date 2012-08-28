@@ -8,7 +8,7 @@ import org.junit.Test;
 import java.math.BigDecimal;
 import java.util.Map;
 
-import static com.googlecode.funclate.Model.model;
+import static com.googlecode.funclate.Model.mutable.model;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
