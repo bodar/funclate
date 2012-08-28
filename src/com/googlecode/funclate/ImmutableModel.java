@@ -108,7 +108,7 @@ public class ImmutableModel implements Model {
     }
 
     public Model copy() {
-        return Model.immutable.fromMap(toMap());
+        return this;
     }
 
     public Map<String, Object> toMap() {

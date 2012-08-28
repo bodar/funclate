@@ -66,7 +66,7 @@ public class MutableModel implements Model {
     }
 
     public <T> T get(String key, Class<T> aClass) {
-        return this.<T>get(key);
+        return this.get(key);
     }
 
     public <T> T get(String key) {
@@ -78,7 +78,7 @@ public class MutableModel implements Model {
     }
 
     public <T> List<T> getValues(String key, Class<T> aClass) {
-        return this.<T>getValues(key);
+        return this.getValues(key);
     }
 
     public <T> List<T> getValues(String key) {
@@ -110,21 +110,9 @@ public class MutableModel implements Model {
         return result;
     }
 
-    public static Callable1<? super Model, Map<String, Object>> asMap() {
-        return new Callable1<Model, Map<String, Object>>() {
-            public Map<String, Object> call(Model model) throws Exception {
-                return model.toMap();
-            }
-        };
-    }
-
     private Object toValue(Object value) {
-        if (value instanceof MutableModel) {
-            return ((MutableModel) value).toMap();
-        }
-        if (value instanceof List) {
-            return Sequences.sequence((List) value).map(toValue()).toList();
-        }
+        if (value instanceof MutableModel) return ((MutableModel) value).toMap();
+        if (value instanceof List) return Sequences.sequence((List) value).map(toValue()).toList();
         return value;
     }
 
