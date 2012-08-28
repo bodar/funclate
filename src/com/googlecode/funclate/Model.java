@@ -7,11 +7,14 @@ import com.googlecode.totallylazy.Function2;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Sequences;
+import com.googlecode.totallylazy.collections.ImmutableList;
 import com.googlecode.totallylazy.collections.ImmutableMap;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import static com.googlecode.totallylazy.Sequences.sequence;
 
 public interface Model {
     <T> Model add(String key, T value);
@@ -76,6 +79,10 @@ public interface Model {
         public Model create(String json) {
             return fromMap(Json.parse(json));
         }
+
+        public Iterable<?> toList(Iterable<?> map) {
+            return sequence(map).toList();
+        }
     }
 
     enum immutable implements ModelFactory {
@@ -119,6 +126,10 @@ public interface Model {
 
         public Model create(String json) {
             return fromMap(Json.parse(json));
+        }
+
+        public Iterable<?> toList(Iterable<?> map) {
+            return ImmutableList.constructors.reverse(map);
         }
     }
 

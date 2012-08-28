@@ -14,6 +14,7 @@ import java.util.Set;
 
 import static com.googlecode.totallylazy.Option.some;
 import static com.googlecode.totallylazy.Sequences.one;
+import static com.googlecode.totallylazy.Unchecked.cast;
 import static com.googlecode.totallylazy.matchers.IterableMatcher.hasExactly;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
@@ -21,6 +22,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.sameInstance;
+import static org.junit.Assert.assertEquals;
 
 abstract public class ModelContract {
     private Model createModel() {
@@ -137,8 +139,8 @@ abstract public class ModelContract {
                                 add("tel", "978532")));
 
         Map<String, Object> root = original.toMap();
-        Map<String, Object> users = (Map<String, Object>) root.get("users");
-        List<Map<String, Object>> user = (List<Map<String, Object>>) users.get("user");
+        Map<String, Object> users = cast(root.get("users"));
+        List<Map<String, Object>> user = cast(users.get("user"));
 
         Map<String, Object> dan = user.get(0);
         MatcherAssert.assertThat((String) dan.get("name"), is("Dan"));
@@ -151,7 +153,7 @@ abstract public class ModelContract {
         // reverse it
 
         Model reversed = fromMap(root);
-        MatcherAssert.assertThat(reversed, is(original));
+        assertEquals(reversed, original);
     }
 
     @Test

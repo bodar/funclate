@@ -19,6 +19,8 @@ public interface ModelFactory {
 
     Model create(String json);
 
+    Iterable<?> toList(Iterable<?> map);
+
     class methods {
         private methods() {
         }
@@ -40,11 +42,11 @@ public interface ModelFactory {
                 return fromMap(factory, (Map<String, Object>) value);
             }
             if (value instanceof List) {
-                return sequence((List<Object>) value).map(new Callable1<Object, Object>() {
+                return factory.toList(sequence((List<Object>) value).map(new Callable1<Object, Object>() {
                     public Object call(Object o) throws Exception {
                         return convert(factory, o);
                     }
-                }).toList();
+                }));
             }
             return value;
         }
