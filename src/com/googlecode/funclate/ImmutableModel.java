@@ -4,11 +4,10 @@ import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Sequence;
-import com.googlecode.totallylazy.Sequences;
+import com.googlecode.totallylazy.Unchecked;
+import com.googlecode.totallylazy.collections.ImmutableList;
 import com.googlecode.totallylazy.collections.ImmutableMap;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,8 +15,11 @@ import java.util.Set;
 
 import static com.googlecode.funclate.Model.immutable.toModel;
 import static com.googlecode.funclate.json.Json.toJson;
-import static com.googlecode.totallylazy.Predicates.is;
 import static com.googlecode.totallylazy.Sequences.sequence;
+import static com.googlecode.totallylazy.Unchecked.cast;
+import static com.googlecode.totallylazy.collections.ImmutableList.constructors.empty;
+import static com.googlecode.totallylazy.collections.ImmutableList.constructors.list;
+import static com.googlecode.totallylazy.collections.ImmutableList.constructors.reverse;
 import static com.googlecode.totallylazy.collections.ImmutableSortedMap.constructors.sortedMap;
 
 public class ImmutableModel implements Model {
@@ -31,50 +33,58 @@ public class ImmutableModel implements Model {
         return new ImmutableModel(sortedMap(values));
     }
 
-    public <T> Model add(String key, T value) {
+    public <T> Model add(String key, T newValue) {
         if (!contains(key)) {
-            return new ImmutableModel(values.put(key, value));
+            if (newValue instanceof List) return new ImmutableModel(values.put(key, listToImmutableList(newValue)));
+            return new ImmutableModel(values.put(key, newValue));
         }
-        List list = new ArrayList(getValues(key, value.getClass()));
-        if (value instanceof List) {
-            list.addAll((List) value);
+
+        ImmutableList<T> existingValues = values(key);
+        if (newValue instanceof List) {
+            final ImmutableList<T> reverse = listToImmutableList(newValue);
+            existingValues = reverse.joinTo(existingValues);
         } else {
-            list.add(value);
+            existingValues = existingValues.cons(newValue);
         }
-        return new ImmutableModel(values.put(key, list));
+        return new ImmutableModel(values.put(key, existingValues));
+    }
+
+    private <T> ImmutableList<T> listToImmutableList(T newValue) {
+        return reverse(Unchecked.<List<T>>cast(newValue));
     }
 
     public <T> T get(String key, Class<T> aClass) {
-        return this.<T>get(key);
+        return this.get(key);
     }
 
     public <T> T get(String key) {
-        T t = (T) values.get(key).getOrNull();
-        if (t instanceof List) {
-            return (T) ((List) t).get(0);
-        }
+        T t = this.<T>object(key).getOrNull();
+        if (t instanceof ImmutableList) return (sequence(Unchecked.<ImmutableList<T>>cast(t))).last();
         return t;
     }
 
     public <T> List<T> getValues(String key, Class<T> aClass) {
-        return this.<T>getValues(key);
+        return this.getValues(key);
     }
 
     public <T> List<T> getValues(String key) {
-        final Object value = getObject(key);
-        if (value == null) {
-            return Collections.emptyList();
-        }
-        if (value instanceof List) {
-            return (List) value;
-        }
-        return new ArrayList() {{
-            add(value);
-        }};
+        return this.<T>values(key).toSequence().reverse().toList();
+    }
+
+    public <T> ImmutableList<T> values(String key) {
+        Option<T> value = object(key);
+        if (value.isEmpty()) return empty();
+        final T t = value.get();
+        if (t instanceof ImmutableList) return cast(t);
+        return list(t);
     }
 
     public <T> T getObject(String key) {
-        return (T) values.get(key).getOrNull();
+        return this.<T>object(key).getOrNull();
+    }
+
+    private <T> Option<T> object(String key) {
+        return cast(values.get(key));
     }
 
     public <T> Model set(String name, T value) {
@@ -94,7 +104,7 @@ public class ImmutableModel implements Model {
     }
 
     public boolean contains(String key) {
-        return !values.filterKeys(is(key)).isEmpty();
+        return values.contains(key);
     }
 
     public Model copy() {
@@ -103,8 +113,8 @@ public class ImmutableModel implements Model {
 
     public Map<String, Object> toMap() {
         Map<String, Object> result = new LinkedHashMap<String, Object>();
-        for (Map.Entry<String, Object> entry : entries()) {
-            result.put(entry.getKey(), toValue(entry.getValue()));
+        for (Pair<String, Object> entry : values) {
+            result.put(entry.first(), toValue(entry.second()));
         }
         return result;
     }
@@ -113,14 +123,14 @@ public class ImmutableModel implements Model {
         if (value instanceof ImmutableModel) {
             return ((ImmutableModel) value).toMap();
         }
-        if (value instanceof List) {
-            return Sequences.sequence((List) value).map(toValue()).toList();
+        if (value instanceof ImmutableList) {
+            return sequence(Unchecked.<ImmutableList<Object>>cast(value)).map(toValue()).reverse().toList();
         }
         return value;
     }
 
-    private Callable1 toValue() {
-        return new Callable1() {
+    private Callable1<Object, Object> toValue() {
+        return new Callable1<Object, Object>() {
             public Object call(Object o) throws Exception {
                 return toValue(o);
             }
@@ -128,7 +138,7 @@ public class ImmutableModel implements Model {
     }
 
     public Set<Map.Entry<String, Object>> entries() {
-        return values.toMap().entrySet();
+        return toMap().entrySet();
     }
 
     @Override
@@ -147,6 +157,6 @@ public class ImmutableModel implements Model {
     }
 
     protected Sequence myFields() {
-        return sequence(entries());
+        return sequence(values);
     }
 }
