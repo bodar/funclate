@@ -2,9 +2,7 @@ package com.googlecode.funclate;
 
 import org.junit.Test;
 
-import java.util.Arrays;
-
-import static com.googlecode.funclate.Model.model;
+import static com.googlecode.funclate.Model.mutable.model;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.is;
@@ -18,7 +16,7 @@ public class ModelsTest {
         Model b = model().add("bFirst", "bFirstValue").add("bSecond", "bSecondValue");
 
         Model expected = model().add("aFirst", "aFirstValue").add("aSecond", "aSecondValue").add("bFirst", "bFirstValue").add("bSecond", "bSecondValue");
-        
+
         assertThat(sequence(a, b).reduce(Models.merge()), is(expected));
     }
 

@@ -2,6 +2,7 @@ package com.googlecode.funclate.stringtemplate;
 
 import com.googlecode.funclate.CompositeFunclate;
 import com.googlecode.funclate.Model;
+import com.googlecode.funclate.MutableModel;
 import com.googlecode.funclate.Renderer;
 import org.antlr.stringtemplate.StringTemplateGroup;
 
