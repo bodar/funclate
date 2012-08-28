@@ -124,14 +124,6 @@ public class MutableModel implements Model {
         };
     }
 
-    public static <T> Callable1<? super Model, T> value(final String key, final Class<T> aClass) {
-        return new Callable1<Model, T>() {
-            public T call(Model model) throws Exception {
-                return model.get(key, aClass);
-            }
-        };
-    }
-
     @Override
     public String toString() {
         return toJson(this.toMap());
