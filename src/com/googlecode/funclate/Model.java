@@ -133,10 +133,7 @@ public interface Model {
         }
     }
 
-    public static final class functions {
-        private functions() {
-        }
-
+    class functions {
         public static Function2<Model, Pair<String, Object>, Model> updateValues() {
             return new Function2<Model, Pair<String, Object>, Model>() {
                 public Model call(Model model, Pair<String, Object> value) throws Exception {
@@ -145,13 +142,22 @@ public interface Model {
             };
         }
 
-        public static Callable1<? super Model, Map<String, Object>> asMap() {
-            return new Callable1<Model, Map<String, Object>>() {
-                public Map<String, Object> call(Model model) throws Exception {
-                    return model.toMap();
+        public static final Function1<Model,Map<String,Object>> toMap = new Function1<Model, Map<String, Object>>() {
+            public Map<String, Object> call(Model model) throws Exception {
+                return model.toMap();
+            }
+        };
+
+        public static Function1<? super Model, Map<String, Object>> asMap() {
+            return toMap;
+        }
+
+        public static <T> Function1<? super Model, T> value(final String key, final Class<T> aClass) {
+            return new Function1<Model, T>() {
+                public T call(Model model) throws Exception {
+                    return model.get(key, aClass);
                 }
             };
         }
     }
-
 }
