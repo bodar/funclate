@@ -20,24 +20,22 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertEquals;
 
 abstract public class ModelContract {
-    private Model createModel() {
+    protected Model createModel() {
         return modelFactory().create();
     }
 
-    private Model createModel(Iterable<Pair<String, Object>> values) {
+    protected Model createModel(Iterable<Pair<String, Object>> values) {
         return modelFactory().create(values);
     }
 
-    private Model fromMap(Map<String, Object> root) {
+    protected Model fromMap(Map<String, Object> root) {
         return modelFactory().create(root);
     }
 
-    private Model parse(String serialized) {
+    protected Model parse(String serialized) {
         return modelFactory().create(serialized);
     }
 
@@ -54,15 +52,6 @@ abstract public class ModelContract {
     public void supportsSet() throws Exception {
         Model model = createModel().add("key", "value").set("key", "foo");
         assertThat(model.get("key", String.class), is("foo"));
-    }
-
-    @Test
-    public void supportsCopy() throws Exception {
-        Model model = createModel().
-                add("key", "value");
-        Model copy = model.copy();
-        assertThat(copy, is(not(sameInstance(model))));
-        assertThat(copy, is(model));
     }
 
     @Test
