@@ -29,8 +29,6 @@ public interface Model {
 
     <T> List<T> getValues(String key);
 
-    <T> T getObject(String key);
-
     boolean contains(String key);
 
     Model copy();
@@ -56,7 +54,7 @@ public interface Model {
             return instance.create(values);
         }
 
-        public static Model fromMap(Map<String, Object> values) {
+        public static Model model(Map<String, Object> values) {
             return instance.create(values);
         }
 
@@ -73,11 +71,11 @@ public interface Model {
         }
 
         public Model create(Map<String, Object> values) {
-            return ModelFactory.methods.fromMap(instance, values);
+            return methods.fromMap(instance, values);
         }
 
         public Model create(String json) {
-            return fromMap(Json.parse(json));
+            return model(Json.parse(json));
         }
 
         public Iterable<?> toList(Iterable<?> map) {
@@ -96,7 +94,7 @@ public interface Model {
             return instance.create(values);
         }
 
-        public static Model fromMap(Map<String, Object> values) {
+        public static Model model(Map<String, Object> values) {
             return instance.create(values);
         }
 
@@ -121,11 +119,11 @@ public interface Model {
         }
 
         public Model create(Map<String, Object> values) {
-            return ModelFactory.methods.fromMap(instance, values);
+            return methods.fromMap(instance, values);
         }
 
         public Model create(String json) {
-            return fromMap(Json.parse(json));
+            return model(Json.parse(json));
         }
 
         public Iterable<?> toList(Iterable<?> map) {
@@ -142,7 +140,7 @@ public interface Model {
             };
         }
 
-        public static final Function1<Model,Map<String,Object>> toMap = new Function1<Model, Map<String, Object>>() {
+        public static final Function1<Model, Map<String, Object>> toMap = new Function1<Model, Map<String, Object>>() {
             public Map<String, Object> call(Model model) throws Exception {
                 return model.toMap();
             }
@@ -158,6 +156,14 @@ public interface Model {
                     return model.get(key, aClass);
                 }
             };
+        }
+
+        public static Model toImmutableModel(Model model) {
+            return immutable.model(model.toMap());
+        }
+
+        public static Model toMutableModel(Model model) {
+            return mutable.model(model.toMap());
         }
     }
 }
