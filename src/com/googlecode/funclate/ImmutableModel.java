@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static com.googlecode.funclate.Model.immutable.toModel;
+import static com.googlecode.funclate.Model.immutable.*;
 import static com.googlecode.funclate.json.Json.toJson;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Unchecked.cast;
@@ -79,10 +79,6 @@ public class ImmutableModel implements Model {
         return list(t);
     }
 
-    public <T> T getObject(String key) {
-        return this.<T>object(key).getOrNull();
-    }
-
     private <T> Option<T> object(String key) {
         return cast(values.get(key));
     }
@@ -99,7 +95,7 @@ public class ImmutableModel implements Model {
         return ImmutableMap.methods.<String, T, ImmutableMap>remove(values, key).map(toModel());
     }
 
-    public ImmutableModel map(Callable1<? super Object, ?> callable) {
+    public ImmutableModel map(Callable1<? super Object, ? extends Object> callable) {
         return new ImmutableModel(values.map(callable));
     }
 

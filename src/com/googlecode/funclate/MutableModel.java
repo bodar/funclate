@@ -94,7 +94,7 @@ public class MutableModel implements Model {
         }};
     }
 
-    public <T> T getObject(String key) {
+    private <T> T getObject(String key) {
         return (T) values.get(key);
     }
 
@@ -144,6 +144,6 @@ public class MutableModel implements Model {
     }
 
     public Model copy() {
-        return Model.mutable.fromMap(toMap());
+        return Model.mutable.model(toMap());
     }
 }
