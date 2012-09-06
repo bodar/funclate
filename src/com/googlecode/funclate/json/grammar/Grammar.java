@@ -13,19 +13,12 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import static com.googlecode.funclate.Grammars.ws;
+import static com.googlecode.funclate.Grammars.wsChar;
 import static com.googlecode.lazyparsec.Scanners.isChar;
 import static com.googlecode.lazyparsec.Scanners.string;
 
 public class Grammar {
-    public static final Parser<Void> IGNORE_WHITESPACE = isChar(CharacterPredicates.IS_WHITESPACE).skipMany();
-
-    private static Parser<Void> wsChar(final char character) {
-        return ws(isChar(character));
-    }
-
-    private static <T> Parser<T> ws(final Parser<T> parser) {
-        return Parsers.between(IGNORE_WHITESPACE, parser, IGNORE_WHITESPACE);
-    }
 
     public static final Parser<Void> NULL = string("null");
 

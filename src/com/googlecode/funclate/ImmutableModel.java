@@ -95,7 +95,7 @@ public class ImmutableModel implements Model {
         return ImmutableMap.methods.<String, T, ImmutableMap>remove(values, key).map(toModel());
     }
 
-    public ImmutableModel map(Callable1<? super Object, ? extends Object> callable) {
+    public ImmutableModel map(Callable1<? super Object, ?> callable) {
         return new ImmutableModel(values.map(callable));
     }
 

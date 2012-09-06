@@ -1,6 +1,8 @@
 package com.googlecode.funclate;
 
 import com.googlecode.funclate.parser.Grammar;
+import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Predicates;
 
 import java.util.Map;
 
@@ -16,6 +18,16 @@ public class StringFunclate extends CompositeFunclate {
         super(parent);
         add(instanceOf(Map.class), Grammar.TEMPLATE(this).parse(template));
         add(instanceOf(Model.class), new ModelRenderer(this));
+//        add("if", instanceOf(Map.class), ifElse());
+    }
+
+    private Callable1<Map<String, String>, String> ifElse() {
+        return new Callable1<Map<String, String>, String>() {
+            @Override
+            public String call(Map<String, String> arguments) throws Exception {
+                return "TODO";
+            }
+        };
     }
 
     public static class ModelRenderer implements Renderer<Model> {
