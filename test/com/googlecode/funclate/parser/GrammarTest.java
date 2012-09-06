@@ -26,12 +26,26 @@ public class GrammarTest {
     }
 
     @Test
-    public void canParseTemplateCall() throws Exception {
+    public void canParseNoArgumentTemplateCall() throws Exception {
         TemplateCall noArguments = Grammar.TEMPLATE_CALL(new CompositeFunclate()).parse("$template()$");
         assertThat(noArguments.name(), is("template"));
-        TemplateCall templateCall = Grammar.TEMPLATE_CALL(new CompositeFunclate()).parse("$template(foo=bar)$");
-        assertThat(templateCall.name(), is("template"));
-        assertThat(templateCall.arguments().get("foo"), is("bar"));
+    }
+
+    @Test
+    public void canParseTemplateCallWithNamedParameters() throws Exception {
+        TemplateCall namedArguments = Grammar.TEMPLATE_CALL(new CompositeFunclate()).parse("$template(foo=bar, baz=dan)$");
+        assertThat(namedArguments.name(), is("template"));
+        assertThat(namedArguments.arguments().get("foo"), is("bar"));
+        assertThat(namedArguments.arguments().get("baz"), is("dan"));
+    }
+
+    @Test
+    public void canParseTemplateCallImplicitParameters() throws Exception {
+        TemplateCall unnamed = Grammar.TEMPLATE_CALL(new CompositeFunclate()).parse("$template(foo, bar, baz)$");
+        assertThat(unnamed.name(), is("template"));
+        assertThat(unnamed.arguments().get("0"), is("foo"));
+        assertThat(unnamed.arguments().get("1"), is("bar"));
+        assertThat(unnamed.arguments().get("2"), is("baz"));
     }
 
     @Test
