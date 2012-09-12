@@ -4,6 +4,7 @@ import com.googlecode.funclate.Model;
 import com.googlecode.funclate.MutableModel;
 import com.googlecode.funclate.json.grammar.Grammar;
 import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Function1;
 
 import java.util.Map;
 
@@ -48,6 +49,7 @@ public class Json {
         };
     }
 
+    @Deprecated //use functions.toJson() removed after version 182
     public static Callable1<Object, String> toJson() {
         return new Callable1<Object, String>() {
             public String call(Object value) throws Exception {
@@ -58,5 +60,23 @@ public class Json {
 
     public static Map<String, Object> parse(String json) {
         return Grammar.OBJECT.parse(json);
+    }
+
+    public class functions {
+        public Function1<String, Map<String, Object>> parse() {
+            return new Function1<String, Map<String, Object>>() {
+                public Map<String, Object> call(String json) throws Exception {
+                    return Json.parse(json);
+                }
+            };
+        }
+
+        public Function1<Object, String> toJson() {
+            return new Function1<Object, String>() {
+                public String call(Object value) throws Exception {
+                    return Json.toJson(value);
+                }
+            };
+        }
     }
 }
