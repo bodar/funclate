@@ -99,6 +99,19 @@ public class JsonTest {
     }
 
     @Test
+    public void handlesSpecialCharacters() throws Exception {
+        String result = Json.toJson(model().add("text", "first line\n second line λ"));
+
+        assertThat(result, is("{\"text\":\"first line\\n second line λ\"}"));
+
+        Map<String, Object> parsed = Json.parse(result);
+        assertThat((String) parsed.get("text"), is("first line\n second line λ"));
+
+        Map<String, Object> parsedWithUnicode = Json.parse("{\"text\":\"first line\\n second line \\u03BB\"}");
+        assertThat((String) parsedWithUnicode.get("text"), is("first line\n second line λ"));
+    }
+
+    @Test
     public void handlesNulls() throws Exception {
         Model model = model().add("nullValue", null);
         assertThat(Json.toJson(model), is("{\"nullValue\":null}"));
