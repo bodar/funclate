@@ -5,18 +5,22 @@ import com.googlecode.lazyparsec.Parsers;
 import com.googlecode.lazyparsec.Scanners;
 import com.googlecode.lazyparsec.pattern.CharacterPredicates;
 import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Maps;
 import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Triple;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import static com.googlecode.funclate.Grammars.ws;
 import static com.googlecode.funclate.Grammars.wsChar;
+import static com.googlecode.lazyparsec.Scanners.among;
 import static com.googlecode.lazyparsec.Scanners.isChar;
 import static com.googlecode.lazyparsec.Scanners.string;
+import static com.googlecode.totallylazy.Sequences.sequence;
+import static java.lang.Integer.parseInt;
 
 public class Grammar {
 
@@ -28,15 +32,38 @@ public class Grammar {
         }
     });
 
-    public static final Parser<String> STRING = Scanners.DOUBLE_QUOTE_STRING.map(new Callable1<String, String>() {
-        public String call(String withQuotes) {
-            return unescape(withQuotes.substring(1, withQuotes.length() - 1));
-        }
-    });
+    public static final Predicate<Character> UNICODE_CHARACTER = CharacterPredicates.notAmong("\"\\");
 
-    private static final Pattern removeDoubleSlash = Pattern.compile("\\\\(.)");
-    private static String unescape(String value) {
-        return removeDoubleSlash.matcher(value).replaceAll("$1");
+    public static final Parser<String> ESCAPED_CHARACTER = isChar('\\').followedBy(among("\"\\/bfnrt").
+            or(isChar('u').followedBy(isChar(CharacterPredicates.IS_HEX_DIGIT).times(4)))).source();
+
+    public static final Parser<String> STRING = isChar(UNICODE_CHARACTER).source().
+            or(ESCAPED_CHARACTER.map(unescape())).many().map(join()).between(isChar('"'), isChar('"'));
+
+    private static Function1<List<String>, String> join() {
+        return new Function1<List<String>, String>() {
+            public String call(List<String> strings) throws Exception {
+                return sequence(strings).toString("");
+            }
+        };
+    }
+
+    private static Function1<String, String> unescape() {
+        return new Function1<String, String>() {
+            public String call(String escaped) throws Exception {
+                switch (escaped.charAt(1)) {
+                    case '"': return "\"";
+                    case '\\': return "\\";
+                    case '/': return "/";
+                    case 'b': return "\b";
+                    case 'n': return "\n";
+                    case 'r': return "\r";
+                    case 't': return "\t";
+                    case 'u': return Character.toString((char) parseInt(escaped.substring(2), 16));
+                    default: throw new UnsupportedOperationException();
+                }
+            }
+        };
     }
 
     public static final Parser<Number> NUMBER = Scanners.DECIMAL.map(new Callable1<String, Number>() {
