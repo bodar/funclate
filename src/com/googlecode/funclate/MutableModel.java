@@ -92,7 +92,7 @@ public class MutableModel implements Model {
 
     public <T> List<T> getValues(String key) {
         final Object value = getObject(key);
-        if (value == null) return Collections.emptyList();
+        if (value == null) return new ArrayList<T>();
         if (value instanceof List) return new ArrayList<T>((List) value);
         return new ArrayList() {{ add(value); }};
     }

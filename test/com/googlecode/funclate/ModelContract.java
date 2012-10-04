@@ -104,6 +104,12 @@ abstract public class ModelContract {
     }
 
     @Test
+    public void canModifyEmptyListInModel() throws Exception {
+        Model model = createModel();
+        model.getValues("key", String.class).add("foo");
+    }
+
+    @Test
     public void multiValuesCanBeRetrievedAsTheFirstValue() throws Exception {
         Model model = createModel().
                 add("key", "one").
