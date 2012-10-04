@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static com.googlecode.funclate.Model.immutable.*;
+import static com.googlecode.funclate.Model.immutable.toModel;
 import static com.googlecode.funclate.json.Json.toJson;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Unchecked.cast;
@@ -33,23 +33,27 @@ public class ImmutableModel implements Model {
         return new ImmutableModel(sortedMap(values));
     }
 
-    public <T> Model add(String key, T newValue) {
-        if (!contains(key)) {
-            if (newValue instanceof List) return new ImmutableModel(values.put(key, listToImmutableList(newValue)));
-            return new ImmutableModel(values.put(key, newValue));
-        }
+    public <T> Model add(String key, T rawValue) {
+        Object value = lift(rawValue);
+
+        if (!contains(key)) return new ImmutableModel(values.put(key, value));
 
         ImmutableList<T> existingValues = values(key);
-        if (newValue instanceof List) {
-            final ImmutableList<T> reverse = listToImmutableList(newValue);
-            existingValues = reverse.joinTo(existingValues);
+        if (value instanceof ImmutableList) {
+            existingValues = Unchecked.<ImmutableList<T>>cast(value).joinTo(existingValues);
         } else {
-            existingValues = existingValues.cons(newValue);
+            existingValues = existingValues.cons(Unchecked.<T>cast(value));
         }
         return new ImmutableModel(values.put(key, existingValues));
     }
 
-    private <T> ImmutableList<T> listToImmutableList(T newValue) {
+    private <T> Object lift(T value) {
+        if (value instanceof List) return listToImmutableList(value);
+        if (value instanceof Sequence) return Unchecked.<Sequence<T>>cast(value).toImmutableList();
+        return value;
+    }
+
+    private <T> ImmutableList<T> listToImmutableList(Object newValue) {
         return reverse(Unchecked.<List<T>>cast(newValue));
     }
 

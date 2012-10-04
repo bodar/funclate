@@ -6,6 +6,7 @@ import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Sequences;
+import com.googlecode.totallylazy.collections.ImmutableList;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,12 +30,14 @@ public class MutableModel implements Model {
         return new MutableModel(Maps.map(values));
     }
 
-    public <T> Model add(String key, T value) {
+    public <T> Model add(String key, T rawValue) {
+        Object value = lift(rawValue);
+
         if (!contains(key)) {
             values.put(key, value);
             return this;
         }
-        List list = new ArrayList(getValues(key, value.getClass()));
+        List list = getValues(key, value.getClass());
         if (value instanceof List) {
             list.addAll((List) value);
         } else {
@@ -42,6 +45,12 @@ public class MutableModel implements Model {
         }
         values.put(key, list);
         return this;
+    }
+
+    private <T> Object lift(T value) {
+        if (value instanceof Sequence) return ((Sequence) value).toList();
+        if (value instanceof ImmutableList) return ((ImmutableList) value).toList();
+        return value;
     }
 
     public <T> Model set(String name, T value) {
@@ -83,15 +92,9 @@ public class MutableModel implements Model {
 
     public <T> List<T> getValues(String key) {
         final Object value = getObject(key);
-        if (value == null) {
-            return Collections.emptyList();
-        }
-        if (value instanceof List) {
-            return (List) value;
-        }
-        return new ArrayList() {{
-            add(value);
-        }};
+        if (value == null) return Collections.emptyList();
+        if (value instanceof List) return new ArrayList<T>((List) value);
+        return new ArrayList() {{ add(value); }};
     }
 
     private <T> T getObject(String key) {

@@ -9,6 +9,7 @@ import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Sequences;
 import com.googlecode.totallylazy.collections.ImmutableList;
 import com.googlecode.totallylazy.collections.ImmutableMap;
+import com.googlecode.totallylazy.predicates.LogicalPredicate;
 
 import java.util.List;
 import java.util.Map;
@@ -164,6 +165,17 @@ public interface Model {
 
         public static Model toMutableModel(Model model) {
             return mutable.model(model.toMap());
+        }
+    }
+
+    class predicates {
+        public static LogicalPredicate<Model> contains(final String key) {
+            return new LogicalPredicate<Model>() {
+                @Override
+                public boolean matches(Model model) {
+                    return model.contains(key);
+                }
+            };
         }
     }
 }

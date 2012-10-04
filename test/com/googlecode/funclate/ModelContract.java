@@ -14,12 +14,16 @@ import java.util.Set;
 
 import static com.googlecode.totallylazy.Option.some;
 import static com.googlecode.totallylazy.Sequences.one;
+import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Unchecked.cast;
+import static com.googlecode.totallylazy.collections.ImmutableList.constructors.list;
 import static com.googlecode.totallylazy.matchers.IterableMatcher.hasExactly;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertEquals;
 
 abstract public class ModelContract {
@@ -73,6 +77,30 @@ abstract public class ModelContract {
                 add("key", Arrays.list("one")).
                 add("key", Arrays.list("two"));
         assertThat(model.getValues("key", String.class), hasExactly("one", "two"));
+    }
+
+    @Test
+    public void supportsSequenceMultiValues() throws Exception {
+        Model model = createModel().
+                add("key", sequence("one")).
+                add("key", sequence("two"));
+        assertThat(model.getValues("key", String.class), hasExactly("one", "two"));
+    }
+
+    @Test
+    public void supportsImmuableListMultiValues() throws Exception {
+        Model model = createModel().
+                add("key", list("one")).
+                add("key", list("two"));
+        assertThat(model.getValues("key", String.class), hasExactly("one", "two"));
+    }
+
+    @Test
+    public void alwaysReturnsACopyOfValues() throws Exception {
+        List<String> value = java.util.Arrays.asList("one", "two");
+        Model model = createModel().
+                add("key", value);
+        assertThat(model.getValues("key", String.class), not(sameInstance(value)));
     }
 
     @Test
