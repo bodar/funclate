@@ -35,10 +35,10 @@ public class Grammar {
     public static final Predicate<Character> UNICODE_CHARACTER = CharacterPredicates.notAmong("\"\\");
 
     public static final Parser<String> ESCAPED_CHARACTER = isChar('\\').followedBy(among("\"\\/bfnrt").
-            or(isChar('u').followedBy(isChar(CharacterPredicates.IS_HEX_DIGIT).times(4)))).source();
+            or(isChar('u').followedBy(isChar(CharacterPredicates.IS_HEX_DIGIT).times(4)))).source().map(unescape());
 
     public static final Parser<String> STRING = isChar(UNICODE_CHARACTER).source().
-            or(ESCAPED_CHARACTER.map(unescape())).many().map(join()).between(isChar('"'), isChar('"'));
+            or(ESCAPED_CHARACTER).many().map(join()).between(isChar('"'), isChar('"'));
 
     private static Function1<List<String>, String> join() {
         return new Function1<List<String>, String>() {
@@ -59,6 +59,7 @@ public class Grammar {
                     case 'n': return "\n";
                     case 'r': return "\r";
                     case 't': return "\t";
+                    case 'f': return "\f";
                     case 'u': return Character.toString((char) parseInt(escaped.substring(2), 16));
                     default: throw new UnsupportedOperationException();
                 }

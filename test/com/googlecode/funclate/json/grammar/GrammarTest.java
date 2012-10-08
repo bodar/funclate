@@ -14,15 +14,15 @@ import static org.hamcrest.Matchers.nullValue;
 public class GrammarTest {
     @Test
     public void canHandleEscapedCharacters() {
-        assertThat(Grammar.ESCAPED_CHARACTER.parse("\\\""), is("\\\""));
-        assertThat(Grammar.ESCAPED_CHARACTER.parse("\\\\"), is("\\\\"));
-        assertThat(Grammar.ESCAPED_CHARACTER.parse("\\/"), is("\\/"));
-        assertThat(Grammar.ESCAPED_CHARACTER.parse("\\b"), is("\\b"));
-        assertThat(Grammar.ESCAPED_CHARACTER.parse("\\f"), is("\\f"));
-        assertThat(Grammar.ESCAPED_CHARACTER.parse("\\n"), is("\\n"));
-        assertThat(Grammar.ESCAPED_CHARACTER.parse("\\r"), is("\\r"));
-        assertThat(Grammar.ESCAPED_CHARACTER.parse("\\t"), is("\\t"));
-        assertThat(Grammar.ESCAPED_CHARACTER.parse("\\u03BB"), is("\\u03BB"));
+        assertThat(Grammar.ESCAPED_CHARACTER.parse("\\\""), is("\""));
+        assertThat(Grammar.ESCAPED_CHARACTER.parse("\\\\"), is("\\"));
+        assertThat(Grammar.ESCAPED_CHARACTER.parse("\\/"), is("/"));
+        assertThat(Grammar.ESCAPED_CHARACTER.parse("\\b"), is("\b"));
+        assertThat(Grammar.ESCAPED_CHARACTER.parse("\\f"), is("\f"));
+        assertThat(Grammar.ESCAPED_CHARACTER.parse("\\n"), is("\n"));
+        assertThat(Grammar.ESCAPED_CHARACTER.parse("\\r"), is("\r"));
+        assertThat(Grammar.ESCAPED_CHARACTER.parse("\\t"), is("\t"));
+        assertThat(Grammar.ESCAPED_CHARACTER.parse("\\u03BB"), is("λ"));
     }
 
     @Test
@@ -45,8 +45,8 @@ public class GrammarTest {
 
     @Test
     public void canParseString() throws Exception {
-//        assertThat(Grammar.STRING.parse("\"Word\""), is("Word"));
-//        assertThat(Grammar.STRING.parse("\"This is some \\\" random string\""), is("This is some \" random string"));
+        assertThat(Grammar.STRING.parse("\"Word\""), is("Word"));
+        assertThat(Grammar.STRING.parse("\"This is some \\\" random string\""), is("This is some \" random string"));
         assertThat(Grammar.STRING.parse("\"Text with unicode \\u03BB\""), is("Text with unicode λ"));
     }
 
