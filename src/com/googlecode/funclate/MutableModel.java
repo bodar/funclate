@@ -9,13 +9,13 @@ import com.googlecode.totallylazy.Sequences;
 import com.googlecode.totallylazy.collections.ImmutableList;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import static com.googlecode.funclate.json.Json.toJson;
+import static com.googlecode.totallylazy.Option.option;
 import static com.googlecode.totallylazy.Sequences.sequence;
 
 @SuppressWarnings("unchecked")
@@ -84,6 +84,16 @@ public class MutableModel implements Model {
             return (T) ((List) t).get(0);
         }
         return t;
+    }
+
+    @Override
+    public <T> Option<T> getOption(String key, Class<T> aClass) {
+        return getOption(key);
+    }
+
+    @Override
+    public <T> Option<T> getOption(String key) {
+        return option(this.<T>get(key));
     }
 
     public <T> List<T> getValues(String key, Class<T> aClass) {
