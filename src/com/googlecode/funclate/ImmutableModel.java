@@ -62,9 +62,19 @@ public class ImmutableModel implements Model {
     }
 
     public <T> T get(String key) {
-        T t = this.<T>object(key).getOrNull();
+        T t = this.<T>getOption(key).getOrNull();
         if (t instanceof ImmutableList) return (sequence(Unchecked.<ImmutableList<T>>cast(t))).last();
         return t;
+    }
+
+    @Override
+    public <T> Option<T> getOption(String key, Class<T> aClass) {
+        return getOption(key);
+    }
+
+    @Override
+    public <T> Option<T> getOption(String key) {
+        return cast(values.get(key));
     }
 
     public <T> List<T> getValues(String key, Class<T> aClass) {
@@ -76,15 +86,11 @@ public class ImmutableModel implements Model {
     }
 
     public <T> ImmutableList<T> values(String key) {
-        Option<T> value = object(key);
+        Option<T> value = getOption(key);
         if (value.isEmpty()) return empty();
         final T t = value.get();
         if (t instanceof ImmutableList) return cast(t);
         return list(t);
-    }
-
-    private <T> Option<T> object(String key) {
-        return cast(values.get(key));
     }
 
     public <T> Model set(String name, T value) {

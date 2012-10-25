@@ -26,6 +26,10 @@ public interface Model {
 
     <T> T get(String key);
 
+    <T> Option<T> getOption(String key, Class<T> aClass);
+
+    <T> Option<T> getOption(String key);
+
     <T> List<T> getValues(String key, Class<T> aClass);
 
     <T> List<T> getValues(String key);
@@ -43,6 +47,7 @@ public interface Model {
     <T> Pair<Model, Option<T>> remove(String key);
 
     Model map(Callable1<? super Object, ?> callable);
+
 
     enum mutable implements ModelFactory {
         instance;
@@ -173,6 +178,15 @@ public interface Model {
             return new LogicalPredicate<Model>() {
                 @Override
                 public boolean matches(Model model) {
+                    return model.contains(key);
+                }
+            };
+        }
+
+        public static LogicalPredicate<String> in(final Model model) {
+            return new LogicalPredicate<String>() {
+                @Override
+                public boolean matches(String key) {
                     return model.contains(key);
                 }
             };

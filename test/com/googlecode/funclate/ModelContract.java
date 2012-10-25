@@ -53,6 +53,13 @@ abstract public class ModelContract {
     }
 
     @Test
+    public void supportsGetOption() throws Exception {
+        Model model = createModel().
+                add("key", "value");
+        assertThat(model.getOption("key", String.class), is(Option.some("value")));
+    }
+
+    @Test
     public void supportsSet() throws Exception {
         Model model = createModel().add("key", "value").set("key", "foo");
         assertThat(model.get("key", String.class), is("foo"));
