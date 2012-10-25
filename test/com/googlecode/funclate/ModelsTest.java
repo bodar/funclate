@@ -1,14 +1,44 @@
 package com.googlecode.funclate;
 
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.Test;
+
+import java.util.List;
+import java.util.Map;
 
 import static com.googlecode.funclate.Model.mutable.model;
 import static com.googlecode.totallylazy.Sequences.sequence;
+import static com.googlecode.totallylazy.Unchecked.cast;
 import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class ModelsTest {
+    @Test
+    public void canMixModelTypes() throws Exception {
+        Model original = Model.mutable.model().
+                add("users", Model.immutable.model().
+                        add("user", Model.mutable.model().
+                                add("name", "Dan").
+                                add("tel", "34567890")).
+                        add("user", Model.immutable.model().
+                                add("name", "Mat").
+                                add("tel", "978532")));
+
+        Map<String, Object> root = original.toMap();
+        Map<String, Object> users = cast(root.get("users"));
+        List<Map<String, Object>> user = cast(users.get("user"));
+
+        Map<String, Object> dan = user.get(0);
+        MatcherAssert.assertThat((String) dan.get("name"), Matchers.is("Dan"));
+        MatcherAssert.assertThat((String) dan.get("tel"), Matchers.is("34567890"));
+
+        Map<String, Object> mat = user.get(1);
+        MatcherAssert.assertThat((String) mat.get("name"), Matchers.is("Mat"));
+        MatcherAssert.assertThat((String) mat.get("tel"), Matchers.is("978532"));
+    }
+
 
     @Test
     public void mergeDisjunctModels() throws Exception {
