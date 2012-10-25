@@ -8,7 +8,6 @@ import com.googlecode.totallylazy.Unchecked;
 import com.googlecode.totallylazy.collections.ImmutableList;
 import com.googlecode.totallylazy.collections.ImmutableMap;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -118,33 +117,16 @@ public class ImmutableModel implements Model {
     }
 
     public Map<String, Object> toMap() {
-        Map<String, Object> result = new LinkedHashMap<String, Object>();
-        for (Pair<String, Object> entry : values) {
-            result.put(entry.first(), toValue(entry.second()));
-        }
-        return result;
-    }
-
-    private Object toValue(Object value) {
-        if (value instanceof ImmutableModel) {
-            return ((ImmutableModel) value).toMap();
-        }
-        if (value instanceof ImmutableList) {
-            return sequence(Unchecked.<ImmutableList<Object>>cast(value)).map(toValue()).reverse().toList();
-        }
-        return value;
-    }
-
-    private Callable1<Object, Object> toValue() {
-        return new Callable1<Object, Object>() {
-            public Object call(Object o) throws Exception {
-                return toValue(o);
-            }
-        };
+        return Model.methods.toMap(this);
     }
 
     public Set<Map.Entry<String, Object>> entries() {
         return toMap().entrySet();
+    }
+
+    @Override
+    public Iterable<Pair<String, Object>> pairs() {
+        return values;
     }
 
     @Override

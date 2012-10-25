@@ -5,11 +5,9 @@ import com.googlecode.totallylazy.Maps;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Sequence;
-import com.googlecode.totallylazy.Sequences;
 import com.googlecode.totallylazy.collections.ImmutableList;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -115,26 +113,13 @@ public class MutableModel implements Model {
         return values.entrySet();
     }
 
+    @Override
+    public Iterable<Pair<String, Object>> pairs() {
+        return Maps.pairs(values);
+    }
+
     public Map<String, Object> toMap() {
-        Map<String, Object> result = new LinkedHashMap<String, Object>();
-        for (Map.Entry<String, Object> entry : values.entrySet()) {
-            result.put(entry.getKey(), toValue(entry.getValue()));
-        }
-        return result;
-    }
-
-    private Object toValue(Object value) {
-        if (value instanceof MutableModel) return ((MutableModel) value).toMap();
-        if (value instanceof List) return Sequences.sequence((List) value).map(toValue()).toList();
-        return value;
-    }
-
-    private Callable1 toValue() {
-        return new Callable1() {
-            public Object call(Object o) throws Exception {
-                return toValue(o);
-            }
-        };
+        return Model.methods.toMap(this);
     }
 
     @Override

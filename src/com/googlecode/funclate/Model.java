@@ -7,10 +7,12 @@ import com.googlecode.totallylazy.Function2;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Sequences;
+import com.googlecode.totallylazy.Unchecked;
 import com.googlecode.totallylazy.collections.ImmutableList;
 import com.googlecode.totallylazy.collections.ImmutableMap;
 import com.googlecode.totallylazy.predicates.LogicalPredicate;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -41,6 +43,8 @@ public interface Model {
     Map<String, Object> toMap();
 
     Set<Map.Entry<String, Object>> entries();
+
+    Iterable<Pair<String, Object>> pairs();
 
     <T> Pair<Model, Option<T>> remove(String key, Class<T> aClass);
 
@@ -137,6 +141,37 @@ public interface Model {
         }
     }
 
+    class methods {
+        public static Model toImmutableModel(Model model) {
+            return immutable.model(model.toMap());
+        }
+
+        public static Model toMutableModel(Model model) {
+            return mutable.model(model.toMap());
+        }
+
+        public static Map<String, Object> toMap(Model model) {
+            Map<String, Object> result = new LinkedHashMap<String, Object>();
+            for (Pair<String, Object> pair : model.pairs()) {
+                result.put(pair.first(), toValue(pair.second()));
+            }
+            return result;
+        }
+
+        private static Object toValue(Object value) {
+            if (value instanceof Model) return ((Model) value).toMap();
+            if (value instanceof List) return Sequences.sequence((List<?>) value).map(toValue).toList();
+            if (value instanceof ImmutableList) return sequence(Unchecked.<ImmutableList<Object>>cast(value)).map(toValue).reverse().toList();
+            return value;
+        }
+
+        private static final Callable1<Object, Object> toValue = new Callable1<Object, Object>() {
+            public Object call(Object o) throws Exception {
+                return toValue(o);
+            }
+        };
+    }
+
     class functions {
         public static Function2<Model, Pair<String, Object>, Model> updateValues() {
             return new Function2<Model, Pair<String, Object>, Model>() {
@@ -162,14 +197,6 @@ public interface Model {
                     return model.get(key, aClass);
                 }
             };
-        }
-
-        public static Model toImmutableModel(Model model) {
-            return immutable.model(model.toMap());
-        }
-
-        public static Model toMutableModel(Model model) {
-            return mutable.model(model.toMap());
         }
     }
 
