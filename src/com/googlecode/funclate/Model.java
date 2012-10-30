@@ -52,6 +52,8 @@ public interface Model {
 
     Model map(Callable1<? super Object, ?> callable);
 
+    Model merge(Model other);
+
 
     enum mutable implements ModelFactory {
         instance;
@@ -170,6 +172,10 @@ public interface Model {
                 return toValue(o);
             }
         };
+
+        public static Model merge(Model into, Model other) {
+            return sequence(other.pairs()).fold(into, functions.mergeEntry());
+        }
     }
 
     class functions {
@@ -198,6 +204,23 @@ public interface Model {
                 }
             };
         }
+
+        public static Function2<Model, Model, Model> merge() {
+            return new Function2<Model, Model, Model>() {
+                public Model call(final Model result, Model part) throws Exception {
+                    return methods.merge(result, part);
+                }
+            };
+        }
+
+        public static Function2< Model, Pair<String, Object>, Model> mergeEntry() {
+            return new Function2<Model, Pair<String, Object>, Model>() {
+                public Model call(Model model, Pair<String, Object> pair) throws Exception {
+                    return model.add(pair.first(), pair.second());
+                }
+            };
+        }
+
     }
 
     class predicates {
