@@ -68,6 +68,11 @@ public class MutableModel implements Model {
         return new MutableModel(Maps.mapValues(values, callable));
     }
 
+    @Override
+    public Model merge(Model other) {
+        return Model.methods.merge(this, other);
+    }
+
     public boolean contains(String key) {
         return values.containsKey(key);
     }

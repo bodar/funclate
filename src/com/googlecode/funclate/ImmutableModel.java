@@ -108,6 +108,11 @@ public class ImmutableModel implements Model {
         return new ImmutableModel(values.map(callable));
     }
 
+    @Override
+    public Model merge(Model other) {
+        return Model.methods.merge(this, other);
+    }
+
     public boolean contains(String key) {
         return values.contains(key);
     }
