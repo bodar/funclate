@@ -5,7 +5,7 @@ import com.googlecode.totallylazy.Maps;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Sequence;
-import com.googlecode.totallylazy.collections.ImmutableList;
+import com.googlecode.totallylazy.collections.PersistentList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +47,7 @@ public class MutableModel implements Model {
 
     private <T> Object lift(T value) {
         if (value instanceof Sequence) return ((Sequence) value).toList();
-        if (value instanceof ImmutableList) return ((ImmutableList) value).toList();
+        if (value instanceof PersistentList) return ((PersistentList) value).toList();
         return value;
     }
 

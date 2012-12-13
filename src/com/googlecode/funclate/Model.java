@@ -8,8 +8,8 @@ import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Sequences;
 import com.googlecode.totallylazy.Unchecked;
-import com.googlecode.totallylazy.collections.ImmutableList;
-import com.googlecode.totallylazy.collections.ImmutableMap;
+import com.googlecode.totallylazy.collections.PersistentList;
+import com.googlecode.totallylazy.collections.PersistentMap;
 import com.googlecode.totallylazy.predicates.LogicalPredicate;
 
 import java.util.LinkedHashMap;
@@ -114,9 +114,9 @@ public interface Model {
             return instance.create(json);
         }
 
-        public static Function1<ImmutableMap<String, Object>, Model> toModel() {
-            return new Function1<ImmutableMap<String, Object>, Model>() {
-                public Model call(ImmutableMap<String, Object> map) throws Exception {
+        public static Function1<PersistentMap<String, Object>, Model> toModel() {
+            return new Function1<PersistentMap<String, Object>, Model>() {
+                public Model call(PersistentMap<String, Object> map) throws Exception {
                     return model(map);
                 }
             };
@@ -139,12 +139,12 @@ public interface Model {
         }
 
         public Iterable<?> toList(Iterable<?> map) {
-            return ImmutableList.constructors.reverse(map);
+            return PersistentList.constructors.reverse(map);
         }
     }
 
     class methods {
-        public static Model toImmutableModel(Model model) {
+        public static Model toPersistentModel(Model model) {
             return immutable.model(model.toMap());
         }
 
@@ -163,7 +163,7 @@ public interface Model {
         private static Object toValue(Object value) {
             if (value instanceof Model) return ((Model) value).toMap();
             if (value instanceof List) return Sequences.sequence((List<?>) value).map(toValue).toList();
-            if (value instanceof ImmutableList) return sequence(Unchecked.<ImmutableList<Object>>cast(value)).map(toValue).reverse().toList();
+            if (value instanceof PersistentList) return sequence(Unchecked.<PersistentList<Object>>cast(value)).map(toValue).reverse().toList();
             return value;
         }
 

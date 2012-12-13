@@ -5,8 +5,8 @@ import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Unchecked;
-import com.googlecode.totallylazy.collections.ImmutableList;
-import com.googlecode.totallylazy.collections.ImmutableMap;
+import com.googlecode.totallylazy.collections.PersistentList;
+import com.googlecode.totallylazy.collections.PersistentMap;
 
 import java.util.List;
 import java.util.Map;
@@ -16,15 +16,15 @@ import static com.googlecode.funclate.Model.immutable.toModel;
 import static com.googlecode.funclate.json.Json.toJson;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Unchecked.cast;
-import static com.googlecode.totallylazy.collections.ImmutableList.constructors.empty;
-import static com.googlecode.totallylazy.collections.ImmutableList.constructors.list;
-import static com.googlecode.totallylazy.collections.ImmutableList.constructors.reverse;
-import static com.googlecode.totallylazy.collections.ImmutableSortedMap.constructors.sortedMap;
+import static com.googlecode.totallylazy.collections.PersistentList.constructors.empty;
+import static com.googlecode.totallylazy.collections.PersistentList.constructors.list;
+import static com.googlecode.totallylazy.collections.PersistentList.constructors.reverse;
+import static com.googlecode.totallylazy.collections.PersistentSortedMap.constructors.sortedMap;
 
 public class ImmutableModel implements Model {
-    private final ImmutableMap<String, Object> values;
+    private final PersistentMap<String, Object> values;
 
-    private ImmutableModel(ImmutableMap<String, Object> values) {
+    private ImmutableModel(PersistentMap<String, Object> values) {
         this.values = values;
     }
 
@@ -37,9 +37,9 @@ public class ImmutableModel implements Model {
 
         if (!contains(key)) return new ImmutableModel(values.put(key, value));
 
-        ImmutableList<T> existingValues = values(key);
-        if (value instanceof ImmutableList) {
-            existingValues = Unchecked.<ImmutableList<T>>cast(value).joinTo(existingValues);
+        PersistentList<T> existingValues = values(key);
+        if (value instanceof PersistentList) {
+            existingValues = Unchecked.<PersistentList<T>>cast(value).joinTo(existingValues);
         } else {
             existingValues = existingValues.cons(Unchecked.<T>cast(value));
         }
@@ -47,12 +47,12 @@ public class ImmutableModel implements Model {
     }
 
     private <T> Object lift(T value) {
-        if (value instanceof List) return listToImmutableList(value);
-        if (value instanceof Sequence) return Unchecked.<Sequence<T>>cast(value).toImmutableList();
+        if (value instanceof List) return listToPersistentList(value);
+        if (value instanceof Sequence) return Unchecked.<Sequence<T>>cast(value).toPersistentList();
         return value;
     }
 
-    private <T> ImmutableList<T> listToImmutableList(Object newValue) {
+    private <T> PersistentList<T> listToPersistentList(Object newValue) {
         return reverse(Unchecked.<List<T>>cast(newValue));
     }
 
@@ -62,7 +62,7 @@ public class ImmutableModel implements Model {
 
     public <T> T get(String key) {
         T t = this.<T>getOption(key).getOrNull();
-        if (t instanceof ImmutableList) return (sequence(Unchecked.<ImmutableList<T>>cast(t))).last();
+        if (t instanceof PersistentList) return (sequence(Unchecked.<PersistentList<T>>cast(t))).last();
         return t;
     }
 
@@ -84,11 +84,11 @@ public class ImmutableModel implements Model {
         return this.<T>values(key).toSequence().reverse().toList();
     }
 
-    public <T> ImmutableList<T> values(String key) {
+    public <T> PersistentList<T> values(String key) {
         Option<T> value = getOption(key);
         if (value.isEmpty()) return empty();
         final T t = value.get();
-        if (t instanceof ImmutableList) return cast(t);
+        if (t instanceof PersistentList) return cast(t);
         return list(t);
     }
 
@@ -101,7 +101,7 @@ public class ImmutableModel implements Model {
     }
 
     public <T> Pair<Model, Option<T>> remove(String key) {
-        return ImmutableMap.methods.<String, T, ImmutableMap>remove(values, key).map(toModel());
+        return PersistentMap.methods.<String, T, PersistentMap>remove(values, key).map(toModel());
     }
 
     public ImmutableModel map(Callable1<? super Object, ?> callable) {
