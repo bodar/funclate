@@ -1,8 +1,8 @@
 package com.googlecode.funclate;
 
-public class ImmutableModelTest extends ModelContract {
+public class PersistentModelTest extends ModelContract {
     @Override
     protected ModelFactory modelFactory() {
-        return Model.immutable.instance;
+        return Model.persistent.instance;
     }
 }

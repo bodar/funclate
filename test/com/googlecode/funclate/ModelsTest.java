@@ -18,11 +18,11 @@ public class ModelsTest {
     @Test
     public void canMixModelTypes() throws Exception {
         Model original = Model.mutable.model().
-                add("users", Model.immutable.model().
+                add("users", Model.persistent.model().
                         add("user", Model.mutable.model().
                                 add("name", "Dan").
                                 add("tel", "34567890")).
-                        add("user", Model.immutable.model().
+                        add("user", Model.persistent.model().
                                 add("name", "Mat").
                                 add("tel", "978532")));
 

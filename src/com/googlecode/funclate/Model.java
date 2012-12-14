@@ -95,7 +95,7 @@ public interface Model {
         }
     }
 
-    enum immutable implements ModelFactory {
+    enum persistent implements ModelFactory {
         instance;
 
         public static Model model() {
@@ -127,7 +127,7 @@ public interface Model {
         }
 
         public Model create(Iterable<? extends Pair<String, Object>> values) {
-            return ImmutableModel.model(values);
+            return PersistentModel.model(values);
         }
 
         public Model create(Map<String, Object> values) {
@@ -145,7 +145,7 @@ public interface Model {
 
     class methods {
         public static Model toPersistentModel(Model model) {
-            return immutable.model(model.toMap());
+            return persistent.model(model.toMap());
         }
 
         public static Model toMutableModel(Model model) {

@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static com.googlecode.funclate.Model.immutable.toModel;
+import static com.googlecode.funclate.Model.persistent.toModel;
 import static com.googlecode.funclate.json.Json.toJson;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Unchecked.cast;
@@ -21,21 +21,21 @@ import static com.googlecode.totallylazy.collections.PersistentList.constructors
 import static com.googlecode.totallylazy.collections.PersistentList.constructors.reverse;
 import static com.googlecode.totallylazy.collections.PersistentSortedMap.constructors.sortedMap;
 
-public class ImmutableModel implements Model {
+public class PersistentModel implements Model {
     private final PersistentMap<String, Object> values;
 
-    private ImmutableModel(PersistentMap<String, Object> values) {
+    private PersistentModel(PersistentMap<String, Object> values) {
         this.values = values;
     }
 
-    static ImmutableModel model(Iterable<? extends Pair<String, Object>> values) {
-        return new ImmutableModel(sortedMap(values));
+    static PersistentModel model(Iterable<? extends Pair<String, Object>> values) {
+        return new PersistentModel(sortedMap(values));
     }
 
     public <T> Model add(String key, T rawValue) {
         Object value = lift(rawValue);
 
-        if (!contains(key)) return new ImmutableModel(values.put(key, value));
+        if (!contains(key)) return new PersistentModel(values.put(key, value));
 
         PersistentList<T> existingValues = values(key);
         if (value instanceof PersistentList) {
@@ -43,7 +43,7 @@ public class ImmutableModel implements Model {
         } else {
             existingValues = existingValues.cons(Unchecked.<T>cast(value));
         }
-        return new ImmutableModel(values.put(key, existingValues));
+        return new PersistentModel(values.put(key, existingValues));
     }
 
     private <T> Object lift(T value) {
@@ -93,7 +93,7 @@ public class ImmutableModel implements Model {
     }
 
     public <T> Model set(String name, T value) {
-        return new ImmutableModel(values.put(name, value));
+        return new PersistentModel(values.put(name, value));
     }
 
     public <T> Pair<Model, Option<T>> remove(String key, Class<T> aClass) {
@@ -104,8 +104,8 @@ public class ImmutableModel implements Model {
         return PersistentMap.methods.<String, T, PersistentMap>remove(values, key).map(toModel());
     }
 
-    public ImmutableModel map(Callable1<? super Object, ?> callable) {
-        return new ImmutableModel(values.map(callable));
+    public PersistentModel map(Callable1<? super Object, ?> callable) {
+        return new PersistentModel(values.map(callable));
     }
 
     @Override
@@ -141,7 +141,7 @@ public class ImmutableModel implements Model {
 
     @Override
     public final boolean equals(final Object o) {
-        return o instanceof ImmutableModel && myFields().equals(((ImmutableModel) o).myFields());
+        return o instanceof PersistentModel && myFields().equals(((PersistentModel) o).myFields());
     }
 
     @Override
