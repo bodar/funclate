@@ -22,9 +22,6 @@ public interface ModelFactory {
     Iterable<?> toList(Iterable<?> map);
 
     class methods {
-        private methods() {
-        }
-
         public static Model fromMap(ModelFactory factory, Map<String, Object> map) {
             return factory.create(Maps.pairs(map)).map(convert(factory));
         }
@@ -38,16 +35,13 @@ public interface ModelFactory {
         }
 
         private static Object convert(final ModelFactory factory, final Object value) {
-            if (value instanceof Map) {
-                return fromMap(factory, (Map<String, Object>) value);
-            }
-            if (value instanceof List) {
+            if (value instanceof Map) return fromMap(factory, (Map<String, Object>) value);
+            if (value instanceof List)
                 return factory.toList(sequence((List<Object>) value).map(new Callable1<Object, Object>() {
                     public Object call(Object o) throws Exception {
                         return convert(factory, o);
                     }
                 }));
-            }
             return value;
         }
     }
