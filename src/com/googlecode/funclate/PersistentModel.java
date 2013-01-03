@@ -101,7 +101,7 @@ public class PersistentModel implements Model {
     }
 
     public <T> Pair<Model, Option<T>> remove(String key) {
-        return PersistentMap.methods.<String, T, PersistentMap>remove(values, key).map(toModel());
+        return PersistentMap.methods.<String, T, PersistentMap>remove(values, key).map(toModel);
     }
 
     public PersistentModel map(Callable1<? super Object, ?> callable) {

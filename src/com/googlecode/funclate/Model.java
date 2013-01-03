@@ -114,12 +114,14 @@ public interface Model {
             return instance.create(json);
         }
 
+        public static final Function1<PersistentMap<String,Object>,Model> toModel = new Function1<PersistentMap<String, Object>, Model>() {
+            public Model call(PersistentMap<String, Object> map) throws Exception {
+                return model(map);
+            }
+        };
+
         public static Function1<PersistentMap<String, Object>, Model> toModel() {
-            return new Function1<PersistentMap<String, Object>, Model>() {
-                public Model call(PersistentMap<String, Object> map) throws Exception {
-                    return model(map);
-                }
-            };
+            return toModel;
         }
 
         public Model create() {
@@ -174,17 +176,19 @@ public interface Model {
         };
 
         public static Model merge(Model into, Model other) {
-            return sequence(other.pairs()).fold(into, functions.mergeEntry());
+            return sequence(other.pairs()).fold(into, functions.mergeEntry);
         }
     }
 
     class functions {
+        public static final Function2<Model, Pair<String, Object>, Model> updateValues = new Function2<Model, Pair<String, Object>, Model>() {
+            public Model call(Model model, Pair<String, Object> value) throws Exception {
+                return model.set(value.first(), value.second());
+            }
+        };
+
         public static Function2<Model, Pair<String, Object>, Model> updateValues() {
-            return new Function2<Model, Pair<String, Object>, Model>() {
-                public Model call(Model model, Pair<String, Object> value) throws Exception {
-                    return model.set(value.first(), value.second());
-                }
-            };
+            return updateValues;
         }
 
         public static final Function1<Model, Map<String, Object>> toMap = new Function1<Model, Map<String, Object>>() {
@@ -205,20 +209,24 @@ public interface Model {
             };
         }
 
+        public static final Function2<Model,Model,Model> merge = new Function2<Model, Model, Model>() {
+            public Model call(final Model result, Model part) throws Exception {
+                return methods.merge(result, part);
+            }
+        };
+
         public static Function2<Model, Model, Model> merge() {
-            return new Function2<Model, Model, Model>() {
-                public Model call(final Model result, Model part) throws Exception {
-                    return methods.merge(result, part);
-                }
-            };
+            return merge;
         }
 
+        public static final Function2<Model,Pair<String,Object>,Model> mergeEntry = new Function2<Model, Pair<String, Object>, Model>() {
+            public Model call(Model model, Pair<String, Object> pair) throws Exception {
+                return model.add(pair.first(), pair.second());
+            }
+        };
+
         public static Function2< Model, Pair<String, Object>, Model> mergeEntry() {
-            return new Function2<Model, Pair<String, Object>, Model>() {
-                public Model call(Model model, Pair<String, Object> pair) throws Exception {
-                    return model.add(pair.first(), pair.second());
-                }
-            };
+            return mergeEntry;
         }
 
     }
