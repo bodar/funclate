@@ -62,11 +62,11 @@ public interface Model {
             return instance.create();
         }
 
-        public static Model model(Iterable<? extends Pair<String, Object>> values) {
+        public static Model model(Iterable<? extends Pair<String, ? extends Object>> values) {
             return instance.create(values);
         }
 
-        public static Model model(Map<String, Object> values) {
+        public static Model model(Map<String, ? extends Object> values) {
             return instance.create(values);
         }
 
@@ -78,11 +78,11 @@ public interface Model {
             return create(Sequences.<Pair<String, Object>>empty());
         }
 
-        public Model create(Iterable<? extends Pair<String, Object>> values) {
+        public Model create(Iterable<? extends Pair<String, ? extends Object>> values) {
             return MutableModel.model(values);
         }
 
-        public Model create(Map<String, Object> values) {
+        public Model create(Map<String, ? extends Object> values) {
             return methods.fromMap(instance, values);
         }
 
@@ -102,11 +102,11 @@ public interface Model {
             return instance.create();
         }
 
-        public static Model model(Iterable<? extends Pair<String, Object>> values) {
+        public static Model model(Iterable<? extends Pair<String, ? extends Object>> values) {
             return instance.create(values);
         }
 
-        public static Model model(Map<String, Object> values) {
+        public static Model model(Map<String, ? extends Object> values) {
             return instance.create(values);
         }
 
@@ -114,13 +114,13 @@ public interface Model {
             return instance.create(json);
         }
 
-        public static final Function1<PersistentMap<String,Object>,Model> toModel = new Function1<PersistentMap<String, Object>, Model>() {
-            public Model call(PersistentMap<String, Object> map) throws Exception {
+        public static final Function1<PersistentMap<String,? extends Object>,Model> toModel = new Function1<PersistentMap<String, ? extends Object>, Model>() {
+            public Model call(PersistentMap<String, ? extends Object> map) throws Exception {
                 return model(map);
             }
         };
 
-        public static Function1<PersistentMap<String, Object>, Model> toModel() {
+        public static Function1<PersistentMap<String, ? extends Object>, Model> toModel() {
             return toModel;
         }
 
@@ -128,11 +128,11 @@ public interface Model {
             return create(Sequences.<Pair<String, Object>>empty());
         }
 
-        public Model create(Iterable<? extends Pair<String, Object>> values) {
+        public Model create(Iterable<? extends Pair<String, ? extends Object>> values) {
             return PersistentModel.model(values);
         }
 
-        public Model create(Map<String, Object> values) {
+        public Model create(Map<String, ? extends Object> values) {
             return methods.fromMap(instance, values);
         }
 

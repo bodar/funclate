@@ -13,16 +13,16 @@ import static com.googlecode.totallylazy.Sequences.sequence;
 public interface ModelFactory {
     Model create();
 
-    Model create(Iterable<? extends Pair<String, Object>> values);
+    Model create(Iterable<? extends Pair<String, ? extends Object>> values);
 
-    Model create(Map<String, Object> values);
+    Model create(Map<String, ? extends Object> values);
 
     Model create(String json);
 
     Iterable<?> toList(Iterable<?> map);
 
     class methods {
-        public static Model fromMap(ModelFactory factory, Map<String, Object> map) {
+        public static Model fromMap(ModelFactory factory, Map<String, ? extends Object> map) {
             return factory.create(Maps.pairs(map)).map(convert(factory));
         }
 

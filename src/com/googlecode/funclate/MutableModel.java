@@ -24,7 +24,7 @@ public class MutableModel implements Model {
         this.values = values;
     }
 
-    static MutableModel model(Iterable<? extends Pair<String, Object>> values) {
+    static MutableModel model(Iterable<? extends Pair<String, ? extends Object>> values) {
         return new MutableModel(Maps.map(values));
     }
 
