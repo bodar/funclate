@@ -28,8 +28,8 @@ public class PersistentModel implements Model {
         this.values = values;
     }
 
-    static PersistentModel model(Iterable<? extends Pair<String, Object>> values) {
-        return new PersistentModel(sortedMap(values));
+    static PersistentModel model(Iterable<? extends Pair<String, ? extends Object>> values) {
+        return new PersistentModel(sortedMap(Unchecked.<Iterable<Pair<String, Object>>>cast(values)));
     }
 
     public <T> Model add(String key, T rawValue) {
