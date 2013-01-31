@@ -3,14 +3,11 @@ package com.googlecode.funclate;
 import com.googlecode.totallylazy.Arrays;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
+import org.hamcrest.CoreMatchers;
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static com.googlecode.totallylazy.Option.some;
 import static com.googlecode.totallylazy.Sequences.one;
@@ -41,6 +38,10 @@ abstract public class ModelContract {
 
     protected Model parse(String serialized) {
         return modelFactory().create(serialized);
+    }
+
+    protected Model fromProperties(Properties properties) {
+        return modelFactory().create(properties);
     }
 
     protected abstract ModelFactory modelFactory();
@@ -200,5 +201,20 @@ abstract public class ModelContract {
         String serialized = original.toString();
         Model result = parse(serialized);
         MatcherAssert.assertThat(result, is(original));
+    }
+
+    @Test
+    public void canConvertFromProperties() throws Exception {
+        Properties properties = new Properties();
+        properties.setProperty("users.stuart.awesomeness", "extreme");
+        properties.setProperty("users.stuart.shoesize", "10.5");
+        properties.setProperty("users.dan.awesomeness", "mega");
+        properties.setProperty("users.raymond.awesomeness", "totes amazeballs");
+
+        Model model = fromProperties(properties);
+        assertThat(model.get("users", Model.class).get("stuart", Model.class).get("awesomeness", String.class), is("extreme"));
+        assertThat(model.get("users", Model.class).get("stuart", Model.class).get("shoesize", String.class), is("10.5"));
+        assertThat(model.get("users", Model.class).get("dan", Model.class).get("awesomeness", String.class), is("mega"));
+        assertThat(model.get("users", Model.class).get("raymond", Model.class).get("awesomeness", String.class), is("totes amazeballs"));
     }
 }
