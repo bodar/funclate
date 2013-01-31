@@ -12,10 +12,7 @@ import com.googlecode.totallylazy.collections.PersistentList;
 import com.googlecode.totallylazy.collections.PersistentMap;
 import com.googlecode.totallylazy.predicates.LogicalPredicate;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
 
@@ -86,6 +83,11 @@ public interface Model {
             return methods.fromMap(instance, values);
         }
 
+        @Override
+        public Model create(Properties properties) {
+            return methods.fromProperties(instance, properties);
+        }
+
         public Model create(String json) {
             return model(Json.parse(json));
         }
@@ -138,6 +140,11 @@ public interface Model {
 
         public Model create(String json) {
             return model(Json.parse(json));
+        }
+
+        @Override
+        public Model create(Properties properties) {
+            return methods.fromProperties(instance, properties);
         }
 
         public Iterable<?> toList(Iterable<?> map) {
