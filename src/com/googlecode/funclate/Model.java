@@ -1,18 +1,13 @@
 package com.googlecode.funclate;
 
 import com.googlecode.funclate.json.Json;
-import com.googlecode.totallylazy.Callable1;
-import com.googlecode.totallylazy.Function1;
-import com.googlecode.totallylazy.Function2;
-import com.googlecode.totallylazy.Option;
-import com.googlecode.totallylazy.Pair;
-import com.googlecode.totallylazy.Sequences;
-import com.googlecode.totallylazy.Unchecked;
+import com.googlecode.totallylazy.*;
 import com.googlecode.totallylazy.collections.PersistentList;
 import com.googlecode.totallylazy.collections.PersistentMap;
 import com.googlecode.totallylazy.predicates.LogicalPredicate;
 
 import java.util.*;
+import java.util.Properties;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
 
@@ -185,9 +180,46 @@ public interface Model {
         public static Model merge(Model into, Model other) {
             return sequence(other.pairs()).fold(into, functions.mergeEntry);
         }
+
+        public static PersistentModel mergeFlattenChildren(Model into, Model other) {
+            return (PersistentModel) sequence(toPersistentModel(other), toPersistentModel(into)).reduce(functions.mergeFlattenModel);
+        }
     }
 
     class functions {
+
+        private static final Function2<Model, Model, Model> mergeFlattenModel = new Function2<Model, Model, Model>() {
+            @Override
+            public Model call(Model model, Model model2) throws Exception {
+                return sequence(sequence(model2.entries()).map(Maps.<String, Object>entryToPair())).fold(model, mergePairs);
+            }
+        };
+
+        private static final Callable2<? super Model, ? super Pair<String, Object>, ? extends Model> mergePairs = new Callable2<Model, Pair<String, Object>, Model>() {
+            @Override
+            public Model call(Model into, Pair<String, Object> pair) throws Exception {
+                String          otherKey    = pair.first();             // eg "users"
+                Object          otherValue  = pair.second();            // eg PersistentModel
+                List            intoValues  = into.getValues(otherKey); // eg [PersistentModel]
+
+                if (otherValue instanceof Map) {
+                    otherValue = Model.persistent.model((Map)otherValue);
+                }
+                if (otherValue instanceof Model && intoValues.size() == 1 && intoValues.get(0) instanceof Model) {
+                    Object folded = sequence(intoValues).fold(otherValue, mergeFlattenModel);
+                    return into.remove(otherKey).first().set(otherKey, folded);
+                } else if (otherValue instanceof Iterable) {
+                    List others = sequence((Iterable) otherValue).toList();
+                    intoValues.addAll(others);
+                    Model newModel = into.remove(otherKey).first().set(otherKey, intoValues);
+                    return newModel;
+                }
+                return into.add(otherKey, otherValue);
+            }
+        };
+
+
+
         public static final Function2<Model, Pair<String, Object>, Model> updateValues = new Function2<Model, Pair<String, Object>, Model>() {
             public Model call(Model model, Pair<String, Object> value) throws Exception {
                 return model.set(value.first(), value.second());
@@ -221,6 +253,16 @@ public interface Model {
                 return methods.merge(result, part);
             }
         };
+
+        public static final Function2<Model,Model,Model> mergeFlattenChildren = new Function2<Model, Model, Model>() {
+            public Model call(final Model result, Model part) throws Exception {
+                return methods.mergeFlattenChildren(result, part);
+            }
+        };
+
+        public static Function2<Model, Model, Model> mergeFlattenChildren() {
+            return mergeFlattenChildren;
+        }
 
         public static Function2<Model, Model, Model> merge() {
             return merge;
