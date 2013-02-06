@@ -5,22 +5,22 @@ import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.MatcherAssert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.*;
 
+import static com.googlecode.funclate.Model.functions.mergeFlattenChildren;
 import static com.googlecode.totallylazy.Option.some;
 import static com.googlecode.totallylazy.Sequences.one;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Unchecked.cast;
 import static com.googlecode.totallylazy.collections.PersistentList.constructors.list;
 import static com.googlecode.totallylazy.matchers.IterableMatcher.hasExactly;
+import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.sameInstance;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertEquals;
 
 abstract public class ModelContract {
@@ -188,6 +188,246 @@ abstract public class ModelContract {
     }
 
     @Test
+    public void supportsSimpleMerge() throws Exception {
+        Model big = createModel().
+                add("users", createModel().
+                        add("user", createModel().
+                                add("Dan", createModel().
+                                        add("hair", "short")).
+                                add("Ray", createModel().
+                                        add("hair", "none").
+                                        add("accent", "evil"))));
+
+        Model small = createModel().
+                add("users", createModel().
+                        add("user", createModel().
+                                add("Ray", createModel().
+                                        add("eyes", "brown"))));
+
+        Model expected = Model.persistent.model().
+                add("users", Model.persistent.model().
+                        add("user", Model.persistent.model().
+                                add("Dan", Model.persistent.model().
+                                        add("hair", "short")).
+                                add("Ray", Model.persistent.model().
+                                        add("hair", "none").
+                                        add("accent", "evil").
+                                        add("eyes", "brown"))));
+
+        assertThat(Model.methods.mergeFlattenChildren(big, small), is(expected));
+        assertThat(Model.methods.mergeFlattenChildren(small, big), is(expected));
+    }
+
+    @Test
+    public void supportsMergeWith2SameElementsInSameBranch() throws Exception {
+        Model original = createModel().
+                add("users", createModel().
+                        add("user", createModel().
+                                add("name", "Dan").
+                                add("tel", "34567890")).
+                        add("user", createModel().
+                                add("name", "Mat").
+                                add("tel", "978532")));
+        Model second = createModel().
+                add("users", createModel().
+                        add("user", createModel().
+                                add("name", "Alex").
+                                add("dress-sense", "snappy"))
+                );
+        Model expected = Model.persistent.model().
+                add("users", Model.persistent.model()
+                        .add("user", Model.persistent.model().
+                                add("name", "Dan").
+                                add("tel", "34567890"))
+                        .add("user", Model.persistent.model().
+                                add("name", "Mat").
+                                add("tel", "978532"))
+                        .add("user", Model.persistent.model().
+                                add("name", "Alex").
+                                add("dress-sense", "snappy"))
+                );
+        Model actual = Model.methods.mergeFlattenChildren(original, second);
+        assertThat(actual, is(expected));
+
+        expected = Model.persistent.model().
+                add("users", Model.persistent.model()
+                        .add("user", Model.persistent.model().
+                                add("name", "Alex").
+                                add("dress-sense", "snappy"))
+                        .add("user", Model.persistent.model().
+                                add("name", "Dan").
+                                add("tel", "34567890"))
+                        .add("user", Model.persistent.model().
+                                add("name", "Mat").
+                                add("tel", "978532"))
+                        );
+
+        actual = Model.methods.mergeFlattenChildren(second, original);
+        assertThat(actual.toMap(), is(expected.toMap()));
+    }
+
+    @Test
+    public void supportsMergeWithEmptyList() throws Exception {
+        Model original = createModel().
+                add("users", createModel().
+                        add("dev", createModel().
+                                add("name", "Dan").
+                                add("tel", "34567890")));
+        Model second = createModel().
+                add("users", createModel().
+                        add("user", createModel().
+                                add("name", "Alex").
+                                add("dress-sense", "snappy"))
+                );
+        Model expected = Model.persistent.model().
+                add("users", Model.persistent.model()
+                        .add("user", Model.persistent.model().
+                                add("name", "Alex").
+                                add("dress-sense", "snappy"))
+                        .add("dev", Model.persistent.model().
+                                add("name", "Dan").
+                                add("tel", "34567890"))
+                );
+        Model actual = Model.methods.mergeFlattenChildren(original, second);
+        assertThat(actual, is(expected));
+
+        expected = Model.persistent.model().
+                add("users", Model.persistent.model()
+                        .add("dev", Model.persistent.model().
+                                add("name", "Dan").
+                                add("tel", "34567890"))
+                        .add("user", Model.persistent.model().
+                                add("name", "Alex").
+                                add("dress-sense", "snappy"))
+                );
+
+        actual = Model.methods.mergeFlattenChildren(second, original);
+        assertThat(actual, is(expected));
+    }
+
+    @Test
+    public void supportsMergeWithListOfOneElement() throws Exception {
+        Model original = createModel().
+                add("users", createModel().
+                        add("user", createModel().
+                                add("name", "Dan").
+                                add("tel", "34567890")).
+                        add("user", createModel().
+                                add("name", "Mat").
+                                add("tel", "978532")));
+
+        Model second = createModel().
+                add("users", createModel().
+                        add("user", createModel().
+                                add("name", "Alex").
+                                add("dress-sense", "snappy"))
+                        );
+
+        Model expected = Model.persistent.model().
+                add("users", Model.persistent.model()
+                        .add("user", Model.persistent.model().
+                                add("name", "Dan").
+                                add("tel", "34567890"))
+                        .add("user", Model.persistent.model().
+                                add("name", "Mat").
+                                add("tel", "978532"))
+                        .add("user", Model.persistent.model().
+                                add("name", "Alex").
+                                add("dress-sense", "snappy"))
+
+                );
+
+        Model actual = Model.methods.mergeFlattenChildren(original, second);
+        assertThat(actual, is(expected));
+
+
+        expected = Model.persistent.model().
+                add("users", Model.persistent.model().
+                        add("user", Model.persistent.model().
+                                add("name", "Alex").
+                                add("dress-sense", "snappy")).
+                        add("user", Model.persistent.model().
+                                add("name", "Dan").
+                                add("tel", "34567890")).
+                        add("user", Model.persistent.model().
+                                add("name", "Mat").
+                                add("tel", "978532"))
+                );
+
+        actual = Model.methods.mergeFlattenChildren(second, original);
+        assertThat(actual.toMap(), is(expected.toMap()));
+    }
+
+    @Test
+    public void supportsMergeWithList() throws Exception {
+        Model original = createModel().
+                add("users", createModel().
+                        add("user", createModel().
+                                add("name", "Dan").
+                                add("tel", "34567890")).
+                        add("user", createModel().
+                                add("name", "Mat").
+                                add("tel", "978532")));
+
+        Model second = createModel().
+                add("users", createModel().
+                        add("user", createModel().
+                                add("name", "Alex").
+                                add("dress-sense", "snappy")).
+                        add("user", createModel().
+                                add("name", "Stu").
+                                add("tel", "999")));
+
+        Model expected = Model.persistent.model().
+                add("users", Model.persistent.model().
+                        add("user", Model.persistent.model().
+                                add("name", "Dan").
+                                add("tel", "34567890")).
+                        add("user", Model.persistent.model().
+                                add("name", "Mat").
+                                add("tel", "978532")).
+                        add("user", Model.persistent.model().
+                                add("name", "Alex").
+                                add("dress-sense", "snappy")).
+                        add("user", Model.persistent.model().
+                                add("name", "Stu").
+                                add("tel", "999"))
+
+                );
+
+        assertThat(Model.methods.mergeFlattenChildren(original, second).toMap(), is(expected.toMap()));
+
+        expected = Model.persistent.model().
+                add("users", Model.persistent.model()
+                        .add("user", Model.persistent.model().
+                                add("name", "Alex").
+                                add("dress-sense", "snappy"))
+                        .add("user", Model.persistent.model().
+                                add("name", "Stu").
+                                add("tel", "999"))
+                        .add("user", Model.persistent.model().
+                                add("name", "Dan").
+                                add("tel", "34567890"))
+                        .add("user", Model.persistent.model().
+                                add("name", "Mat").
+                                add("tel", "978532"))
+                );
+
+        assertThat(Model.methods.mergeFlattenChildren(second, original).toMap(), is(expected.toMap()));
+    }
+
+
+    @Test
+    @Ignore
+    public void mergeIsCommutative() throws Exception {
+        Model a = createModel().add("sharedKey", createModel().add("aModel", "aSharedValue"));
+        Model c = createModel().add("sharedKey", createModel().add("cModel", "cSharedValue"));
+        Model b = createModel().add("sharedKey", createModel().add("bModel", "bSharedValue")).add("sharedKey", createModel().add("dModel", "dSharedValue"));
+
+        assertThat(sequence(a, c, b).reduce(mergeFlattenChildren), CoreMatchers.is(sequence(a,b,c).reduce(mergeFlattenChildren)));
+    }
+
+    @Test
     public void supportsConvertingToStringAndBack() throws Exception {
         Model original = createModel().
                 add("users", createModel().
@@ -207,8 +447,8 @@ abstract public class ModelContract {
     public void canConvertFromProperties() throws Exception {
         Properties properties = new Properties();
         properties.setProperty("users.stuart.awesomeness", "extreme");
-        properties.setProperty("users.stuart.shoesize", "10.5");
         properties.setProperty("users.dan.awesomeness", "mega");
+        properties.setProperty("users.stuart.shoesize", "10.5");
         properties.setProperty("users.raymond.awesomeness", "totes amazeballs");
 
         Model model = fromProperties(properties);

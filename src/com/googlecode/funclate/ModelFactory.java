@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import static com.googlecode.funclate.Model.functions.merge;
+import static com.googlecode.funclate.Model.functions.mergeFlattenChildren;
 import static com.googlecode.totallylazy.Sequences.sequence;
 
 public interface ModelFactory {
@@ -30,30 +32,38 @@ public interface ModelFactory {
         public static Model fromProperties(final ModelFactory factory, Properties properties) {
             Sequence<Pair<String, String>> map = Sequences.sequence(properties.entrySet()).map(Maps.entryToPair()).unsafeCast();
 
-            return factory.create(map.map(new Callable1<Pair<String, String>, Pair<Sequence<String>, Pair<String, String>>>() {
+            return map.map(new Callable1<Pair<String, String>, Pair<Sequence<String>, Pair<String, String>>>() {
                 @Override
                 public Pair<Sequence<String>, Pair<String, String>> call(Pair<String, String> keyValuePair) throws Exception {
                     Sequence<String> keys = Sequences.sequence(keyValuePair.first().split("\\."));
                     return Pair.pair(keys.init(), Pair.pair(keys.last(), keyValuePair.second()));
                 }
-            }).fold(new HashMap<String, Object>(), new Callable2<HashMap<String, Object>, Pair<Sequence<String>, Pair<String, String>>, HashMap<String, Object>>() {
+            }).map(new Mapper<Pair<Sequence<String>, Pair<String, String>>, Model>() {
                 @Override
-                public HashMap<String, Object> call(HashMap<String, Object> map, Pair<Sequence<String>, Pair<String, String>> hierarchyAndValue) throws Exception {
-                    Sequence<String> hierarchy = hierarchyAndValue.first();
-                    Pair<String, String> value = hierarchyAndValue.second();
+                public Model call(Pair<Sequence<String>, Pair<String, String>> sequencePairPair) throws Exception {
+                    Sequence<String> hierarchy = sequencePairPair.first();
+                    Pair<String, String> keyAndValue = sequencePairPair.second();
+                    Model previous = factory.create().add(keyAndValue.first(), keyAndValue.second());
 
-                    HashMap<String, Object> next = map;
-                    for (String key : hierarchy) {
-                        if (!next.containsKey(key)) {
-                            next.put(key, new HashMap<String, Object>());
-                        }
-                        next = (HashMap<String, Object>) next.get(key);
+                    for (String key : hierarchy.reverse()) {
+                        previous = factory.create().add(key, previous);
                     }
 
-                    next.put(value.first(), value.second());
-                    return map;
+                    return previous;
                 }
-            }));
+            }).reduce(mergeFlattenChildren());
+        }
+
+        private Model createModel(ModelFactory factory, Model root, Model model, Sequence<String> hierarchy) {
+            if (hierarchy.isEmpty())
+                return root;
+            String head = hierarchy.head();
+            if (model.get(head) == null) {
+                Model value = factory.create();
+                Model newModel = model.add(head, value);
+                return createModel(factory, root, value, hierarchy.tail());
+            } else
+                return createModel(factory, root, model.<Model>get(head), hierarchy.tail());
         }
 
         private static Function1<Object, Object> convert(final ModelFactory factory) {
