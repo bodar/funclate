@@ -263,7 +263,7 @@ abstract public class ModelContract {
                         );
 
         actual = Model.methods.mergeFlattenChildren(second, original);
-        assertThat(actual.toMap(), is(expected.toMap()));
+        assertThat(actual, is(expected));
     }
 
     @Test
@@ -355,7 +355,7 @@ abstract public class ModelContract {
                 );
 
         actual = Model.methods.mergeFlattenChildren(second, original);
-        assertThat(actual.toMap(), is(expected.toMap()));
+        assertThat(actual, is(expected));
     }
 
     @Test
@@ -395,7 +395,7 @@ abstract public class ModelContract {
 
                 );
 
-        assertThat(Model.methods.mergeFlattenChildren(original, second).toMap(), is(expected.toMap()));
+        assertThat(Model.methods.mergeFlattenChildren(original, second), is(expected));
 
         expected = Model.persistent.model().
                 add("users", Model.persistent.model()
@@ -413,13 +413,13 @@ abstract public class ModelContract {
                                 add("tel", "978532"))
                 );
 
-        assertThat(Model.methods.mergeFlattenChildren(second, original).toMap(), is(expected.toMap()));
+        assertThat(Model.methods.mergeFlattenChildren(second, original), is(expected));
     }
 
 
     @Test
     @Ignore
-    public void mergeIsCommutative() throws Exception {
+    public void flattenMergeIsCommutative() throws Exception {
         Model a = createModel().add("sharedKey", createModel().add("aModel", "aSharedValue"));
         Model c = createModel().add("sharedKey", createModel().add("cModel", "cSharedValue"));
         Model b = createModel().add("sharedKey", createModel().add("bModel", "bSharedValue")).add("sharedKey", createModel().add("dModel", "dSharedValue"));

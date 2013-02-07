@@ -9,6 +9,7 @@ import com.googlecode.totallylazy.predicates.LogicalPredicate;
 import java.util.*;
 import java.util.Properties;
 
+import static com.googlecode.totallylazy.Sequences.add;
 import static com.googlecode.totallylazy.Sequences.sequence;
 
 public interface Model {
@@ -191,33 +192,46 @@ public interface Model {
         private static final Function2<Model, Model, Model> mergeFlattenModel = new Function2<Model, Model, Model>() {
             @Override
             public Model call(Model model, Model model2) throws Exception {
-                return sequence(sequence(model2.entries()).map(Maps.<String, Object>entryToPair())).fold(model, mergePairs);
+                return sequence(model2.pairs()).fold(model, mergePairs);
             }
         };
 
         private static final Callable2<? super Model, ? super Pair<String, Object>, ? extends Model> mergePairs = new Callable2<Model, Pair<String, Object>, Model>() {
             @Override
             public Model call(Model into, Pair<String, Object> pair) throws Exception {
-                String          otherKey    = pair.first();             // eg "users"
+                final String          otherKey    = pair.first();             // eg "users"
                 Object          otherValue  = pair.second();            // eg PersistentModel
-                List            intoValues  = into.getValues(otherKey); // eg [PersistentModel]
+                List<Object>            intoValues  = into.getValues(otherKey); // eg [PersistentModel]
 
-                if (otherValue instanceof Map) {
-                    otherValue = Model.persistent.model((Map)otherValue);
-                }
                 if (otherValue instanceof Model && intoValues.size() == 1 && intoValues.get(0) instanceof Model) {
-                    Object folded = sequence(intoValues).fold(otherValue, mergeFlattenModel);
+                    Object folded = sequence(intoValues).safeCast(Model.class).fold((Model) otherValue, mergeFlattenModel);
                     return into.remove(otherKey).first().set(otherKey, folded);
                 } else if (otherValue instanceof Iterable) {
-                    List others = sequence((Iterable) otherValue).toList();
+                    List others;
+                    if (otherValue instanceof PersistentList) {
+                        others = sequence((PersistentList)otherValue).reverse().toList();
+                    } else {
+                        others = sequence((Iterable) otherValue).toList();
+                    }
                     intoValues.addAll(others);
-                    Model newModel = into.remove(otherKey).first().set(otherKey, intoValues);
-                    return newModel;
+                    Model seed = into.remove(otherKey).first();
+
+                    return Sequences.<Object>sequence(intoValues).fold(seed, add(otherKey));
                 }
                 return into.add(otherKey, otherValue);
             }
         };
 
+        public static final Function3<String,Model,Object,Model> add = new Function3<String, Model, Object, Model>() {
+            @Override
+            public Model call(String key, Model model, Object o) throws Exception {
+                return model.add(key, o);
+            }
+        };
+
+        public static Function2<Model, Object, Model> add(final String key) {
+            return Functions.uncurry2(add.apply(key));
+        }
 
 
         public static final Function2<Model, Pair<String, Object>, Model> updateValues = new Function2<Model, Pair<String, Object>, Model>() {
