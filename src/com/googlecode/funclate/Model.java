@@ -9,7 +9,6 @@ import com.googlecode.totallylazy.predicates.LogicalPredicate;
 import java.util.*;
 import java.util.Properties;
 
-import static com.googlecode.totallylazy.Sequences.add;
 import static com.googlecode.totallylazy.Sequences.sequence;
 
 public interface Model {
@@ -199,24 +198,19 @@ public interface Model {
         private static final Callable2<? super Model, ? super Pair<String, Object>, ? extends Model> mergePairs = new Callable2<Model, Pair<String, Object>, Model>() {
             @Override
             public Model call(Model into, Pair<String, Object> pair) throws Exception {
-                final String          otherKey    = pair.first();             // eg "users"
-                Object          otherValue  = pair.second();            // eg PersistentModel
-                List<Object>            intoValues  = into.getValues(otherKey); // eg [PersistentModel]
+                final String        otherKey    = pair.first();
+                Object              otherValue  = pair.second();
+                List<Object>        intoValues  = into.getValues(otherKey);
 
                 if (otherValue instanceof Model && intoValues.size() == 1 && intoValues.get(0) instanceof Model) {
                     Object folded = sequence(intoValues).safeCast(Model.class).fold((Model) otherValue, mergeFlattenModel);
-                    return into.remove(otherKey).first().set(otherKey, folded);
+                    return into.set(otherKey, folded);
                 } else if (otherValue instanceof Iterable) {
-                    List others;
+                    Sequence<Object> others = Sequences.sequence(otherValue);
                     if (otherValue instanceof PersistentList) {
-                        others = sequence((PersistentList)otherValue).reverse().toList();
-                    } else {
-                        others = sequence((Iterable) otherValue).toList();
+                        others = others.reverse();
                     }
-                    intoValues.addAll(others);
-                    Model seed = into.remove(otherKey).first();
-
-                    return Sequences.<Object>sequence(intoValues).fold(seed, add(otherKey));
+                    return others.fold(into, add(otherKey));
                 }
                 return into.add(otherKey, otherValue);
             }
