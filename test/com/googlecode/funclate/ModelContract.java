@@ -18,6 +18,7 @@ import static com.googlecode.totallylazy.Unchecked.cast;
 import static com.googlecode.totallylazy.collections.PersistentList.constructors.list;
 import static com.googlecode.totallylazy.matchers.IterableMatcher.hasExactly;
 import static java.util.Arrays.asList;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -188,7 +189,7 @@ abstract public class ModelContract {
     }
 
     @Test
-    public void supportsSimpleMerge() throws Exception {
+    public void supportsSimpleFlattenMerge() throws Exception {
         Model big = createModel().
                 add("users", createModel().
                         add("user", createModel().
@@ -219,7 +220,7 @@ abstract public class ModelContract {
     }
 
     @Test
-    public void supportsMergeWith2SameElementsInSameBranch() throws Exception {
+    public void supportsFlattenMergeWith2SameElementsInSameBranch() throws Exception {
         Model original = createModel().
                 add("users", createModel().
                         add("user", createModel().
@@ -267,7 +268,7 @@ abstract public class ModelContract {
     }
 
     @Test
-    public void supportsMergeWithEmptyList() throws Exception {
+    public void supportsFlattenMergeWithEmptyList() throws Exception {
         Model original = createModel().
                 add("users", createModel().
                         add("dev", createModel().
@@ -306,7 +307,7 @@ abstract public class ModelContract {
     }
 
     @Test
-    public void supportsMergeWithListOfOneElement() throws Exception {
+    public void supportsFlattenMergeWithListOfOneElement() throws Exception {
         Model original = createModel().
                 add("users", createModel().
                         add("user", createModel().
@@ -359,7 +360,7 @@ abstract public class ModelContract {
     }
 
     @Test
-    public void supportsMergeWithList() throws Exception {
+    public void supportsFlattenMergeWithList() throws Exception {
         Model original = createModel().
                 add("users", createModel().
                         add("user", createModel().
@@ -416,13 +417,12 @@ abstract public class ModelContract {
         assertThat(Model.methods.mergeFlattenChildren(second, original), is(expected));
     }
 
-
     @Test
-    @Ignore
+    @Ignore("This is unlikely to ever be possible")
     public void flattenMergeIsCommutative() throws Exception {
         Model a = createModel().add("sharedKey", createModel().add("aModel", "aSharedValue"));
-        Model c = createModel().add("sharedKey", createModel().add("cModel", "cSharedValue"));
         Model b = createModel().add("sharedKey", createModel().add("bModel", "bSharedValue")).add("sharedKey", createModel().add("dModel", "dSharedValue"));
+        Model c = createModel().add("sharedKey", createModel().add("cModel", "cSharedValue"));
 
         assertThat(sequence(a, c, b).reduce(mergeFlattenChildren), CoreMatchers.is(sequence(a,b,c).reduce(mergeFlattenChildren)));
     }
@@ -444,10 +444,14 @@ abstract public class ModelContract {
     }
 
     @Test
-    public void canConvertFromProperties() throws Exception {
+    public void canConvertFromHierarchicalProperties() throws Exception {
         Properties properties = new Properties();
+        properties.setProperty("foo", "bar");
         properties.setProperty("users.stuart.awesomeness", "extreme");
+        properties.setProperty("application.db", "none");
+        properties.setProperty("application.jms.url", "someUrl");
         properties.setProperty("users.dan.awesomeness", "mega");
+        properties.setProperty("application.jms.port", "12345");
         properties.setProperty("users.stuart.shoesize", "10.5");
         properties.setProperty("users.raymond.awesomeness", "totes amazeballs");
 
@@ -456,5 +460,9 @@ abstract public class ModelContract {
         assertThat(model.get("users", Model.class).get("stuart", Model.class).get("shoesize", String.class), is("10.5"));
         assertThat(model.get("users", Model.class).get("dan", Model.class).get("awesomeness", String.class), is("mega"));
         assertThat(model.get("users", Model.class).get("raymond", Model.class).get("awesomeness", String.class), is("totes amazeballs"));
+        assertThat(model.get("application", Model.class).get("db", String.class), is("none"));
+        assertThat(model.get("application", Model.class).get("jms", Model.class).get("url", String.class), is("someUrl"));
+        assertThat(model.get("application", Model.class).get("jms", Model.class).get("port", String.class), is("12345"));
+        assertThat(model.get("foo", String.class), is("bar"));
     }
 }
