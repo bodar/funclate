@@ -25,12 +25,12 @@ public class StringFunclateTest {
     }
 
     @Test
-    @Ignore("WIP")
+    @Ignore
     public void supportsIfElse() throws Exception {
         Model model = model().
                 add("enabled", true).
                 add("name", "Dan");
-        StringFunclate funclate = new StringFunclate("$if(enabled, 'Stu', other)$");
+        StringFunclate funclate = new StringFunclate("Hello $if(enabled, \"Stu\", name)$");
         assertThat(funclate.render(model), Matchers.is("Hello Stu"));
     }
 }
