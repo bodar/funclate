@@ -8,6 +8,16 @@ import static com.googlecode.funclate.Model.mutable.model;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class StringFunclateTest {
+
+    @Test
+    @Ignore
+    public void canParseWithProperties() {
+        StringFunclate funclate = new StringFunclate("Foo:$myTemplate(\"bar\")$");
+        StringFunclate funclate3 = new StringFunclate("Foo:$myTemplate(myparam=dan, mysecondparam=\"foo\")$");
+        StringFunclate funclate2 = new StringFunclate("Foo:$myTemplate(dan, \"foo\")$");
+    }
+
+
     @Test
     public void canParseTemplateViaConstructor() throws Exception {
         StringFunclate funclate = new StringFunclate("Hello $name$");

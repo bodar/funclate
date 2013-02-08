@@ -16,7 +16,7 @@ public class StringFunclate extends CompositeFunclate {
 
     public StringFunclate(String template, RendererContainer parent) {
         super(parent);
-        add(instanceOf(Map.class), Grammar.TEMPLATE(this).parse(template));
+        add(instanceOf(Map.class), new Grammar(this).parse(template));
         add(instanceOf(Model.class), new ModelRenderer(this));
 //        add("if", instanceOf(Map.class), ifElse());
     }
