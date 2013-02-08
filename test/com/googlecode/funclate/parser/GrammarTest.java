@@ -2,6 +2,7 @@ package com.googlecode.funclate.parser;
 
 import com.googlecode.funclate.CompositeFunclate;
 import com.googlecode.funclate.Funclate;
+import com.googlecode.funclate.Renderer;
 import com.googlecode.totallylazy.Callable1;
 import org.hamcrest.Matchers;
 import org.junit.Ignore;
@@ -59,14 +60,33 @@ public class GrammarTest {
     }
 
     @Test
-    @Ignore
     public void canParseTemplateCallLiteralParameters() throws Exception {
-        TemplateCall unnamed = grammar.TEMPLATE_CALL.parse("template(\"foo\", \"bar\", \"baz\")");
+        TemplateCall unnamed = grammar.TEMPLATE_CALL.parse("template(\"foo\")");
         assertThat(unnamed.name(), is("template"));
         assertThat(((Text) unnamed.arguments().get("0")).value(), is("foo"));
-        assertThat(((Text) unnamed.arguments().get("1")).value(), is("bar"));
-        assertThat(((Text) unnamed.arguments().get("2")).value(), is("baz"));
+//        assertThat(((Text) unnamed.arguments().get("1")).value(), is("bar"));
+//        assertThat(((Text) unnamed.arguments().get("2")).value(), is("baz"));
     }
+
+    @Test
+    public void canParseImplicits() throws Exception {
+        assertThat(grammar.IMPLICIT_ARGUMENTS.parse("a").get("0"), Matchers.instanceOf(Attribute.class));
+        assertThat(grammar.IMPLICIT_ARGUMENTS.parse("a,b").get("1"), Matchers.instanceOf(Attribute.class));
+        assertThat(grammar.IMPLICIT_ARGUMENTS.parse("\"a\"").get("0"), Matchers.instanceOf(Text.class));
+    }
+
+    @Test
+    public void canParseValue() throws Exception {
+        assertThat(grammar.VALUE.parse("a"), Matchers.instanceOf(Attribute.class));
+        assertThat(grammar.VALUE.parse("\"a\""), Matchers.instanceOf(Text.class));
+    }
+
+    @Test
+    public void canParseLiteral() throws Exception {
+        Text text = grammar.LITERAL.parse("\"Some other text\"");
+        assertThat(text.value(), is("Some other text"));
+    }
+
 
     @Test
     public void canParseATemplate() throws Exception {

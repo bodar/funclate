@@ -31,8 +31,7 @@ public class TemplateCall implements Renderer<Map<String, Object>> {
     }
 
     public String render(Map<String, Object> context) throws Exception {
-        Renderer<Object> objectRenderer = funclate.get(name);
-        return objectRenderer.render(apply(arguments, context));
+        return funclate.get(name).render(apply(arguments, context));
     }
 
     private Map<String, String> apply(Map<String, Renderer<Map<String, Object>>> arguments, Map<String, Object> context) {
