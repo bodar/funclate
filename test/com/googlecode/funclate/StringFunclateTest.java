@@ -1,22 +1,30 @@
 package com.googlecode.funclate;
 
+import com.googlecode.totallylazy.Predicates;
+import com.googlecode.totallylazy.UnaryFunction;
 import org.hamcrest.Matchers;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import static com.googlecode.funclate.Model.mutable.model;
+import static com.googlecode.totallylazy.matchers.Matchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class StringFunclateTest {
 
     @Test
-    @Ignore
-    public void canParseWithProperties() {
-        StringFunclate funclate = new StringFunclate("Foo:$myTemplate(\"bar\")$");
-        StringFunclate funclate3 = new StringFunclate("Foo:$myTemplate(myparam=dan, mysecondparam=\"foo\")$");
-        StringFunclate funclate2 = new StringFunclate("Foo:$myTemplate(dan, \"foo\")$");
-    }
+    public void canParseWithProperties() throws Exception {
+        Funclate parent = new CompositeFunclate().add("myTemplate", Predicates.always(), StringFunclate.functions.first(new UnaryFunction<String>() {
+            @Override
+            public String call(String s) throws Exception {
+                return "Hello " + s;
+            }
+        }));
+        StringFunclate funclate = new StringFunclate("$myTemplate(\"bar\")$", parent);
 
+        Model model = model().add("dan", "Dan");
+        assertThat(funclate.render(model), is("Hello bar"));
+    }
 
     @Test
     public void canParseTemplateViaConstructor() throws Exception {

@@ -41,4 +41,15 @@ public class StringFunclate extends CompositeFunclate {
             return funclate.render(model.toMap());
         }
     }
+
+    public static class functions {
+        public static Renderer<Map<String, String>> first(final Callable1<String, String> callable) {
+            return new Renderer<Map<String, String>>() {
+                @Override
+                public String render(Map<String, String> instance) throws Exception {
+                    return callable.call(instance.get("0"));
+                }
+            };
+        }
+    }
 }
