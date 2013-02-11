@@ -1,7 +1,9 @@
 package com.googlecode.funclate;
 
 import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Function2;
 import com.googlecode.totallylazy.Predicate;
+import com.googlecode.totallylazy.Triple;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -55,7 +57,7 @@ public class CompositeFunclate implements Funclate {
 
     protected MatchingRenderer renderersFor(String name) {
         String normalisedName = normalise(name);
-        if(!contains(normalisedName)) {
+        if (!contains(normalisedName)) {
             create(normalisedName);
         }
         return funclates.get(normalisedName);
@@ -69,5 +71,24 @@ public class CompositeFunclate implements Funclate {
         return name.trim().toLowerCase();
     }
 
+    public static class functions {
+        public static <T> Function2<Funclate, Triple<String, Predicate<? super T>, Callable1<? super T, String>>, Funclate> addCallable() {
+            return new Function2<Funclate, Triple<String, Predicate<? super T>, Callable1<? super T, String>>, Funclate>() {
+                @Override
+                public Funclate call(Funclate funclate, Triple<String, Predicate<? super T>, Callable1<? super T, String>> triple) throws Exception {
+                    return funclate.add(triple.first(), triple.second(), triple.third());
+                }
+            };
+        }
+
+        public static <T> Function2<Funclate, Triple<String, Predicate<? super T>, Renderer<? super T>>, Funclate> addRenderer() {
+            return new Function2<Funclate, Triple<String, Predicate<? super T>, Renderer<? super T>>, Funclate>() {
+                @Override
+                public Funclate call(Funclate funclate, Triple<String, Predicate<? super T>, Renderer<? super T>> triple) throws Exception {
+                    return funclate.add(triple.first(), triple.second(), triple.third());
+                }
+            };
+        }
+    }
 
 }

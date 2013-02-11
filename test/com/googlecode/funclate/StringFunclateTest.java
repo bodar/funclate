@@ -20,10 +20,10 @@ public class StringFunclateTest {
                 return "Hello " + s;
             }
         }));
-        StringFunclate funclate = new StringFunclate("$myTemplate(\"bar\")$", parent);
+        StringFunclate funclate = new StringFunclate("$myTemplate(\"bar.height\")$", parent);
 
         Model model = model().add("dan", "Dan");
-        assertThat(funclate.render(model), is("Hello bar"));
+        assertThat(funclate.render(model), is("Hello bar.height"));
     }
 
     @Test
