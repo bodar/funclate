@@ -2,6 +2,7 @@ package com.googlecode.funclate;
 
 import com.googlecode.funclate.parser.Grammar;
 import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Callable2;
 import com.googlecode.totallylazy.Predicates;
 
 import java.util.Map;
@@ -48,6 +49,15 @@ public class StringFunclate extends CompositeFunclate {
                 @Override
                 public String render(Map<String, String> instance) throws Exception {
                     return callable.call(instance.get("0"));
+                }
+            };
+        }
+
+        public static Renderer<Map<String, String>> both(final Callable2<String, String, String> callable) {
+            return new Renderer<Map<String, String>>() {
+                @Override
+                public String render(Map<String, String> instance) throws Exception {
+                    return callable.call(instance.get("0"), instance.get("1"));
                 }
             };
         }
