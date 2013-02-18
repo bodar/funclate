@@ -15,6 +15,7 @@ import com.googlecode.totallylazy.Triple;
 import java.util.List;
 import java.util.Map;
 
+import static com.googlecode.funclate.Grammars.ws;
 import static com.googlecode.funclate.Grammars.wsChar;
 import static com.googlecode.lazyparsec.Parsers.between;
 import static com.googlecode.lazyparsec.Scanners.IDENTIFIER;
@@ -31,6 +32,7 @@ public class Grammar {
 
     public Grammar(Funclate funclate) {
         this.funclate = funclate;
+        value.set(ws(Parsers.<Renderer<Map<String, Object>>>or(LITERAL, TEMPLATE_CALL, ATTRIBUTE)));
     }
 
     public final Parser<Attribute> ATTRIBUTE = IDENTIFIER.map(new Callable1<String, Attribute>() {
@@ -51,7 +53,9 @@ public class Grammar {
         });
     }
 
-    public final Parser<Renderer<Map<String,Object>>> VALUE = Parsers.<Renderer<Map<String, Object>>>or(LITERAL, ATTRIBUTE);
+    private final Parser.Reference<Renderer<Map<String,Object>>> value = Parser.newReference();
+    public final Parser<Renderer<Map<String,Object>>> VALUE = value.lazy();
+
     public final Parser<Pair<String, Renderer<Map<String, Object>>>> NAMED_ARGUMENT = Parsers.tuple(IDENTIFIER, isChar('='), VALUE).map(new Mapper<Triple<String, Void, Renderer<Map<String, Object>>>, Pair<String, Renderer<Map<String, Object>>>>() {
         @Override
         public Pair<String, Renderer<Map<String, Object>>> call(Triple<String, Void, Renderer<Map<String, Object>>> triple) throws Exception {

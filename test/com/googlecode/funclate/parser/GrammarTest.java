@@ -3,6 +3,7 @@ package com.googlecode.funclate.parser;
 import com.googlecode.funclate.CompositeFunclate;
 import com.googlecode.funclate.Funclate;
 import com.googlecode.funclate.Renderer;
+import com.googlecode.funclate.StringFunclate;
 import com.googlecode.totallylazy.Callable1;
 import org.hamcrest.Matchers;
 import org.junit.Ignore;
@@ -96,12 +97,17 @@ public class GrammarTest {
                 return "Bodart";
             }
         });
+        funclate.add("yourLastName", always(), StringFunclate.functions.first(new Callable1<String, String>() {
+            public String call(String arg) throws Exception {
+                return "Your last name is " + arg;
+            }
+        }));
         Grammar grammar = new Grammar(funclate);
-        Template template = grammar.parse("Hello $name$ $template()$");
+        Template template = grammar.parse("Hello $name$ $template()$ $yourLastName(template())$");
         Map<String, Object> map = new HashMap<String, Object>() {{
             put("name", "Dan");
         }};
         String call = template.render(map);
-        assertThat(call, is("Hello Dan Bodart"));
+        assertThat(call, is("Hello Dan Bodart Your last name is Bodart"));
     }
 }
