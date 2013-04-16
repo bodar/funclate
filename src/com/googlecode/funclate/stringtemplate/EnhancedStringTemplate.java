@@ -32,15 +32,15 @@ public class EnhancedStringTemplate extends StringTemplate {
         setDefaultArgumentValues();
 
         CharSequence result = expressions().
-                mapConcurrently(toCharSequence().orElse(" "), executor).
+                mapConcurrently(asString().orElse(" "), executor).
                 reduce(join);
         out.write(result.toString());
     }
 
-    public Mapper<Expr, CharSequence> toCharSequence() {
-        return new Mapper<Expr, CharSequence>() {
+    private Mapper<Expr, String> asString() {
+        return new Mapper<Expr, String>() {
             @Override
-            public CharSequence call(Expr expr) throws Exception {
+            public String call(Expr expr) throws Exception {
                 StringTemplateWriter writer = new NoIndentStringWriter();
                 expr.write(EnhancedStringTemplate.this, writer);
                 return writer.toString();
