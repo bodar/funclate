@@ -32,6 +32,12 @@ public class GrammarTest {
     }
 
     @Test
+    public void literalCanBeSingleOrDoubleQuoted() throws Exception {
+        assertThat(grammar.LITERAL.parse("\"foo\"").value(), is("foo"));
+        assertThat(grammar.LITERAL.parse("'foo'").value(), is("foo"));
+    }
+
+    @Test
     public void canParseNoArgumentTemplateCall() throws Exception {
         TemplateCall noArguments = grammar.TEMPLATE_CALL.parse("template()");
         assertThat(noArguments.name(), is("template"));
@@ -65,8 +71,6 @@ public class GrammarTest {
         TemplateCall unnamed = grammar.TEMPLATE_CALL.parse("template(\"foo\")");
         assertThat(unnamed.name(), is("template"));
         assertThat(((Text) unnamed.arguments().get("0")).value(), is("foo"));
-//        assertThat(((Text) unnamed.arguments().get("1")).value(), is("bar"));
-//        assertThat(((Text) unnamed.arguments().get("2")).value(), is("baz"));
     }
 
     @Test

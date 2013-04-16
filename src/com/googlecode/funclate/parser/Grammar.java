@@ -26,7 +26,8 @@ import static com.googlecode.totallylazy.Pair.pair;
 
 public class Grammar {
     private static final Parser<Void> SEPARATOR = wsChar(',');
-    public static final Parser<Void> QUOTE = isChar('"');
+    public static final Parser<Void> SINGLE_QUOTE = isChar('\'');
+    public static final Parser<Void> DOUBLE_QUOTE = isChar('"');
     private final Funclate funclate;
     private final char del = '$';
 
@@ -43,7 +44,9 @@ public class Grammar {
 
     public final Parser<Text> TEXT = textExcept(del);
 
-    public final Parser<Text> LITERAL = Parsers.between(QUOTE, textExcept('"'), QUOTE);
+    private final Parser<Text> SINGLE_QUOTED = Parsers.between(SINGLE_QUOTE, textExcept('\''), SINGLE_QUOTE);
+    private final Parser<Text> DOUBLE_QUOTED = Parsers.between(DOUBLE_QUOTE, textExcept('"'), DOUBLE_QUOTE);
+    public final Parser<Text> LITERAL = SINGLE_QUOTED.or(DOUBLE_QUOTED);
 
     private Parser<Text> textExcept(char c) {
         return notChar(c).many().source().map(new Callable1<String, Text>() {
