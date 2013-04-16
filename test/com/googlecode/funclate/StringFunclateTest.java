@@ -49,6 +49,12 @@ public class StringFunclateTest {
     }
 
     @Test
+    public void missingParametersRenderEmpty() throws Exception {
+        StringFunclate funclate = new StringFunclate("Hello $name$");
+        assertThat(funclate.render(model()), Matchers.is("Hello "));
+    }
+
+    @Test
     @Ignore
     public void supportsIfElse() throws Exception {
         Model model = model().

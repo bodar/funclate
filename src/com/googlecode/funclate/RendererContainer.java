@@ -1,5 +1,7 @@
 package com.googlecode.funclate;
 
+import com.googlecode.totallylazy.Strings;
+
 public interface RendererContainer {
     Renderer<Object> get(String name);
 
@@ -9,7 +11,7 @@ public interface RendererContainer {
                 public Renderer<Object> get(String name) {
                     return new Renderer<Object>() {
                         public String render(Object instance) throws Exception {
-                            return instance.toString();
+                            return Strings.asString(instance);
                         }
                     };
                 }

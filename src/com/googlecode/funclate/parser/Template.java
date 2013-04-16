@@ -1,13 +1,15 @@
 package com.googlecode.funclate.parser;
 
 import com.googlecode.funclate.Renderer;
-import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Mapper;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Strings;
+import com.googlecode.totallylazy.annotations.multimethod;
+import com.googlecode.totallylazy.multi;
 
 import java.util.Map;
 
+import static com.googlecode.totallylazy.Callables.toString;
 import static com.googlecode.totallylazy.Sequences.sequence;
 
 public class Template implements Renderer<Map<String, Object>> {
@@ -21,4 +23,16 @@ public class Template implements Renderer<Map<String, Object>> {
         return objects.map(functions.render(map)).toString(Strings.EMPTY);
     }
 
+    @Override
+    public String toString() {
+        return objects.map(new Mapper<Object, String>() {
+            @Override
+            public String call(Object renderer) throws Exception {
+                return new multi(){}.<String>methodOption(renderer).getOrElse(toString.apply(renderer));
+            }
+            @multimethod String call(Attribute attribute) {return "$" + attribute + "$";}
+            @multimethod String call(TemplateCall call) {return "$" + call + "$";}
+
+        }).toString("");
+    }
 }

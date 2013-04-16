@@ -11,6 +11,7 @@ import com.googlecode.totallylazy.Maps;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Sequences;
 import com.googlecode.totallylazy.Triple;
+import com.googlecode.totallylazy.UnaryFunction;
 
 import java.util.List;
 import java.util.Map;

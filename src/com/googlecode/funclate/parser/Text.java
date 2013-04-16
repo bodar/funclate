@@ -5,6 +5,8 @@ import com.googlecode.totallylazy.Value;
 
 import java.util.Map;
 
+import static java.lang.String.format;
+
 public class Text implements Value<String>, Renderer<Map<String, Object>> {
     private final String value;
 
