@@ -1,8 +1,10 @@
 package com.googlecode.funclate;
 
 import com.googlecode.totallylazy.Arrays;
+import com.googlecode.totallylazy.Maps;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.Sequence;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.MatcherAssert;
 import org.junit.Ignore;
@@ -12,6 +14,7 @@ import java.util.*;
 
 import static com.googlecode.funclate.Model.functions.mergeFlattenChildren;
 import static com.googlecode.totallylazy.Option.some;
+import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.totallylazy.Sequences.one;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Unchecked.cast;
@@ -146,7 +149,7 @@ abstract public class ModelContract {
         final Model model = createModel(one(Pair.<String, Object>pair("key", "value")));
         model.remove("key");
         model.add("key", "value");
-        final Pair<Model, Option<String>> value = Pair.pair(createModel(), some("value"));
+        final Pair<Model, Option<String>> value = pair(createModel(), some("value"));
         final Pair<Model, Option<String>> key = model.remove("key", String.class);
         assertThat(key, is(value));
     }
@@ -464,5 +467,12 @@ abstract public class ModelContract {
         assertThat(model.get("application", Model.class).get("jms", Model.class).get("url", String.class), is("someUrl"));
         assertThat(model.get("application", Model.class).get("jms", Model.class).get("port", String.class), is("12345"));
         assertThat(model.get("foo", String.class), is("bar"));
+    }
+
+    @Test
+    public void canConstructModelFromIterable() throws Exception {
+        Model model = createModel(sequence(Pair.<String, Object>pair("list", Arrays.list("dog", "cat")), Pair.<String, Object>pair("map", Maps.map(pair("c", Maps.map(pair("d", "parrot")))))));
+        assertThat(model.getValues("list", String.class), is(Arrays.list("dog", "cat")));
+        assertThat(model.get("map", Model.class), is(createModel().add("c", createModel().add("d", "parrot"))));
     }
 }
