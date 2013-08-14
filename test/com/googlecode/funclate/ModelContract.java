@@ -145,6 +145,12 @@ abstract public class ModelContract {
     }
 
     @Test
+    public void shouldPreserveOrderingForSeqeunces() throws Exception {
+        Model model = createModel().add("list", sequence("1", "2", "3"));
+        assertThat(model.getValues("list", String.class), is(Arrays.list("1", "2", "3")));
+    }
+
+    @Test
     public void supportsRemove() throws Exception {
         final Model model = createModel(one(Pair.<String, Object>pair("key", "value")));
         model.remove("key");
