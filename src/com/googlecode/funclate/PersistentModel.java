@@ -48,7 +48,7 @@ public class PersistentModel implements Model {
 
     private <T> Object lift(T value) {
         if (value instanceof List) return listToPersistentList(value);
-        if (value instanceof Sequence) return Unchecked.<Sequence<T>>cast(value).toPersistentList();
+        if (value instanceof Sequence) return reverse(Unchecked.<Sequence<T>>cast(value).toPersistentList());
         return value;
     }
 
