@@ -9,6 +9,7 @@ import com.googlecode.totallylazy.predicates.LogicalPredicate;
 import java.util.*;
 import java.util.Properties;
 
+import static com.googlecode.funclate.ModelFactory.methods.convert;
 import static com.googlecode.totallylazy.Sequences.sequence;
 
 public interface Model {
@@ -71,11 +72,11 @@ public interface Model {
         }
 
         public Model create(Iterable<? extends Pair<String, ? extends Object>> values) {
-            return MutableModel.model(values);
+            return MutableModel.model(values).map(convert(instance));
         }
 
         public Model create(Map<String, ? extends Object> values) {
-            return methods.fromMap(instance, values);
+            return create(Maps.pairs(values));
         }
 
         @Override
@@ -126,11 +127,11 @@ public interface Model {
         }
 
         public Model create(Iterable<? extends Pair<String, ? extends Object>> values) {
-            return PersistentModel.model(values);
+            return PersistentModel.model(values).map(convert(instance));
         }
 
         public Model create(Map<String, ? extends Object> values) {
-            return methods.fromMap(instance, values);
+            return create(Maps.pairs(values));
         }
 
         public Model create(String json) {
