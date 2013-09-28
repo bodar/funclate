@@ -35,7 +35,7 @@ public class PersistentModel implements Model {
     public <T> Model add(String key, T rawValue) {
         Object value = lift(rawValue);
 
-        if (!contains(key)) return new PersistentModel(values.put(key, value));
+        if (!contains(key)) return new PersistentModel(values.insert(key, value));
 
         PersistentList<T> existingValues = values(key);
         if (value instanceof PersistentList) {
@@ -43,10 +43,11 @@ public class PersistentModel implements Model {
         } else {
             existingValues = existingValues.cons(Unchecked.<T>cast(value));
         }
-        return new PersistentModel(values.put(key, existingValues));
+        return new PersistentModel(values.insert(key, existingValues));
     }
 
     private <T> Object lift(T value) {
+        if (value instanceof PersistentList) return value;
         if (value instanceof List) return listToPersistentList(value);
         if (value instanceof Sequence) return reverse(Unchecked.<Sequence<T>>cast(value).toPersistentList());
         return value;
@@ -73,7 +74,7 @@ public class PersistentModel implements Model {
 
     @Override
     public <T> Option<T> getOption(String key) {
-        return cast(values.get(key));
+        return cast(values.lookup(key));
     }
 
     public <T> List<T> getValues(String key, Class<T> aClass) {
@@ -93,7 +94,7 @@ public class PersistentModel implements Model {
     }
 
     public <T> Model set(String name, T value) {
-        return new PersistentModel(values.put(name, value));
+        return new PersistentModel(values.insert(name, value));
     }
 
     public <T> Pair<Model, Option<T>> remove(String key, Class<T> aClass) {

@@ -1,6 +1,7 @@
 package com.googlecode.funclate;
 
 import com.googlecode.totallylazy.*;
+import com.googlecode.totallylazy.collections.PersistentMap;
 
 import java.util.HashMap;
 import java.util.List;
@@ -17,6 +18,8 @@ public interface ModelFactory {
     Model create(Iterable<? extends Pair<String, ? extends Object>> values);
 
     Model create(Map<String, ? extends Object> values);
+
+    Model create(PersistentMap<String, ? extends Object> values);
 
     Model create(String json);
 

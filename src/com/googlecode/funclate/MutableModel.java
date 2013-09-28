@@ -47,7 +47,7 @@ public class MutableModel implements Model {
 
     private <T> Object lift(T value) {
         if (value instanceof Sequence) return ((Sequence) value).toList();
-        if (value instanceof PersistentList) return ((PersistentList) value).toList();
+        if (value instanceof PersistentList) return ((PersistentList) value).toMutableList();
         return value;
     }
 
