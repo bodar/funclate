@@ -80,6 +80,11 @@ public interface Model {
         }
 
         @Override
+        public Model create(final PersistentMap<String, ? extends Object> values) {
+            return create((Iterable<? extends Pair<String, ? extends Object>>)values);
+        }
+
+        @Override
         public Model create(Properties properties) {
             return methods.fromProperties(instance, properties);
         }
@@ -108,6 +113,10 @@ public interface Model {
             return instance.create(values);
         }
 
+        public static Model model(PersistentMap<String, ? extends Object> values) {
+            return instance.create(values);
+        }
+
         public static Model parse(String json) {
             return instance.create(json);
         }
@@ -132,6 +141,11 @@ public interface Model {
 
         public Model create(Map<String, ? extends Object> values) {
             return create(Maps.pairs(values));
+        }
+
+        @Override
+        public Model create(final PersistentMap<String, ? extends Object> values) {
+            return create((Iterable<? extends Pair<String, ? extends Object>>)values);
         }
 
         public Model create(String json) {
@@ -167,8 +181,8 @@ public interface Model {
 
         private static Object toValue(Object value) {
             if (value instanceof Model) return ((Model) value).toMap();
-            if (value instanceof List) return Sequences.sequence((List<?>) value).map(toValue).toList();
             if (value instanceof PersistentList) return sequence(Unchecked.<PersistentList<Object>>cast(value)).map(toValue).reverse().toList();
+            if (value instanceof List) return Sequences.sequence((List<?>) value).map(toValue).toList();
             return value;
         }
 
