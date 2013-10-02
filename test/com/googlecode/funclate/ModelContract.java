@@ -162,6 +162,13 @@ abstract public class ModelContract {
     }
 
     @Test
+    public void removeShouldPreserveOrderingForSequences() throws Exception {
+        final Model model = createModel().add("first", sequence("1", "2", "3")).add("second", "sec");
+        final Pair<Model, Option<String>> pair = model.remove("second", String.class);
+        assertThat(pair.first().getValues("first", String.class), hasExactly("1", "2", "3"));
+    }
+
+    @Test
     public void shouldPreserveListOrderingWhenConvertingToJson() throws Exception {
         Model original = createModel().
                 add("2", "3").add("2", "2");

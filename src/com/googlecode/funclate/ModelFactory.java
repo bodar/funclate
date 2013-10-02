@@ -1,6 +1,7 @@
 package com.googlecode.funclate;
 
 import com.googlecode.totallylazy.*;
+import com.googlecode.totallylazy.collections.PersistentList;
 import com.googlecode.totallylazy.collections.PersistentMap;
 
 import java.util.HashMap;
@@ -63,6 +64,7 @@ public interface ModelFactory {
 
         private static Object convert(final ModelFactory factory, final Object value) {
             if (value instanceof Map) return factory.create((Map<String, Object>) value);
+            if (value instanceof PersistentList) return ((PersistentList<Object>) value).map(convert(factory));
             if (value instanceof List)
                 return factory.toList(sequence((List<Object>) value).map(new Callable1<Object, Object>() {
                     public Object call(Object o) throws Exception {
