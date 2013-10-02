@@ -1,10 +1,6 @@
 package com.googlecode.funclate;
 
-import com.googlecode.totallylazy.Callable1;
-import com.googlecode.totallylazy.Option;
-import com.googlecode.totallylazy.Pair;
-import com.googlecode.totallylazy.Sequence;
-import com.googlecode.totallylazy.Unchecked;
+import com.googlecode.totallylazy.*;
 import com.googlecode.totallylazy.collections.PersistentList;
 import com.googlecode.totallylazy.collections.PersistentMap;
 
@@ -16,9 +12,8 @@ import static com.googlecode.funclate.Model.persistent.toModel;
 import static com.googlecode.funclate.json.Json.toJson;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Unchecked.cast;
-import static com.googlecode.totallylazy.collections.PersistentList.constructors.empty;
-import static com.googlecode.totallylazy.collections.PersistentList.constructors.list;
-import static com.googlecode.totallylazy.collections.PersistentList.constructors.reverse;
+import static com.googlecode.totallylazy.collections.ListMap.listMap;
+import static com.googlecode.totallylazy.collections.PersistentList.constructors.*;
 import static com.googlecode.totallylazy.collections.PersistentSortedMap.constructors.sortedMap;
 
 public class PersistentModel implements Model {
@@ -127,12 +122,12 @@ public class PersistentModel implements Model {
     }
 
     public Set<Map.Entry<String, Object>> entries() {
-        return toMap().entrySet();
+        return listMap(pairs()).entrySet();
     }
 
     @Override
     public Iterable<Pair<String, Object>> pairs() {
-        return values;
+        return values.keys().zip(values.values().map(reverseIfNeeded()));
     }
 
     @Override
@@ -152,5 +147,17 @@ public class PersistentModel implements Model {
 
     protected Sequence myFields() {
         return sequence(values);
+    }
+
+    private Mapper<Object, Object> reverseIfNeeded() {
+        return new Mapper<Object, Object>() {
+            @Override
+            public Object call(Object value) throws Exception {
+                if (value instanceof PersistentList) {
+                    return sequence(Unchecked.<PersistentList>cast(value).reverse()).toList();
+                }
+                return value;
+            }
+        };
     }
 }

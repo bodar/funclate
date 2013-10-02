@@ -4,7 +4,7 @@ import com.googlecode.totallylazy.Arrays;
 import com.googlecode.totallylazy.Maps;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
-import com.googlecode.totallylazy.Sequence;
+import com.googlecode.totallylazy.Unchecked;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.MatcherAssert;
 import org.junit.Ignore;
@@ -17,10 +17,10 @@ import static com.googlecode.totallylazy.Option.some;
 import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.totallylazy.Sequences.one;
 import static com.googlecode.totallylazy.Sequences.sequence;
+import static com.googlecode.totallylazy.Sequences.first;
 import static com.googlecode.totallylazy.Unchecked.cast;
 import static com.googlecode.totallylazy.collections.PersistentList.constructors.list;
 import static com.googlecode.totallylazy.matchers.IterableMatcher.hasExactly;
-import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -145,9 +145,10 @@ abstract public class ModelContract {
     }
 
     @Test
-    public void shouldPreserveOrderingForSeqeunces() throws Exception {
+    public void shouldPreserveOrderingForSequences() throws Exception {
         Model model = createModel().add("list", sequence("1", "2", "3"));
         assertThat(model.getValues("list", String.class), is(Arrays.list("1", "2", "3")));
+        assertThat(Unchecked.<List<String>>cast(first(model.pairs()).second()), hasExactly("1", "2", "3"));
     }
 
     @Test
