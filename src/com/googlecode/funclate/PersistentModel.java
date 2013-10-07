@@ -41,15 +41,11 @@ public class PersistentModel implements Model {
         return new PersistentModel(values.insert(key, existingValues));
     }
 
-    private <T> Object lift(T value) {
+    private Object lift(Object value) {
         if (value instanceof PersistentList) return value;
-        if (value instanceof List) return listToPersistentList(value);
-        if (value instanceof Sequence) return reverse(Unchecked.<Sequence<T>>cast(value).toPersistentList());
+        if (value instanceof List) return reverse(Unchecked.<List<Object>>cast(value));
+        if (value instanceof Sequence) return reverse(Unchecked.<Sequence<Object>>cast(value));
         return value;
-    }
-
-    private <T> PersistentList<T> listToPersistentList(Object newValue) {
-        return reverse(Unchecked.<List<T>>cast(newValue));
     }
 
     public <T> T get(String key, Class<T> aClass) {
@@ -127,7 +123,7 @@ public class PersistentModel implements Model {
 
     @Override
     public Iterable<Pair<String, Object>> pairs() {
-        return values.keys().zip(values.values().map(reverseIfNeeded()));
+        return values.map(reverseIfNeeded());
     }
 
     @Override
@@ -154,7 +150,7 @@ public class PersistentModel implements Model {
             @Override
             public Object call(Object value) throws Exception {
                 if (value instanceof PersistentList) {
-                    return sequence(Unchecked.<PersistentList>cast(value).reverse()).toList();
+                    return Unchecked.<PersistentList>cast(value).reverse().toMutableList();
                 }
                 return value;
             }
