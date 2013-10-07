@@ -24,6 +24,16 @@ public class StreamingJsonTest {
     }
 
     @Test
+    public void canStreamAnIterable() throws Exception {
+        Sequence<String> values = sequence("1", "2");
+        Writer writer = new StringWriter();
+
+        StreamingJson.toJson(values, writer);
+
+        assertThat(writer.toString(), is(Json.toJson(values)));
+    }
+
+    @Test
     public void canStreamAMap() throws Exception {
         Map<String, Integer> values = sortedMap("one", 1, "two", 2);
         Writer writer = new StringWriter();
