@@ -16,13 +16,18 @@ public class Json {
 
     public static String toJson(Object value) {
         if (value == null) return "null";
-        if (value instanceof String) return quote(escape((String) value));
+        if (value instanceof String) return toJson((String) value);
         if (value instanceof Map) return toObjectLiteral((Map) value);
+        if (value instanceof Map.Entry) return toJson((Map.Entry) value);
         if (value instanceof Model) return toObjectLiteral(((Model) value).toMap());
         if (value instanceof Iterable) return toArray((Iterable) value);
         if (value instanceof Boolean) return value.toString();
         if (value instanceof Number) return value.toString();
-        return quote(escape(value.toString()));
+        return toJson(value.toString());
+    }
+
+    public static String toJson(String value) {
+        return quote(escape(value));
     }
 
     public static String escape(String value) {
@@ -43,6 +48,10 @@ public class Json {
 
     public static String quote(String value) {
         return format("\"%s\"", value);
+    }
+
+    public static String toJson(Map.Entry<?,?> entry) {
+        return toPair(entry.getKey(), entry.getValue());
     }
 
     public static String toPair(Object key, Object value) {
