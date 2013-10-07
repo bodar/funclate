@@ -19,11 +19,15 @@ public class Json {
         if (value instanceof String) return toJson((String) value);
         if (value instanceof Map) return toObjectLiteral((Map) value);
         if (value instanceof Map.Entry) return toJson((Map.Entry) value);
-        if (value instanceof Model) return toObjectLiteral(((Model) value).toMap());
+        if (value instanceof Model) return toJson((Model) value);
         if (value instanceof Iterable) return toArray((Iterable) value);
         if (value instanceof Boolean) return value.toString();
         if (value instanceof Number) return value.toString();
         return toJson(value.toString());
+    }
+
+    public static String toJson(Model value) {
+        return toObjectLiteral(value.toMap());
     }
 
     public static String toJson(String value) {
