@@ -11,20 +11,29 @@ import static com.googlecode.totallylazy.LazyException.lazyException;
 
 public class StreamingJson {
     public static void toJson(final Object o, final Writer writer) {
-        if(o instanceof Map) {
-            toJson((Map) o, writer);
+        if(o instanceof Iterable) {
+            toJson(((Iterable) o), writer);
             return;
         }
         if(o instanceof Iterator) {
             toJson((Iterator) o, writer);
             return;
         }
+        if(o instanceof Map) {
+            toJson((Map) o, writer);
+            return;
+        }
         try {
             writer.write(Json.toJson(o));
         } catch (IOException e) {
-            lazyException(e);
+            throw lazyException(e);
         }
 
+    }
+
+    @multimethod
+    public static void toJson(Iterable<?> iterable, Writer writer) {
+        toJson(iterable.iterator(), writer);
     }
 
     @multimethod
