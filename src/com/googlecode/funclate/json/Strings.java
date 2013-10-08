@@ -31,7 +31,7 @@ public class Strings {
         return format("\"%s\"", value);
     }
 
-    public static String unescape(String escaped) {
+    public static String unescape(CharSequence escaped) {
         switch (escaped.charAt(1)) {
             case '"': return "\"";
             case '\\': return "\\";
@@ -41,7 +41,7 @@ public class Strings {
             case 'r': return "\r";
             case 't': return "\t";
             case 'f': return "\f";
-            case 'u': return Character.toString((char) parseInt(escaped.substring(2), 16));
+            case 'u': return Character.toString((char) parseInt(escaped.subSequence(2, escaped.length()).toString(), 16));
             default: throw new UnsupportedOperationException();
         }
     }
