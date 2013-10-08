@@ -1,15 +1,11 @@
 package com.googlecode.funclate.json.grammar;
 
+import com.googlecode.funclate.json.Strings;
 import com.googlecode.lazyparsec.Parser;
 import com.googlecode.lazyparsec.Parsers;
 import com.googlecode.lazyparsec.Scanners;
 import com.googlecode.lazyparsec.pattern.CharacterPredicates;
-import com.googlecode.totallylazy.Callable1;
-import com.googlecode.totallylazy.Function1;
-import com.googlecode.totallylazy.Maps;
-import com.googlecode.totallylazy.Pair;
-import com.googlecode.totallylazy.Predicate;
-import com.googlecode.totallylazy.Triple;
+import com.googlecode.totallylazy.*;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -35,7 +31,7 @@ public class Grammar {
     public static final Predicate<Character> UNICODE_CHARACTER = CharacterPredicates.notAmong("\"\\");
 
     public static final Parser<String> ESCAPED_CHARACTER = isChar('\\').followedBy(among("\"\\/bfnrt").
-            or(isChar('u').followedBy(isChar(CharacterPredicates.IS_HEX_DIGIT).times(4)))).source().map(unescape());
+            or(isChar('u').followedBy(isChar(CharacterPredicates.IS_HEX_DIGIT).times(4)))).source().map(Strings.functions.unescape);
 
     public static final Parser<String> STRING = isChar(UNICODE_CHARACTER).source().
             or(ESCAPED_CHARACTER).many().map(join()).between(isChar('"'), isChar('"'));
@@ -48,24 +44,6 @@ public class Grammar {
         };
     }
 
-    private static Function1<String, String> unescape() {
-        return new Function1<String, String>() {
-            public String call(String escaped) throws Exception {
-                switch (escaped.charAt(1)) {
-                    case '"': return "\"";
-                    case '\\': return "\\";
-                    case '/': return "/";
-                    case 'b': return "\b";
-                    case 'n': return "\n";
-                    case 'r': return "\r";
-                    case 't': return "\t";
-                    case 'f': return "\f";
-                    case 'u': return Character.toString((char) parseInt(escaped.substring(2), 16));
-                    default: throw new UnsupportedOperationException();
-                }
-            }
-        };
-    }
 
     public static final Parser<Number> NUMBER = Scanners.DECIMAL.map(new Callable1<String, Number>() {
         public Number call(String value) {

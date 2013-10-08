@@ -1,31 +1,17 @@
 package com.googlecode.funclate.json;
 
-import com.googlecode.funclate.Model;
 import com.googlecode.funclate.json.grammar.Grammar;
-import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Mapper;
 
 import java.util.Map;
-
-import static com.googlecode.totallylazy.Sequences.characters;
-import static com.googlecode.totallylazy.Sequences.sequence;
-import static java.lang.String.format;
 
 public class Json {
     public static String toJson(Object value) {
         return StreamingJson.toJson(value, new StringBuilder()).toString();
     }
 
-    public static String toJson(Model value) {
-        return StreamingJson.toJson(value, new StringBuilder()).toString();
-    }
-
     public static String toJson(CharSequence value) {
         return Strings.toString(value);
-    }
-
-    public static String toJson(Map.Entry<?,?> value) {
-        return StreamingJson.toJson(value, new StringBuilder()).toString();
     }
 
     public static String toArray(Iterable<?> values) {
