@@ -23,7 +23,7 @@ public class StreamingJson {
         if (o instanceof Iterator) return toJson((Iterator) o, appendable);
         if (o instanceof Iterable) return toJson(((Iterable) o), appendable);
         if (o instanceof Model) return toJson(((Model) o), appendable);
-        return append(Strings.toString(o.toString()), appendable);
+        return toJson(o.toString(), appendable);
     }
 
     public static <A extends Appendable> A toJson(final CharSequence charSequence, final A appendable) {
