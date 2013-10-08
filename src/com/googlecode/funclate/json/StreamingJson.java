@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
 
+import static com.googlecode.totallylazy.Appendables.append;
 import static com.googlecode.totallylazy.LazyException.lazyException;
 
 public class StreamingJson {
@@ -71,23 +72,4 @@ public class StreamingJson {
             }
         }), appendable, start, separator, end);
     }
-
-    private static <A extends Appendable> A append(CharSequence charSequence, A appendable) {
-        try {
-            appendable.append(charSequence);
-            return appendable;
-        } catch (IOException e) {
-            throw lazyException(e);
-        }
-    }
-
-    private static <A extends Appendable> A append(char character, A appendable) {
-        try {
-            appendable.append(character);
-            return appendable;
-        } catch (IOException e) {
-            throw lazyException(e);
-        }
-    }
-
 }
