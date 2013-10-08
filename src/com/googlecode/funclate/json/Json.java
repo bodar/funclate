@@ -12,71 +12,28 @@ import static com.googlecode.totallylazy.Sequences.sequence;
 import static java.lang.String.format;
 
 public class Json {
-    public static final String SEPARATOR = ",";
-
     public static String toJson(Object value) {
-        if (value == null) return "null";
-        if (value instanceof String) return toJson((String) value);
-        if (value instanceof Map) return toObjectLiteral((Map) value);
-        if (value instanceof Map.Entry) return toJson((Map.Entry) value);
-        if (value instanceof Model) return toJson((Model) value);
-        if (value instanceof Iterable) return toArray((Iterable) value);
-        if (value instanceof Boolean) return value.toString();
-        if (value instanceof Number) return value.toString();
-        return toJson(value.toString());
+        return StreamingJson.toJson(value, new StringBuilder()).toString();
     }
 
     public static String toJson(Model value) {
-        return toObjectLiteral(value.toMap());
+        return StreamingJson.toJson(value, new StringBuilder()).toString();
     }
 
-    public static String toJson(String value) {
-        return quote(escape(value));
+    public static String toJson(CharSequence value) {
+        return Strings.toString(value);
     }
 
-    public static String escape(String value) {
-        return characters(value).map(functions.escape).toString("");
-    }
-
-    public static String escape(Character character) {
-        switch (character) {
-            case '"': return "\\\"";
-            case '\\': return "\\\\";
-            case '\b': return "\\b";
-            case '\n': return "\\n";
-            case '\r': return "\\r";
-            case '\t': return "\\t";
-            default: return character.toString();
-        }
-    }
-
-    public static String quote(String value) {
-        return format("\"%s\"", value);
-    }
-
-    public static String toJson(Map.Entry<?,?> entry) {
-        return toPair(entry.getKey(), entry.getValue());
-    }
-
-    public static String toPair(Object key, Object value) {
-        return format("%s:%s", quote(String.valueOf(key)), toJson(value));
+    public static String toJson(Map.Entry<?,?> value) {
+        return StreamingJson.toJson(value, new StringBuilder()).toString();
     }
 
     public static String toArray(Iterable<?> values) {
-        return sequence(values).map(functions.toJson).toString("[", SEPARATOR, "]");
+        return StreamingJson.toJson(values, new StringBuilder()).toString();
     }
 
     public static String toObjectLiteral(Map<?, ?> map) {
-        return sequence(map.entrySet()).map(functions.toPair).toString("{", SEPARATOR, "}");
-    }
-
-    @Deprecated //use functions.toJson() removed after version 182
-    public static Callable1<Object, String> toJson() {
-        return new Callable1<Object, String>() {
-            public String call(Object value) throws Exception {
-                return toJson(value);
-            }
-        };
+        return StreamingJson.toJson(map, new StringBuilder()).toString();
     }
 
     public static Map<String, Object> parse(String json) {
@@ -93,18 +50,6 @@ public class Json {
         public static Mapper<Object, String> toJson = new Mapper<Object, String>() {
             public String call(Object value) throws Exception {
                 return Json.toJson(value);
-            }
-        };
-
-        public static Mapper<Character, String> escape = new Mapper<Character, String>() {
-            public String call(Character character) throws Exception {
-                return escape(character);
-            }
-        };
-
-        public static Mapper<Map.Entry, String> toPair = new Mapper<Map.Entry, String>() {
-            public String call(Map.Entry entry) throws Exception {
-                return toPair(entry.getKey(), entry.getValue());
             }
         };
     }

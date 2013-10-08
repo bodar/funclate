@@ -22,7 +22,9 @@ public class StreamingJsonTest {
 
         StreamingJson.toJson(values.iterator(), writer);
 
-        assertThat(writer.toString(), is(Json.toJson(values)));
+        String actual = writer.toString();
+        assertThat(actual, is("[\"1\",\"2\"]"));
+        assertThat(actual, is(Json.toJson(values)));
     }
 
     @Test
@@ -30,12 +32,13 @@ public class StreamingJsonTest {
         Model model = model().
                 add("root", model().
                         add("parent", model().
-                                add("children", "1").add("children", "2")));
+                                add("children", "1").add("children", true)));
         Writer writer = new StringWriter();
 
         StreamingJson.toJson(model, writer);
 
         String actual = writer.toString();
+        assertThat(actual, is("{\"root\":{\"parent\":{\"children\":[\"1\",true]}}}"));
         assertThat(actual, is(Json.toJson(model)));
     }
 
@@ -46,7 +49,9 @@ public class StreamingJsonTest {
 
         StreamingJson.toJson(values, writer);
 
-        assertThat(writer.toString(), is(Json.toJson(values)));
+        String actual = writer.toString();
+        assertThat(actual, is("[\"1\",\"2\"]"));
+        assertThat(actual, is(Json.toJson(values)));
     }
 
     @Test
@@ -56,6 +61,8 @@ public class StreamingJsonTest {
 
         StreamingJson.toJson(values, writer);
 
-        assertThat(writer.toString(), is(Json.toJson(values)));
+        String actual = writer.toString();
+        assertThat(actual, is("{\"one\":1,\"two\":2}"));
+        assertThat(actual, is(Json.toJson(values)));
     }
 }
