@@ -15,6 +15,8 @@ import static com.googlecode.totallylazy.Sequences.sequence;
 public interface Model {
     <T> Model add(String key, T value);
 
+    Model addOptionally(String key, Object value);
+
     <T> Model set(String name, T value);
 
     <T> T get(String key, Class<T> aClass);
@@ -46,6 +48,7 @@ public interface Model {
     Model map(Callable1<? super Object, ?> callable);
 
     Model merge(Model other);
+
 
 
     enum mutable implements ModelFactory {
