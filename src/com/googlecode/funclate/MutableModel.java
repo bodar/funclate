@@ -1,23 +1,21 @@
 package com.googlecode.funclate;
 
-import com.googlecode.totallylazy.Callable1;
-import com.googlecode.totallylazy.Maps;
-import com.googlecode.totallylazy.Option;
-import com.googlecode.totallylazy.Pair;
-import com.googlecode.totallylazy.Sequence;
+import com.googlecode.totallylazy.*;
+import com.googlecode.totallylazy.annotations.multimethod;
 import com.googlecode.totallylazy.collections.PersistentList;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
 
 import static com.googlecode.funclate.json.Json.toJson;
 import static com.googlecode.totallylazy.Option.option;
 import static com.googlecode.totallylazy.Sequences.sequence;
 
 @SuppressWarnings("unchecked")
-public class MutableModel implements Model {
+public class MutableModel extends AbstractModel {
     private final Map<String, Object> values;
 
     private MutableModel(Map<String, Object> values) {

@@ -13,6 +13,7 @@ import org.junit.Test;
 import java.util.*;
 
 import static com.googlecode.funclate.Model.functions.mergeFlattenChildren;
+import static com.googlecode.totallylazy.Option.none;
 import static com.googlecode.totallylazy.Option.some;
 import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.totallylazy.Sequences.one;
@@ -20,6 +21,7 @@ import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Sequences.first;
 import static com.googlecode.totallylazy.Unchecked.cast;
 import static com.googlecode.totallylazy.collections.PersistentList.constructors.list;
+import static com.googlecode.totallylazy.collections.PersistentSortedMap.constructors.sortedMap;
 import static com.googlecode.totallylazy.matchers.IterableMatcher.hasExactly;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
@@ -49,6 +51,18 @@ abstract public class ModelContract {
     }
 
     protected abstract ModelFactory modelFactory();
+
+    @Test
+    public void supportsOptionallyAddingValues() throws Exception {
+        assertThat(createModel().addOptionally("key", some("value")).get("key", String.class), is("value"));
+        assertThat(createModel().addOptionally("key", none(String.class)).contains("key"), is(false));
+
+        assertThat(createModel().addOptionally("key", list("value")).get("key", String.class), is("value"));
+        assertThat(createModel().addOptionally("key", list()).contains("key"), is(false));
+
+        assertThat(createModel().addOptionally("key", sortedMap("k", "value")).<Map<String, String>>get("key").get("k"), is("value"));
+        assertThat(createModel().addOptionally("key", sortedMap()).contains("key"), is(false));
+    }
 
     @Test
     public void supportsSingleValues() throws Exception {

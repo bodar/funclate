@@ -1,12 +1,14 @@
 package com.googlecode.funclate;
 
 import com.googlecode.totallylazy.*;
+import com.googlecode.totallylazy.annotations.multimethod;
 import com.googlecode.totallylazy.collections.PersistentList;
 import com.googlecode.totallylazy.collections.PersistentMap;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
 
 import static com.googlecode.funclate.Model.persistent.toModel;
 import static com.googlecode.funclate.json.Json.toJson;
@@ -16,7 +18,7 @@ import static com.googlecode.totallylazy.collections.ListMap.listMap;
 import static com.googlecode.totallylazy.collections.PersistentList.constructors.*;
 import static com.googlecode.totallylazy.collections.PersistentSortedMap.constructors.sortedMap;
 
-public class PersistentModel implements Model {
+public class PersistentModel extends AbstractModel {
     private final PersistentMap<String, Object> values;
 
     private PersistentModel(PersistentMap<String, Object> values) {
