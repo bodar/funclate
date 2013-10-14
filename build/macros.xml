@@ -9,7 +9,7 @@
 
             <jarjar jarfile="${release.no.dependencies.jar}" manifest="${release.jar.path}.mf">
                 <zipfileset src="${release.jar.path}"/>
-                <zipgroupfileset dir="${lib}" includes="lazyparsec-*.jar" excludes="*-sources.jar"/>
+                <zipgroupfileset dir="${lib}" includes="**/lazyparsec-*.jar" excludes="*-sources.jar"/>
                 <rule pattern="com.googlecode.lazyparsec.**"
                       result="com.googlecode.funclate.internal.lazyparsec.@1"/>
             </jarjar>
