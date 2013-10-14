@@ -5,6 +5,7 @@ import com.googlecode.totallylazy.Maps;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Unchecked;
+import com.googlecode.totallylazy.collections.PersistentSortedMap;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.MatcherAssert;
 import org.junit.Ignore;
@@ -61,7 +62,7 @@ abstract public class ModelContract {
         assertThat(createModel().addOptionally("key", list()).contains("key"), is(false));
 
         assertThat(createModel().addOptionally("key", sortedMap("k", "value")).<Map<String, String>>get("key").get("k"), is("value"));
-        assertThat(createModel().addOptionally("key", sortedMap()).contains("key"), is(false));
+        assertThat(createModel().addOptionally("key", PersistentSortedMap.constructors.<String, String>sortedMap()).contains("key"), is(false));
     }
 
     @Test
