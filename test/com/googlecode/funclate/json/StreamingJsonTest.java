@@ -1,6 +1,7 @@
 package com.googlecode.funclate.json;
 
 import com.googlecode.funclate.Model;
+import com.googlecode.totallylazy.Maps;
 import com.googlecode.totallylazy.Sequence;
 import org.junit.Test;
 
@@ -9,6 +10,7 @@ import java.io.Writer;
 import java.util.Map;
 
 import static com.googlecode.funclate.Model.persistent.model;
+import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.collections.PersistentSortedMap.constructors.sortedMap;
 import static com.googlecode.totallylazy.matchers.Matchers.is;
@@ -56,7 +58,7 @@ public class StreamingJsonTest {
 
     @Test
     public void canStreamAMap() throws Exception {
-        Map<String, Integer> values = sortedMap("one", 1, "two", 2);
+        Map<String, Integer> values = Maps.map(pair("one", 1), pair("two", 2));
         Writer writer = new StringWriter();
 
         StreamingJson.toJson(values, writer);
