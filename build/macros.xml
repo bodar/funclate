@@ -5,16 +5,16 @@
         <sequential>
             <taskdef name="jarjar" classname="com.tonicsystems.jarjar.JarJarTask"
                      classpathref="all.dependancies"/>
-            <property name="release.no.depemdencies.jar" value="${artifacts}/${release.name}-no-depemdencies.jar"/>
+            <property name="release.no.dependencies.jar" value="${artifacts}/${release.name}-no-dependencies.jar"/>
 
-            <jarjar jarfile="${release.no.depemdencies.jar}" manifest="${release.jar.path}.mf">
+            <jarjar jarfile="${release.no.dependencies.jar}" manifest="${release.jar.path}.mf">
                 <zipfileset src="${release.jar.path}"/>
-                <zipgroupfileset dir="${build.dependencies.dir}" includes="lazyparsec-*.jar" excludes="*-sources.jar"/>
+                <zipgroupfileset dir="${lib}" includes="lazyparsec-*.jar" excludes="*-sources.jar"/>
                 <rule pattern="com.googlecode.lazyparsec.**"
                       result="com.googlecode.funclate.internal.lazyparsec.@1"/>
             </jarjar>
             <delete file="${release.jar.path}"/>
-            <move file="${release.no.depemdencies.jar}" tofile="${release.jar.path}"/>
+            <move file="${release.no.dependencies.jar}" tofile="${release.jar.path}"/>
         </sequential>
     </macrodef>
 
