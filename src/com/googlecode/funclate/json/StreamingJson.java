@@ -43,11 +43,6 @@ public class StreamingJson {
     }
 
     @multimethod
-    public static <A extends Appendable> A toJson(final Model model, final A appendable) {
-        return toJson(model.toMap(), appendable);
-    }
-
-    @multimethod
     public static <A extends Appendable> A toJson(final Map<?, ?> map, final A appendable) {
         return iterate(map.entrySet().iterator(), appendable, "{", SEPARATOR, "}");
     }
