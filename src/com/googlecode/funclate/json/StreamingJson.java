@@ -38,6 +38,7 @@ public class StreamingJson {
 
     @multimethod
     public static <A extends Appendable> A toJson(final Iterable<?> iterable, final A appendable) {
+        if(iterable instanceof Map) return toJson((Map) iterable, appendable);
         return toJson(iterable.iterator(), appendable);
     }
 

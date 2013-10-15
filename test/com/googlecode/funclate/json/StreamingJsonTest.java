@@ -58,10 +58,22 @@ public class StreamingJsonTest {
 
     @Test
     public void canStreamAMap() throws Exception {
-        Map<String, Integer> values = Maps.map(pair("one", 1), pair("two", 2));
+        Map<String, Integer> values = sortedMap("one", 1, "two", 2);
         Writer writer = new StringWriter();
 
         StreamingJson.toJson(values, writer);
+
+        String actual = writer.toString();
+        assertThat(actual, is("{\"one\":1,\"two\":2}"));
+        assertThat(actual, is(Json.toJson(values)));
+    }
+
+    @Test
+    public void canStreamAMapEvenIfCastToAnIterable() throws Exception {
+        Map<String, Integer> values = sortedMap("one", 1, "two", 2);
+        Writer writer = new StringWriter();
+
+        StreamingJson.toJson((Iterable)values, writer);
 
         String actual = writer.toString();
         assertThat(actual, is("{\"one\":1,\"two\":2}"));
