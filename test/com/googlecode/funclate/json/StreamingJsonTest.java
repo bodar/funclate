@@ -37,7 +37,7 @@ public class StreamingJsonTest {
                                 add("children", "1").add("children", true)));
         Writer writer = new StringWriter();
 
-        StreamingJson.toJson(model, writer);
+        StreamingJson.toJson(model.toMap(), writer);
 
         String actual = writer.toString();
         assertThat(actual, is("{\"root\":{\"parent\":{\"children\":[\"1\",true]}}}"));

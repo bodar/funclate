@@ -1,5 +1,6 @@
 package com.googlecode.funclate.json;
 
+import com.googlecode.funclate.Model;
 import com.googlecode.funclate.json.grammar.Grammar;
 import com.googlecode.totallylazy.Mapper;
 
@@ -8,6 +9,10 @@ import java.util.Map;
 public class Json {
     public static String toJson(Object value) {
         return StreamingJson.toJson(value, new StringBuilder()).toString();
+    }
+
+    public static String toJson(Model value) {
+        return StreamingJson.toJson(value.toMap(), new StringBuilder()).toString();
     }
 
     public static String toJson(CharSequence value) {
