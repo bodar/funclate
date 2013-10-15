@@ -3,12 +3,15 @@ package com.googlecode.funclate.json;
 import com.googlecode.funclate.Model;
 import com.googlecode.totallylazy.Randoms;
 import com.googlecode.totallylazy.Uri;
+import com.googlecode.totallylazy.time.Dates;
 import org.junit.Test;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.Map;
 
 import static com.googlecode.funclate.Model.mutable.model;
+import static com.googlecode.totallylazy.time.Dates.date;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
@@ -27,6 +30,14 @@ public class JsonTest {
 
         assertThat(result,
                 is("{\"root\":\"text\"}"));
+    }
+
+    @Test
+    public void writesDatesInIsoFormat() throws Exception {
+        Date date = date(1977, 1, 10, 23, 05, 33, 123);
+        assertThat(Json.toJson(model().
+                add("dob", date)),
+                is("{\"dob\":\"" + Dates.RFC3339withMilliseconds().format(date)  +"\"}"));
     }
 
     @Test
