@@ -13,9 +13,17 @@ import java.util.Map;
 import static com.googlecode.funclate.Model.mutable.model;
 import static com.googlecode.totallylazy.time.Dates.date;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 
 public class JsonTest {
+    @Test
+    public void supportsParsingToVariousNativeJavaTypes() throws Exception {
+        assertThat(Json.<String>map(("{\"root\" : \"text\"}")).get("root"), is("text"));
+        assertThat(Json.<String>list(("[\"one\", \"two\"]")).get(0), is("one"));
+        assertThat(Json.object(("123")), instanceOf(Number.class));
+    }
+
     @Test
     public void correctlyParsesASingleRootElement() throws Exception {
         Map<String, Object> result = Json.parse(("{\"root\" : \"text\"}"));

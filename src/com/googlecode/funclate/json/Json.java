@@ -4,7 +4,10 @@ import com.googlecode.funclate.Model;
 import com.googlecode.funclate.json.grammar.Grammar;
 import com.googlecode.totallylazy.Mapper;
 
+import java.util.List;
 import java.util.Map;
+
+import static com.googlecode.totallylazy.Unchecked.cast;
 
 public class Json {
     public static String toJson(Object value) {
@@ -28,7 +31,19 @@ public class Json {
     }
 
     public static Map<String, Object> parse(String json) {
-        return Grammar.OBJECT.parse(json);
+        return map(json);
+    }
+
+    public static <V> Map<String, V> map(String json) {
+        return cast(Grammar.OBJECT.parse(json));
+    }
+
+    public static <V> List<V> list(String json) {
+        return cast(Grammar.ARRAY.parse(json));
+    }
+
+    public static Object object(String json) {
+        return Grammar.VALUE.parse(json);
     }
 
     public static class functions {
