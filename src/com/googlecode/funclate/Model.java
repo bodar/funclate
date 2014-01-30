@@ -70,6 +70,17 @@ public interface Model {
             return instance.create(json);
         }
 
+        public static final Function1<String, Model> parse = new Function1<String, Model>() {
+            @Override
+            public Model call(String json) throws Exception {
+                return parse(json);
+            }
+        };
+
+        public static Function1<String, Model> parse() {
+            return parse;
+        }
+
         public Model create() {
             return create(Sequences.<Pair<String, Object>>empty());
         }
@@ -122,6 +133,17 @@ public interface Model {
 
         public static Model parse(String json) {
             return instance.create(json);
+        }
+
+        public static final Function1<String, Model> parse = new Function1<String, Model>() {
+            @Override
+            public Model call(String json) throws Exception {
+                return parse(json);
+            }
+        };
+
+        public static Function1<String, Model> parse() {
+            return parse;
         }
 
         public static final Function1<PersistentMap<String,? extends Object>,Model> toModel = new Function1<PersistentMap<String, ? extends Object>, Model>() {
