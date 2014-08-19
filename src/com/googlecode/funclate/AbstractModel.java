@@ -9,9 +9,11 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 
 public abstract class AbstractModel implements Model{
+    private multi multi;
     @Override
     public Model addOptionally(final String key, final Object value) {
-        return new multi(){}.<Model>methodOption(key, value).getOrElse(new Callable<Model>() {
+        if(multi == null) multi = new multi(){};
+        return multi.<Model>methodOption(key, value).getOrElse(new Callable<Model>() {
             @Override
             public Model call() throws Exception {
                 return add(key, value);

@@ -1,26 +1,26 @@
 package com.googlecode.funclate.json;
 
-import com.googlecode.funclate.Model;
 import com.googlecode.totallylazy.Iterators;
 import com.googlecode.totallylazy.Mapper;
 import com.googlecode.totallylazy.annotations.multimethod;
 import com.googlecode.totallylazy.multi;
 import com.googlecode.totallylazy.time.Dates;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
 import static com.googlecode.totallylazy.Appendables.append;
-import static com.googlecode.totallylazy.LazyException.lazyException;
 
 public class StreamingJson {
     public static final String SEPARATOR = ",";
 
+    private static multi multi;
+
     public static <A extends Appendable> A toJson(final Object o, final A appendable) {
-        return new multi(){}.<A>methodOption(o, appendable).getOrElse(new Callable<A>() {
+        if (multi == null) multi = new multi() { };
+        return multi.<A>methodOption(o, appendable).getOrElse(new Callable<A>() {
             @Override
             public A call() throws Exception {
                 return toJson(o.toString(), appendable);
@@ -40,7 +40,7 @@ public class StreamingJson {
 
     @multimethod
     public static <A extends Appendable> A toJson(final Iterable<?> iterable, final A appendable) {
-        if(iterable instanceof Map) return toJson((Map) iterable, appendable);
+        if (iterable instanceof Map) return toJson((Map) iterable, appendable);
         return toJson(iterable.iterator(), appendable);
     }
 

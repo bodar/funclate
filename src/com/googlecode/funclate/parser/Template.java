@@ -26,9 +26,11 @@ public class Template implements Renderer<Map<String, Object>> {
     @Override
     public String toString() {
         return objects.map(new Mapper<Object, String>() {
+            private multi multi;
             @Override
             public String call(Object renderer) throws Exception {
-                return new multi(){}.<String>methodOption(renderer).getOrElse(toString.apply(renderer));
+                if(multi == null) multi = new multi(){};
+                return multi.<String>methodOption(renderer).getOrElse(toString.apply(renderer));
             }
             @multimethod String call(Attribute attribute) {return "$" + attribute + "$";}
             @multimethod String call(TemplateCall call) {return "$" + call + "$";}

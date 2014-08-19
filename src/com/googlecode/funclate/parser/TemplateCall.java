@@ -56,9 +56,10 @@ public class TemplateCall implements Renderer<Map<String, Object>> {
                 if (pair.first().toString().matches("\\d+")) return "";
                 return pair.first() + "=";
             }
-
+            private multi multi;
             private String renderValue(Object renderer) {
-                return new multi() { }.<String>methodOption(renderer).getOrElse(toString.apply(renderer));
+                if(multi == null) multi = new multi(){};
+                return multi.<String>methodOption(renderer).getOrElse(toString.apply(renderer));
             }
 
             @multimethod String renderValue(Text text) { return String.format("\"%s\"", text); }
